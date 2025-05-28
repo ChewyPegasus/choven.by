@@ -1,20 +1,81 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello MainController!{% endblock %}
+{% block title %}Главная страница{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>D:/prog/php/project/choven.by/src/Controller/MainController.php</code></li>
-        <li>Your template at <code>D:/prog/php/project/choven.by/templates/main/index.html.twig</code></li>
-    </ul>
+<div class="hero-section">
+    <!-- Slider main container -->
+    <div class="swiper hero-swiper">
+        <!-- Additional required wrapper -->
+        <div class="swiper-wrapper">
+            <!-- Slides -->
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="{{ asset('images/kayaks.png') }}" alt="Каяки" class="kayaks">
+                    <div class="slide-text">
+                        <h2>Исследуйте водные просторы</h2>
+                        <p>Откройте для себя удивительный мир каякинга</p>
+                        <a href="#" class="btn-primary">Подробнее</a>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="{{ asset('images/kayaks.png') }}" alt="Каяки 2" class="kayaks">
+                    <div class="slide-text">
+                        <h2>Лучшие маршруты</h2>
+                        <p>Мы предлагаем самые живописные маршруты для каякинга</p>
+                        <a href="#" class="btn-primary">Узнать больше</a>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="{{ asset('images/kayaks.png') }}" alt="Каяки 3" class="kayaks">
+                    <div class="slide-text">
+                        <h2>Профессиональные инструкторы</h2>
+                        <p>Наши опытные инструкторы гарантируют безопасность и удовольствие</p>
+                        <a href="#" class="btn-primary">Забронировать</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation buttons -->
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        
+        <!-- Pagination -->
+        <div class="swiper-pagination"></div>
+    </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const swiper = new Swiper('.hero-swiper', {
+            // Optional parameters
+            loop: true,
+            effect: 'fade',
+            fadeEffect: {
+                crossFade: true
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            
+            // Navigation arrows
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+            
+            // Pagination
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    });
+</script>
 {% endblock %}
