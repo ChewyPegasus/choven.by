@@ -11,7 +11,7 @@
             <!-- Slides -->
             <div class="swiper-slide">
                 <div class="slide-content">
-                    <img src="{{ asset('images/kayaks.png') }}" alt="Каяки" class="kayaks">
+                    <img src="{{ asset('images/slider/kayaks.png') }}" alt="Каяки" class="kayaks">
                     <div class="slide-text">
                         <h2>Исследуйте водные просторы</h2>
                         <p>Откройте для себя удивительный мир каякинга</p>
@@ -21,7 +21,7 @@
             </div>
             <div class="swiper-slide">
                 <div class="slide-content">
-                    <img src="{{ asset('images/view.jpg') }}" alt="Каяки 2" class="kayaks">
+                    <img src="{{ asset('images/slider/view.jpg') }}" alt="Маршруты" class="kayaks">
                     <div class="slide-text">
                         <h2>Лучшие маршруты</h2>
                         <p>Мы предлагаем самые живописные маршруты для каякинга</p>
@@ -31,7 +31,7 @@
             </div>
             <div class="swiper-slide">
                 <div class="slide-content">
-                    <img src="{{ asset('images/campfire.jpg') }}" alt="Каяки 3" class="kayaks">
+                    <img src="{{ asset('images/slider/campfire.jpg') }}" alt="Вайб" class="kayaks">
                     <div class="slide-text">
                         <h2>Незабываемые воспоминания</h2>
                         <p>Душевно и беззаботно</p>
@@ -49,6 +49,75 @@
         <div class="swiper-pagination"></div>
     </div>
 </div>
+
+<!-- Секция с плитками сплавов -->
+<section class="tours-section">
+    <div class="container">
+        <h2 class="section-title">Наши сплавы</h2>
+        
+        <div class="tours-grid">
+            <!-- Карточка сплава 1 -->
+            <div class="tour-card">
+                <div class="tour-image" style="background-image: url('{{ asset('images/cards/all-inclusive.jpeg') }}');">
+                    <div class="price-badge">от 200 BYN</div>
+                </div>
+                <div class="tour-content">
+                    <h3>All-inclusive</h3>
+                    <p>Сплав на все выходные с полным пакетом услуг</p>
+                    <a href="#" class="btn-secondary">Подробнее</a>
+                </div>
+            </div>
+            
+            <!-- Карточка сплава 2 -->
+            <div class="tour-card">
+                <div class="tour-image" style="background-image: url('{{ asset('images/cards/isloch-2day.jpg') }}');">
+                    <div class="price-badge">от 150 BYN</div>
+                </div>
+                <div class="tour-content">
+                    <h3>Сплав по Ислочи</h3>
+                    <p>Сплав с ночёвкой по живописной Ислочи</p>
+                    <a href="#" class="btn-secondary">Подробнее</a>
+                </div>
+            </div>
+            
+            <!-- Карточка сплава 3 -->
+            <div class="tour-card">
+                <div class="tour-image" style="background-image: url('{{ asset('images/cards/svisloch.jpeg') }}');">
+                    <div class="price-badge">от 70 BYN</div>
+                </div>
+                <div class="tour-content">
+                    <h3>Дневной сплав по Свислочи</h3>
+                    <p>Быстро, удобно и красиво. Для тех, кому хочется ненадолго вырваться из городской суеты</p>
+                    <a href="#" class="btn-secondary">Подробнее</a>
+                </div>
+            </div>
+        
+            <!-- Карточка сплава 4 -->
+            <div class="tour-card">
+                <div class="tour-image" style="background-image: url('{{ asset('images/cards/isloch.jpg') }}');">
+                    <div class="price-badge">от 250 BYN</div>
+                </div>
+                <div class="tour-content">
+                    <h3>Корпоративный сплав</h3>
+                    <p>Полностью организуем сплав на любой вкус</p>
+                    <a href="#" class="btn-secondary">Подробнее</a>
+                </div>
+            </div>
+            
+            <!-- Карточка сплава 5 -->
+            <div class="tour-card">
+                <div class="tour-image" style="background-image: url('{{ asset('images/cards/svisloch.jpg') }}');">
+                    <div class="price-badge">60 BYN</div>
+                </div>
+                <div class="tour-content">
+                    <h3>Самоорганизация</h3>
+                    <p>Вариант для опытных туристов, которые готовы сами организовать свой сплав</p>
+                    <a href="#" class="btn-secondary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
