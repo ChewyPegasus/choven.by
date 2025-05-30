@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Enum\River;
+use App\Enum\Type;
 use App\Repository\OrderRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,6 +25,15 @@ class Order
 
     #[ORM\Column]
     private ?\DateInterval $date = null;
+
+    #[ORM\Column(enumType: River::class)]
+    private ?River $river = null;
+
+    #[ORM\Column]
+    private ?int $amountOfPeople = null;
+
+    #[ORM\Column(enumType: Type::class)]
+    private ?Type $type = null;
 
     public function getId(): ?int
     {
@@ -61,6 +72,42 @@ class Order
     public function setDate(\DateInterval $date): static
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    public function getRiver(): ?River
+    {
+        return $this->river;
+    }
+
+    public function setRiver(River $river): static
+    {
+        $this->river = $river;
+
+        return $this;
+    }
+
+    public function getAmountOfPeople(): ?int
+    {
+        return $this->amountOfPeople;
+    }
+
+    public function setAmountOfPeople(int $amountOfPeople): static
+    {
+        $this->amountOfPeople = $amountOfPeople;
+
+        return $this;
+    }
+
+    public function getType(): ?Type
+    {
+        return $this->type;
+    }
+
+    public function setType(?Type $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }
