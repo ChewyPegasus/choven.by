@@ -14,6 +14,7 @@
             <link rel="stylesheet" href="{{ asset('styles/slider.css') }}">
             <link rel="stylesheet" href="{{ asset('styles/cards.css') }}">
             <link rel="stylesheet" href="{{ asset('styles/form.css') }}">
+            <link rel="stylesheet" href="{{ asset('styles/flash.css') }}">
 
             <!-- favicon -->
             <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
@@ -21,6 +22,9 @@
             <link rel="shortcut icon" href="/favicon.ico" />
             <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
             <link rel="manifest" href="/site.webmanifest" />
+
+            <!-- Font Awesome -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         {% endblock %}
 
         {% block javascripts %}
@@ -36,10 +40,21 @@
 
         {% for label, messages in app.flashes %}
             {% for message in messages %}
-                <div class="flash-message flash-{{ label }}">
+                <div class="flash-message flash-{{ label }}" id="flash-{{ loop.index }}">
                     <div class="container">
-                        {{ message }}
-                        <span class="close-btn">&times;</span>
+                        <div class="flash-content">
+                            {% if label == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% elseif label == 'error' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% elseif label == 'warning' %}
+                                <i class="fas fa-exclamation-triangle"></i>
+                            {% elseif label == 'info' %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                            {{ message }}
+                        </div>
+                        <span class="close-btn" onclick="closeFlash('flash-{{ loop.index }}')">&times;</span>
                     </div>
                 </div>
             {% endfor %}
@@ -59,9 +74,7 @@
                         this.parentElement.parentElement.style.display = 'none';
                     });
                 });
-            });
 
-            document.addEventListener('DOMContentLoaded', function() {
                 const form = document.querySelector('.reservation-form');
                 
                 if (form) {
@@ -128,7 +141,27 @@
                     }
                     input.classList.remove('is-invalid');
                 }
+
+                const flashMessages = document.querySelectorAll('.flash-message');
+                flashMessages.forEach(function(message, index) {
+                    setTimeout(function() {
+                        closeFlash(message.id);
+                    }, 5000 + (index * 500));
+                });
             });
+
+            function closeFlash(id) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.opacity = '0';
+                    element.style.transform = 'translateY(-20px)';
+                    element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                    
+                    setTimeout(function() {
+                        element.style.display = 'none';
+                    }, 300);
+                }
+            }
         </script>
     </body>
 </html>
