@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\Order;
 use App\Enum\River;
 use App\Enum\Type;
+use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -37,7 +38,7 @@ class OrderForm extends AbstractType
                     ]),
                 ],
             ])
-            ->add('date', DateType::class, [
+            ->add('startDate', DateType::class, [
                 'label' => 'Дата сплава',
                 'widget' => 'single_text',
                 'html5' => true,
@@ -48,6 +49,27 @@ class OrderForm extends AbstractType
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Пожалуйста, выберите дату',
+                    ]),
+                ],
+            ])
+            ->add('duration', DateIntervalType::class, [
+                'label' => 'Продолжительность',
+                'with_days' => true,
+                'with_years' => false,
+                'with_months' => false,
+                'with_hours' => false,
+                'with_minutes' => false,
+                'with_seconds' => false,
+                'with_invert' => false,
+                'labels' => [
+                    'days' => 'Дней',
+                ],
+                'attr' => [
+                    'class' => 'form-control',
+                ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Пожалуйста, укажите продолжительность сплава',
                     ]),
                 ],
             ])
@@ -80,9 +102,7 @@ class OrderForm extends AbstractType
                     new Range([
                         'min' => 1,
                         'max' => 50,
-                        'minMessage' => 'Минимальное количество участников - {{ limit }}',
-                        'maxMessage' => 'Максимальное количество участников - {{ limit }}',
-                    ]),
+                        'notInRangeMessage' => 'Количество участников должно быть от {{ min }} до {{ max }}']),
                 ],
             ])
             ->add('type', EnumType::class, [

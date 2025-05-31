@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Детали заказа{% endblock %}
+
+{% block body %}
+<section class="order-details">
+    <div class="container">
+        <h1 class="section-title">Детали заказа #{{ order.id }}</h1>
+        
+        <div class="order-info">
+            <div class="order-card">
+                <div class="info-row">
+                    <div class="info-label">Email:</div>
+                    <div class="info-value">{{ order.email }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Дата сплава:</div>
+                    <div class="info-value">{{ order.date|date('d.m.Y') }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Река:</div>
+                    <div class="info-value">{{ order.river.label }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Тип сплава:</div>
+                    <div class="info-value">{{ order.type.label }}</div>
+                </div>
+                
+                <div class="info-row">
+                    <div class="info-label">Количество участников:</div>
+                    <div class="info-value">{{ order.amountOfPeople }}</div>
+                </div>
+                
+                {% if order.description %}
+                <div class="info-row description">
+                    <div class="info-label">Дополнительная информация:</div>
+                    <div class="info-value">{{ order.description }}</div>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="actions">
+                <a href="{{ path('app_main') }}" class="btn-secondary">На главную</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

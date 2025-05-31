@@ -9,7 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
-#[ORM\Table(name: '`order`')]
+#[ORM\Table(name: 'orders')]
 class Order
 {
     #[ORM\Id]
@@ -23,9 +23,6 @@ class Order
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
-    #[ORM\Column]
-    private ?\DateInterval $date = null;
-
     #[ORM\Column(enumType: River::class)]
     private ?River $river = null;
 
@@ -34,6 +31,12 @@ class Order
 
     #[ORM\Column(enumType: Type::class)]
     private ?Type $type = null;
+
+    #[ORM\Column]
+    private ?\DateTime $startDate = null;
+
+    #[ORM\Column]
+    private ?\DateInterval $duration = null;
 
     public function getId(): ?int
     {
@@ -60,18 +63,6 @@ class Order
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
-        return $this;
-    }
-
-    public function getDate(): ?\DateInterval
-    {
-        return $this->date;
-    }
-
-    public function setDate(\DateInterval $date): static
-    {
-        $this->date = $date;
 
         return $this;
     }
@@ -108,6 +99,30 @@ class Order
     public function setType(?Type $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTime
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(\DateTime $startDate): static
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getDuration(): ?\DateInterval
+    {
+        return $this->duration;
+    }
+
+    public function setDuration(\DateInterval $duration): static
+    {
+        $this->duration = $duration;
 
         return $this;
     }

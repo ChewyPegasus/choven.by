@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Забронировать сплав{% endblock %}
+
+{% block body %}
+<section class="form-section">
+    <div class="container">
+        <h1 class="section-title">Забронировать сплав</h1>
+        
+        <div class="form-container">
+            {{ form_start(form, {'attr': {'class': 'reservation-form'}}) }}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.email) }}
+                        {{ form_widget(form.email) }}
+                        {{ form_errors(form.email) }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.startDate) }}
+                        {{ form_widget(form.startDate) }}
+                        {{ form_errors(form.startDate) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.river) }}
+                        {{ form_widget(form.river) }}
+                        {{ form_errors(form.river) }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.type) }}
+                        {{ form_widget(form.type) }}
+                        {{ form_errors(form.type) }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.amountOfPeople) }}
+                        {{ form_widget(form.amountOfPeople) }}
+                        {{ form_errors(form.amountOfPeople) }}
+                    </div>
+                    <div class="form-group col-md-6">
+                        {{ form_label(form.duration) }}
+                        <div class="duration-field">
+                            {{ form_widget(form.duration.days, {'attr': {'class': 'form-control duration-days'}}) }}
+                            <span class="duration-label">{{ form.duration.vars.labels.days|default('дней') }}</span>
+                        </div>
+                        {{ form_errors(form.duration) }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    {{ form_label(form.description) }}
+                    {{ form_widget(form.description) }}
+                    {{ form_errors(form.description) }}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-primary">Отправить заявку</button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</section>
+
+{% endblock %}
