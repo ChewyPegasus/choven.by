@@ -64,7 +64,10 @@
                 <div class="tour-content">
                     <h3>All-inclusive</h3>
                     <p>Сплав на все выходные с полным пакетом услуг</p>
-                    <a href="{{ path('app_order_new') }}" class="btn-secondary">Подробнее</a>
+                    <a href="{{ path('app_order_new', {
+                        'type': 'all_inclusive',
+                        'duration': 2,
+                    }) }}" class="btn-secondary">Бронировать</a>
                 </div>
             </div>
             
@@ -76,7 +79,10 @@
                 <div class="tour-content">
                     <h3>Сплав по Ислочи</h3>
                     <p>Сплав с ночёвкой по живописной Ислочи</p>
-                    <a href="{{ path('app_order_new') }}" class="btn-secondary">Подробнее</a>
+                    <a href="{{ path('app_order_new', {
+                        'river': 'isloch',
+                        'duration': 2,
+                    }) }}" class="btn-secondary">Бронировать</a>
                 </div>
             </div>
             
@@ -88,7 +94,10 @@
                 <div class="tour-content">
                     <h3>Дневной сплав по Свислочи</h3>
                     <p>Быстро, удобно и красиво. Для тех, кому хочется ненадолго вырваться из городской суеты</p>
-                    <a href="{{ path('app_order_new') }}" class="btn-secondary">Подробнее</a>
+                    <a href="{{ path('app_order_new', {
+                        'river': 'svisloch',
+                        'duration': 1,
+                    }) }}" class="btn-secondary">Бронировать</a>
                 </div>
             </div>
         
@@ -100,7 +109,9 @@
                 <div class="tour-content">
                     <h3>Корпоративный сплав</h3>
                     <p>Полностью организуем сплав на любой вкус</p>
-                    <a href="{{ path('app_order_new') }}" class="btn-secondary">Подробнее</a>
+                    <a href="{{ path('app_order_new', {
+                        'type': 'all_inclusive',
+                    }) }}" class="btn-secondary">Бронировать</a>
                 </div>
             </div>
             
@@ -112,7 +123,9 @@
                 <div class="tour-content">
                     <h3>Самоорганизация</h3>
                     <p>Вариант для опытных туристов, которые готовы сами организовать свой сплав</p>
-                    <a href="{{ path('app_order_new') }}" class="btn-secondary">Подробнее</a>
+                    <a href="{{ path('app_order_new', {
+                        'type': 'rent_only',
+                    }) }}" class="btn-secondary">Бронировать</a>
                 </div>
             </div>
         </div>

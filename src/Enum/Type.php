@@ -2,11 +2,11 @@
 
 namespace App\Enum;
 
-enum Type: int {
-    case ALL_INCLUSIVE = 1;
-    case MINIMUM = 2;
-    case RENT_ONLY = 3;
-    case OTHER = 4;
+enum Type: string {
+    case ALL_INCLUSIVE = 'all_inclusive';
+    case MINIMUM = 'minimum';
+    case RENT_ONLY = 'rent_only';
+    case OTHER = 'other';
 
     public function getLabel(): string
     {

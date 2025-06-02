@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Order;
 use App\Service\EmailService;
 use Psr\Log\LoggerInterface;
+use App\Enum\River;
+use App\Enum\Type;
 
 #[Route('/order')]
 final class OrderController extends AbstractController
@@ -24,6 +26,21 @@ final class OrderController extends AbstractController
     ): Response
     {
         $order = new Order();
+
+        $type = $request->query->get('type');
+        $duration = $request->query->get('duration');
+        $river = $request->query->get('river');
+
+        if ($type) {
+            $order->setType(Type::from($type));
+        }
+        if ($river) {
+            $order->setRiver(River::from($river));
+        }
+        if ($duration) {
+            $order->setDuration(new \DateInterval('P' . $duration . 'D'));
+        }
+
         $form = $this->createForm(OrderForm::class, $order);
         $form->handleRequest($request);
 
