@@ -9,12 +9,17 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Order;
+use App\Service\EmailService;
 
 #[Route('/order')]
 final class OrderController extends AbstractController
 {
     #[Route('/new', name: 'app_order_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(
+        Request $request, 
+        EntityManagerInterface $entityManager,
+        EmailService $emailService
+    ): Response
     {
         $order = new Order();
         $form = $this->createForm(OrderForm::class, $order);
@@ -24,7 +29,14 @@ final class OrderController extends AbstractController
             $entityManager->persist($order);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Ваша заказ успешно отправлен');
+            try {
+                $emailService->sendOrderConfirmation($order);
+                $this->addFlash('success', 'Ваш заказ успешно отправлен. На ваш email отправлено подтверждение.');
+            } catch (\Exception $e) {
+                $this->addFlash('success', 'Ваш заказ успешно отправлен.');
+                $this->addFlash('warning', 'Возникли проблемы при отправке письма с подтверждением. Мы свяжемся с вами в ближайшее время.');
+            }
+
             return $this->redirectToRoute('app_main');
         }
 
