@@ -2,6 +2,14 @@
 
 {% block title %}Забронировать сплав{% endblock %}
 
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <!-- styles -->
+        <link rel="stylesheet" href="{{ asset('styles/form.css') }}">
+    {% endblock %}
+{% endblock %}
+
 {% block body %}
 <section class="form-section">
     <div class="container">

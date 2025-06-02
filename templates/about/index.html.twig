@@ -1,0 +1,113 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}О нас - Чöвен{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        /* Общие стили страницы */
+        
+    </style>
+{% endblock %}
+
+{% block body %}
+    <!-- Секция с историей -->
+    <section class="about-section">
+        <div class="container">
+            <h2 class="section-title">Наша история</h2>
+            
+            <div class="history-container">
+                <p>Всё началось с простого увлечения водным туризмом еще в студенческие годы. Мы с друзьями регулярно выбирались на сплавы по живописным рекам Беларуси – Ислочь, Свислочь, Западная Березина. <span class="history-highlight">Любовь к воде и природе постепенно переросла в нечто большее.</span></p>
+                
+                <p>В 2018 году мы приобрели наши первые два каяка, которыми с радостью делились с друзьями и знакомыми. Видя растущий интерес к активному отдыху на воде, мы решили расширить наш небольшой флот.</p>
+                
+                <p>К 2020 году мы уже организовывали регулярные сплавы для всех желающих, а к 2021 году наша страсть превратилась в полноценный бизнес – <span class="history-highlight">так родился «Чöвен»</span>.</p>
+                
+                <p>Сегодня мы предлагаем разнообразные маршруты и форматы сплавов – от коротких однодневных приключений до многодневных экспедиций с ночевками на берегу. Наша команда постоянно исследует новые маршруты, чтобы показать вам самые красивые и захватывающие уголки белорусской природы.</p>
+                
+                <p>Наша главная цель остается неизменной – <span class="history-highlight">поделиться нашей любовью к водному туризму</span> и создать для вас незабываемые впечатления от общения с природой.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Секция с фотогалереей -->
+    <section class="about-section" style="background-color: #f9f9f9;">
+        <div class="container">
+            <h2 class="section-title">Фотогалерея</h2>
+            
+            <div class="gallery-container">
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-1.jpg') }}" alt="Сплав по реке">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-2.jpg') }}" alt="Каяки на берегу">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-3.jpg') }}" alt="Отдых на природе">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-4.jpg') }}" alt="Живописные пейзажи">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-5.jpg') }}" alt="Вечер у костра">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-6.jpg') }}" alt="Командный дух">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-7.jpg') }}" alt="Речные приключения">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-8.jpg') }}" alt="Корпоративный отдых">
+                </div>
+                <div class="gallery-item">
+                    <img src="{{ asset('images/gallery/gallery-9.jpg') }}" alt="Красота природы">
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Секция с контактами -->
+    <section class="about-section">
+        <div class="container">
+            <h2 class="section-title">Свяжитесь с нами</h2>
+            
+            <div class="contact-container">
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-title">Телефон</div>
+                    <div class="contact-value">
+                        <a href="tel:+375291234567">+375 (29) 123-45-67</a>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fab fa-instagram"></i>
+                    </div>
+                    <div class="contact-title">Instagram</div>
+                    <div class="contact-value">
+                        <a href="https://www.instagram.com/choven.by/" target="_blank">@choven.by</a>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-title">Email</div>
+                    <div class="contact-value">
+                        <a href="mailto:info@choven.by">info@choven.by</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

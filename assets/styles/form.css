@@ -37,6 +37,8 @@
     border: 1px solid #ddd;
     border-radius: 4px;
     transition: border-color 0.3s;
+    resize: none;
+    box-sizing: border-box;
 }
 
 .form-control:focus, .form-select:focus {
@@ -169,4 +171,31 @@ label {
 [name$="[invert]"], label[for$="[years]"], label[for$="[months]"], label[for$="[hours]"],
 label[for$="[minutes]"], label[for$="[seconds]"], label[for$="[invert]"] {
     display: none;
+}
+
+.section-title {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 50px;
+    color: #333;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #ff6b00;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
