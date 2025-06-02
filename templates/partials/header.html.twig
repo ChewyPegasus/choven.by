@@ -1,9 +1,19 @@
-<div class="site-header">
-    <nav>
-        <ul>
-            <li><a href="{{ path('app_main') }}">Главная</a></li>
-            <li><a href="#">Техника безопасности</a></li>
-            <li><a href="#">О нас</a></li>
-        </ul>
-    </nav>
-</div>
+<header class="site-header">
+    <div class="container">
+        <div class="header-content">
+            <div class="logo">
+                <a href="{{ path('app_main') }}">
+                    <span class="logo-text">Чöвен</span>
+                </a>
+            </div>
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="{{ path('app_main') }}">Главная</a></li>
+                    <li><a href="#">Техника безопасности</a></li>
+                    <li><a href="{{ path('app_about') }}">О нас</a></li>
+                    <li><a href="{{ path('app_order_new') }}" class="btn-outline">Забронировать</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</header>
