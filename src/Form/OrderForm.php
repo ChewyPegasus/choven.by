@@ -53,25 +53,25 @@ class OrderForm extends AbstractType
                 ],
             ])
             ->add('duration', DateIntervalType::class, [
-                'label' => 'Продолжительность',
-                'with_days' => true,
+                'label' => 'Продолжительность (дней)',
                 'with_years' => false,
                 'with_months' => false,
-                'with_hours' => false,
-                'with_minutes' => false,
-                'with_seconds' => false,
-                'with_invert' => false,
-                'labels' => [
-                    'days' => 'Дней',
-                ],
+                'with_days' => true,
+                'days' => array_combine(range(1, 7), range(1, 7)),
                 'attr' => [
                     'class' => 'form-control',
+                    'list' => 'duration-options',
                 ],
                 'constraints' => [
                     new NotBlank([
                         'message' => 'Пожалуйста, укажите продолжительность сплава',
                     ]),
-                ],
+                    new Range([
+                        'min' => 1,
+                        'max' => 7,
+                        'notInRangeMessage' => 'Длительность должна быть от {{ min }} до {{ max }} дней'
+                    ]),
+                ]
             ])
             ->add('river', EnumType::class, [
                 'label' => 'Река',
@@ -103,7 +103,7 @@ class OrderForm extends AbstractType
                         'min' => 1,
                         'max' => 50,
                         'notInRangeMessage' => 'Количество участников должно быть от {{ min }} до {{ max }}']),
-                ],
+                    ],
             ])
             ->add('type', EnumType::class, [
                 'label' => 'Тип сплава',
