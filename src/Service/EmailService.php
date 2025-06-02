@@ -10,8 +10,8 @@ use App\Entity\Order;
 class EmailService {
     public function __construct(
         private MailerInterface $mailer,
-        private string $senderEmail = 'info@choven.by',
-        private string $adminEmail = 'admin@choven.by'
+        private string $senderEmail,
+        private string $adminEmail,
     )
     {
     }
