@@ -1,0 +1,149 @@
+/* Общие стили для страницы */
+.section-title {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 50px;
+    color: #333;
+    font-weight: 700;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #ff6b00;
+}
+
+/* Стили для секции с техникой безопасности */
+.safety-section {
+    padding: 80px 0;
+    background-color: #f9f9f9;
+}
+
+.safety-content {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 50px;
+}
+
+.safety-image {
+    flex: 0 0 40%;
+}
+
+.safety-image img {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.safety-images {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.safety-images img:hover {
+    transform: scale(1.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.safety-info {
+    flex: 0 0 55%;
+}
+
+.safety-rule {
+    display: flex;
+    margin-bottom: 25px;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.safety-rule:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.rule-icon {
+    flex: 0 0 60px;
+    height: 60px;
+    background-color: #ff6b00;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    font-size: 24px;
+}
+
+.rule-content h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 600;
+}
+
+.rule-content p {
+    margin: 0;
+    color: #666;
+    line-height: 1.6;
+}
+
+.safety-additional {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+.safety-additional h3 {
+    margin-top: 0;
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.safety-additional ul {
+    padding-left: 20px;
+}
+
+.safety-additional li {
+    margin-bottom: 12px;
+    color: #555;
+    line-height: 1.6;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 992px) {
+    .safety-content {
+        flex-direction: column;
+    }
+    
+    .safety-image, .safety-info {
+        flex: 0 0 100%;
+    }
+    
+    .safety-image {
+        margin-bottom: 30px;
+    }
+}
+
+@media (max-width: 576px) {
+    .safety-rule {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .rule-icon {
+        margin: 0 auto 15px;
+    }
+}

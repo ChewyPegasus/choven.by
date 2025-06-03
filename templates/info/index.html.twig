@@ -1,0 +1,112 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Всё о сплавах{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/info.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <!-- Секция с техникой безопасности -->
+    <section class="safety-section">
+        <div class="container">
+            <h1 class="section-title">Техника безопасности</h1>
+            
+            <div class="safety-content">
+                <div class="safety-images">
+                    <div class="safety-image">
+                        <img src="{{ asset('images/safety/rules.jpg') }}" alt="Техника безопасности на воде">
+                    </div>
+                    <div class="safety-image">
+                        <img src="{{ asset('images/safety/rules2.jpg') }}" alt="Техника безопасности на воде">
+                    </div>
+                </div>
+                
+                <div class="safety-info">
+                    <div class="safety-rule">
+                        <div class="rule-icon">
+                            <i class="fas fa-life-ring"></i>
+                        </div>
+                        <div class="rule-content">
+                            <h3>Спасательный жилет - обязателен!</h3>
+                            <p>Независимо от опыта и умения плавать, <b>всегда</b> надевайте спасательный жилет. Непредвиденные кульбиты бывают у всех)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="safety-rule">
+                        <div class="rule-icon">
+                            <i class="fas fa-tint-slash"></i>
+                        </div>
+                        <div class="rule-content">
+                            <h3>Оставьте праздник до возвращения на берег</h3>
+                            <p>Трезвым проще разрешить трудности на пути и доплыть до конца</p>
+                        </div>
+                    </div>
+                    
+                    <div class="safety-rule">
+                        <div class="rule-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="rule-content">
+                            <h3>Не сплавляйтесь в одиночку</h3>
+                            <p>На сплаве Вы должны видеть предыдущую лодку. В случае непредвиденной ситуации вы сможете помочь друг другу или позвать на помощь.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="safety-rule">
+                        <div class="rule-icon">
+                            <i class="fas fa-ship"></i>
+                        </div>
+                        <div class="rule-content">
+                            <h3>Вёсла чтобы плыть</h3>
+                            <p>Толкаться вёслами от берегов от дна и берегов практически бесполезно. Эффективнее ими грести. Вёсла ещё и стоят денег)</p>
+                        </div>
+                    </div>
+
+                    <div class="safety-rule">
+                        <div class="rule-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <div class="rule-content">
+                            <h3>Обнимать лучше друга, а не дерево</h3>
+                            <p>Большинство переворотов случается, когда гребцы решают ухватиться за дерево или ветку, а река этого не хочет</p>
+                        </div>
+                    </div>
+
+                    <div class="safety-rule">
+                        <div class="rule-icon">
+                            <i class="fas fa-mountain"></i>
+                        </div>
+                        <div class="rule-content">
+                            <h3>Спину ровно</h3>
+                            <p>Работает только плечевой пояс. Если вы при гребке отклоняетесь в сторону, значит Вы делаете что-то неправильно</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="safety-additional">
+                <h3>Дополнительные рекомендации</h3>
+                <ul>
+                    <li>Имейте при себе непромокаемую упаковку для телефона и других ценных вещей</li>
+                    <li>Возьмите с собой запасную одежду в водонепроницаемом мешке</li>
+                    <li>Используйте защиту от солнца: крем, головной убор, солнцезащитные очки</li>
+                    <li>Следуйте всем инструкциям инструктора и не отклоняйтесь от группы</li>
+                    <li>Наслаждайтесь отдыхом и тишиной белорусской природы</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Секция "Как проходит сплав" -->
+    
+    <!-- Секция "FAQ" -->
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{% endblock %}
