@@ -1,25 +1,38 @@
-
-###> symfony/framework-bundle ###
+# Конфиденциальные данные и окружение
+/.env
 /.env.local
 /.env.local.php
 /.env.*.local
+!/.env.example
+!/.env.test
+
+# Секреты
 /config/secrets/prod/prod.decrypt.private.php
-/public/bundles/
+/config/secrets/dev/dev.decrypt.private.php
+
+# Временные и кеш файлы
 /var/
 /vendor/
-###< symfony/framework-bundle ###
-
-###> phpunit/phpunit ###
-/phpunit.xml
-.phpunit.result.cache
-###< phpunit/phpunit ###
-
-###> symfony/phpunit-bridge ###
-.phpunit.result.cache
-/phpunit.xml
-###< symfony/phpunit-bridge ###
-
-###> symfony/asset-mapper ###
+/public/bundles/
 /public/assets/
 /assets/vendor/
-###< symfony/asset-mapper ###
+.phpunit.result.cache
+
+# Docker
+/docker-compose.override.yaml
+/docker-compose.override.yml
+
+# Автоматически созданные файлы
+/phpunit.xml
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+
+# Системные файлы
+.DS_Store
+Thumbs.db
