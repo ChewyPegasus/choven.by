@@ -16,7 +16,8 @@ class EmailService {
     {
     }
 
-    public function sendOrderConfirmation(Order $order): void {
+    public function sendOrderConfirmation(Order $order): void 
+    {
         $email = (new TemplatedEmail())
             ->from(new Address($this->senderEmail, 'Choven.by'))
             ->to(new Address($order->getEmail()))
