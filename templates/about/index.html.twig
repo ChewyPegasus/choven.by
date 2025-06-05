@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{#Чöвен#}
-{% block title %}О нас{% endblock %}
+{% block title %}{{ 'about.title'|trans }}{% endblock %}
 
 {% block head %}
     {% block stylesheets %}
@@ -14,18 +13,18 @@
     <!-- Секция с историей -->
     <section class="about-section">
         <div class="container">
-            <h2 class="section-title">Наша история</h2>
+            <h2 class="section-title">{{ 'about.history.title'|trans }}</h2>
             
             <div class="history-container">
-                <p>Всё началось с простого увлечения водным туризмом. Первыми реками были Ислочь, Вилия, Нарочанка. <span class="history-highlight">Любовь к реке и природе вокруг постепенно переросла в нечто большее.</span></p>
+                <p>{{ 'about.history.start'|trans }}<span class="history-highlight">{{ 'about.history.love'|trans }}</span></p>
                 
-                <p>В 2022 году мы приобрели наши первые каяки, которые в первый сезон катали друзей и знакомых. Видя растущий интерес к активному отдыху на воде, мы решили расширить наш небольшой флот.</p>
+                <p>{{ 'about.history.first_kayaks'|trans }}</p>
                 
-                <p>К 2023 году мы уже организовывали регулярные сплавы для всех желающих, а к 2024 году наша страсть превратилась в полноценный бизнес – <span class="history-highlight">так родился «Чöвен»</span>.</p>
+                <p>{{ 'about.history.growing'|trans }}<span class="history-highlight">{{ 'about.history.born'|trans }}</span>.</p>
                 
-                <p>Сегодня мы предлагаем разнообразные маршруты и форматы сплавов – от коротких однодневных приключений до многодневных экспедиций с ночевками на берегу. Наша команда постоянно исследует новые маршруты, чтобы показать вам самые красивые и захватывающие уголки белорусской природы.</p>
+                <p>{{ 'about.history.today'|trans }}</p>
                 
-                <p>Наша главная цель остается неизменной – <span class="history-highlight">поделиться нашей любовью к водному туризму</span> и создать для вас незабываемые впечатления от общения с природой.</p>
+                <p {{ 'about.history.no_change'|trans }}<span class="history-highlight">{{ 'about.history.first_goal'|trans }}</span> {{ 'about.history.second_goal'|trans }}</p>
             </div>
         </div>
     </section>
@@ -33,7 +32,7 @@
     <!-- Секция с фотогалереей -->
     <section class="about-section" style="background-color: #f9f9f9;">
         <div class="container">
-            <h2 class="section-title">Фотогалерея</h2>
+            <h2 class="section-title">{{ 'about.photogallery'|trans }}</h2>
             
             <div class="gallery-container">
                 <div class="gallery-item">
@@ -70,14 +69,14 @@
     <!-- Секция с контактами -->
     <section class="about-section">
         <div class="container">
-            <h2 class="section-title">Свяжитесь с нами</h2>
+            <h2 class="section-title">{{ 'about.contacts.contact_us'|trans }}</h2>
             
             <div class="contact-container">
                 <div class="contact-item">
                     <div class="contact-icon">
                         <i class="fas fa-phone-alt"></i>
                     </div>
-                    <div class="contact-title">Телефон</div>
+                    <div class="contact-title">{{ 'about.contacts.phone_number'|trans }}</div>
                     <div class="contact-value">
                         <a href="tel:+375291234567">+375 (29) 706-75-85</a>
                     </div>
