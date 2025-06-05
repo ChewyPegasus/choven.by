@@ -47,6 +47,9 @@ final class OrderController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $durationDays = $form->get('durationDays')->getData();
+            $order->setDurationDays($durationDays);
+            
             $entityManager->persist($order);
             $entityManager->flush();
 

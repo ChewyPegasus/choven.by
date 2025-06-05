@@ -8,7 +8,7 @@
 Река: {{ order.river.label }}
 Тип сплава: {{ order.type.label }}
 Дата начала: {{ order.startDate|date('d.m.Y') }}
-Продолжительность: {{ order.duration.days }} дней
+Продолжительность: {{ order.durationDays }} дней
 Количество участников: {{ order.amountOfPeople }}
 {% if order.description %}
 Дополнительная информация: {{ order.description }}

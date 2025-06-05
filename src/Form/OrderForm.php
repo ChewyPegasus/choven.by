@@ -54,15 +54,13 @@ class OrderForm extends AbstractType
                     ]),
                 ],
             ])
-            ->add('duration', DateIntervalType::class, [
+            ->add('durationDays', IntegerType::class, [
                 'label' => 'Продолжительность (дней)',
-                'with_years' => false,
-                'with_months' => false,
-                'with_days' => true,
-                'days' => array_combine(range(1, 7), range(1, 7)),
+                'mapped' => false,
                 'attr' => [
+                    'min' => 1,
+                    'max' => 7,
                     'class' => 'form-control',
-                    'list' => 'duration-options',
                 ],
                 'constraints' => [
                     new NotBlank([

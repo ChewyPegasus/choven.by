@@ -1,12 +1,4 @@
-{% extends 'base.html.twig' %}
-
-{% block head %}
-    {% block stylesheets %}
-        {{ parent() }}
-        <!-- styles -->
-        <link rel="stylesheet" href="{{ asset('styles/mail.css') }}">
-    {% endblock %}
-{% endblock %}
+{% extends 'mailer/base_email.html.twig' %}
 
 {% block body %}
     <div class="header">
@@ -36,7 +28,7 @@
         
         <div class="info-row">
             <div class="info-label">Продолжительность:</div>
-            <div>{{ order.duration.days }} дней</div>
+            <div>{{ order.durationDays }} дней</div>
         </div>
         
         <div class="info-row">
@@ -57,6 +49,6 @@
     
     <div class="footer">
         <p>С уважением, команда Choven.by</p>
-        <p>Email: info@choven.by | Телефон: +375 29 123-45-67</p>
+        <p>Email: info@choven.by | Телефон: +375 29 706-75-85</p>
     </div>
 {% endblock %}

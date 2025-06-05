@@ -128,4 +128,15 @@ class Order
 
         return $this;
     }
+
+    public function getDurationDays(): int
+    {
+        return $this->duration ? $this->duration->d : 1;
+    }
+
+    public function setDurationDays(int $days): self
+    {
+        $this->duration = new \DateInterval("P{$days}D");
+        return $this;
+    }
 }
