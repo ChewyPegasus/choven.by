@@ -1,0 +1,16 @@
+name: 'Чöвен'
+
+menu:
+  home: 'Главная'
+  about_rafting: 'Всё о сплавах'
+  about_us: 'О нас'
+  book: 'Забронировать'
+
+footer:
+  copyright: 'Все права защищены'
+  description: 'Водные приключения в Беларуси'
+  links: 'Ссылки'
+  documents: 'Документы'
+  privacy_policy: 'Политика конфиденциальности'
+  terms_of_use: 'Условия использования'
+  contacts: 'Контакты'

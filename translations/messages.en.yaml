@@ -1,0 +1,16 @@
+name: 'Choven'
+
+menu:
+  home: 'Home'
+  about_rafting: 'About rafting'
+  about_us: 'About us'
+  book: 'Book'
+
+footer:
+  copyright: 'All rights reserved'
+  description: 'Water adventures in Belarus'
+  links: 'Links'
+  documents: 'Documents'
+  privacy_policy: 'Privacy policy'
+  terms_of_use: 'Terms of use'
+  contacts: 'Contacts'

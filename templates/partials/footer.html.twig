@@ -3,32 +3,32 @@
         <div class="footer-content">
             <div class="footer-info">
                 <div class="footer-logo">
-                    <span class="logo-text">Чöвен</span>
+                    <span class="logo-text">{{ 'name'|trans }}</span>
                 </div>
-                <p class="footer-tagline">Водные приключения в Беларуси</p>
-                <p class="copyright">&copy; {{ "now"|date("Y") }} choven.by. Все права защищены.</p>
+                <p class="footer-tagline">{{ 'footer.description'|trans }}</p>
+                <p class="copyright">&copy; {{ "now"|date("Y") }} choven.by. {{ 'footer.copyright'|trans }}</p>
             </div>
             
             <div class="footer-links">
                 <div class="footer-section">
-                    <h4>Ссылки</h4>
+                    <h4>{{ 'footer.links'|trans }}</h4>
                     <ul>
-                        <li><a href="{{ path('app_main') }}">Главная</a></li>
-                        <li><a href="{{ path('app_about') }}">О нас</a></li>
-                        <li><a href="#">Техника безопасности</a></li>
+                        <li><a href="{{ path('app_main') }}">{{ 'menu.home'|trans }}</a></li>
+                        <li><a href="{{ path('app_about') }}">{{ 'menu.about_us'|trans }}</a></li>
+                        <li><a href="{{ path('app_info') }}">{{ 'menu.about_rafting'|trans }}</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-section">
-                    <h4>Документы</h4>
+                    <h4>{{ 'footer.documents'|trans }}</h4>
                     <ul>
-                        <li><a href="#">Политика конфиденциальности</a></li>
-                        <li><a href="#">Условия использования</a></li>
+                        <li><a href="#">{{ 'footer.privacy_policy'|trans }}</a></li>
+                        <li><a href="#">{{ 'footer.terms_of_use'|trans }}</a></li>
                     </ul>
                 </div>
                 
                 <div class="footer-section">
-                    <h4>Контакты</h4>
+                    <h4>{{ 'footer.contacts'|trans }}</h4>
                     <ul class="contact-info">
                         <li><i class="fas fa-phone"></i> +375 (29) 123-45-67</li>
                         <li><i class="fas fa-envelope"></i> info@choven.by</li>

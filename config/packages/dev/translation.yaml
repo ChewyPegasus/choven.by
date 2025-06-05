@@ -1,0 +1,9 @@
+framework:
+    translator:
+        logging: true
+        pseudo_localization:
+            enabled: true
+            accents: false
+            expansion_factor: 1
+            brackets: true
+            parse_html: false

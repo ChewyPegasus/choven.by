@@ -1,0 +1,16 @@
+name: 'Чöвен'
+
+menu:
+  home: 'Галоўная'
+  about_rafting: 'Усё пра сплавы'
+  about_us: 'Пра нас'
+  book: 'Забраніраваць'
+
+footer:
+  copyright: 'Усе права абаронены'
+  description: 'Водныя прыгоды ў Беларусі'
+  links: 'Спасылкі'
+  documents: 'Дакументы'
+  privacy_policy: 'Палітыка канфідэнцыяльнасці'
+  terms_of_use: 'Умовы выкарыстання'
+  contacts: 'Кантакты'

@@ -1,5 +1,15 @@
+locale_controller:
+    resource: '../src/Controller/LocaleController.php'
+    type: attribute
+
 controllers:
     resource:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+    prefix: /{_locale}
+    requirements:
+        _locale: ru|be|en
+    defaults:
+        _locale: ru
+    exclude: '../src/Controller/LocaleController.php'

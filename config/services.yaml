@@ -6,6 +6,8 @@
 parameters:
     app.senderEmail: 'info@choven.by'
     app.adminEmail: 'admin@choven.by'
+    app.supported_locales: 'ru|be|en'
+    app.default_locale: 'ru'
 
 services:
     # default configuration for services in *this* file
