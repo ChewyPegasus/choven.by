@@ -7,6 +7,7 @@ namespace App\Form;
 use App\Entity\Order;
 use App\Enum\River;
 use App\Enum\Type;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateIntervalType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -22,26 +23,31 @@ use Symfony\Component\Validator\Constraints\Range;
 
 class OrderForm extends AbstractType
 {
+
+    public function __construct(private TranslatorInterface $translator)
+    {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
             ->add('email', EmailType::class, [
-                'label' => 'Ваш email',
+                'label' => $this->translator->trans('order.form.email'),
                 'attr' => [
-                    'placeholder' => 'Введите ваш email',
+                    'placeholder' => $this->translator->trans('order.form.email_placeholder'),
                     'class' => 'form-control',
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Пожалуйста, введите email',
+                        'message' => $this->translator->trans('order.form.error.email_required'),
                     ]),
                     new Email([
-                        'message' => 'Введите корректный email',
+                        'message' => $this->translator->trans('order.form.error.email_invalid'),
                     ]),
                 ],
             ])
             ->add('startDate', DateType::class, [
-                'label' => 'Дата сплава',
+                'label' => $this->translator->trans('order.form.start_date'),
                 'widget' => 'single_text',
                 'html5' => true,
                 'attr' => [
@@ -50,12 +56,12 @@ class OrderForm extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Пожалуйста, выберите дату',
+                        'message' => $this->translator->trans('order.form.error.date_required'),
                     ]),
                 ],
             ])
             ->add('durationDays', IntegerType::class, [
-                'label' => 'Продолжительность (дней)',
+                'label' => $this->translator->trans('order.form.duration'),
                 'mapped' => false,
                 'attr' => [
                     'min' => 1,
@@ -64,32 +70,32 @@ class OrderForm extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Пожалуйста, укажите продолжительность сплава',
+                        'message' => $this->translator->trans('order.form.error.duration_required'),
                     ]),
                     new Range([
                         'min' => 1,
                         'max' => 7,
-                        'notInRangeMessage' => 'Длительность должна быть от {{ min }} до {{ max }} дней'
+                        'notInRangeMessage' => $this->translator->trans('order.form.error.duration_range'),
                     ]),
                 ]
             ])
             ->add('river', EnumType::class, [
-                'label' => 'Река',
+                'label' => $this->translator->trans('order.form.river'),
                 'class' => River::class,
                 'choice_label' => function(River $river) {
-                    return $river->getLabel();
+                    return $this->translator->trans($river->getLabel());
                 },
                 'attr' => [
                     'class' => 'form-select',
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Пожалуйста, выберите реку',
+                        'message' => $this->translator->trans('order.form.error.river_required'),
                     ]),
                 ],
             ])
             ->add('amountOfPeople', IntegerType::class, [
-                'label' => 'Количество участников',
+                'label' => $this->translator->trans('order.form.people_count'),
                 'attr' => [
                     'min' => 1,
                     'max' => 50,
@@ -97,35 +103,35 @@ class OrderForm extends AbstractType
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Пожалуйста, укажите количество участников',
+                        'message' => $this->translator->trans('order.form.error.people_required'),
                     ]),
                     new Range([
                         'min' => 1,
                         'max' => 50,
-                        'notInRangeMessage' => 'Количество участников должно быть от {{ min }} до {{ max }}']),
+                        'notInRangeMessage' => $this->translator->trans('order.form.error.people_range')]),
                     ],
             ])
             ->add('type', EnumType::class, [
-                'label' => 'Тип сплава',
+                'label' => $this->translator->trans('order.form.type'),
                 'class' => Type::class,
                 'choice_label' => function(Type $type) {
-                    return $type->getLabel();
+                    return $this->translator->trans($type->getLabel());
                 },
                 'attr' => [
                     'class' => 'form-select',
                 ],
                 'constraints' => [
                     new NotBlank([
-                        'message' => 'Пожалуйста, выберите тип сплава',
+                        'message' => $this->translator->trans('order.form.error.type_required'),
                     ]),
                 ],
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Дополнительная информация',
+                'label' => $this->translator->trans('order.form.description'),
                 'required' => false,
                 'attr' => [
                     'rows' => 4,
-                    'placeholder' => 'Укажите дополнительные пожелания или вопросы',
+                    'placeholder' => $this->translator->trans('order.form.description_placeholder'),
                     'class' => 'form-control',
                 ],
             ])

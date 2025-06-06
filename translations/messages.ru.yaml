@@ -191,3 +191,51 @@ main:
         preposition: ''
         title: 'Самоорганизация'
         description: 'Вариант для опытных туристов, которые готовы сами организовать свой сплав'
+
+order:
+  title: 'Забронировать сплав'
+  form:
+    email: 'Ваш email'
+    email_placeholder: 'Введите ваш email'
+    start_date: 'Дата сплава'
+    duration: 'Продолжительность (дней)'
+    river: 'Река'
+    people_count: 'Количество участников'
+    type: 'Тип сплава'
+    description: 'Дополнительная информация'
+    description_placeholder: 'Укажите дополнительные пожелания или вопросы'
+    submit: 'Отправить заявку'
+    days: 'дней'
+    error:
+      email_required: 'Пожалуйста, введите email'
+      email_invalid: 'Введите корректный email'
+      date_required: 'Пожалуйста, выберите дату'
+      duration_required: 'Пожалуйста, укажите продолжительность сплава'
+      duration_range: 'Длительность должна быть от {{ min }} до {{ max }} дней'
+      river_required: 'Пожалуйста, выберите реку'
+      people_required: 'Пожалуйста, укажите количество участников'
+      people_range: 'Количество участников должно быть от {{ min }} до {{ max }}'
+      type_required: 'Пожалуйста, выберите тип сплава'
+
+# Переводы для типов сплавов
+type:
+  all_inclusive: 'Всё включено'
+  minimum: 'Минимум услуг'
+  rent_only: 'Только аренда байдарок'
+  other: 'Другое'
+
+# Переводы для рек
+river:
+  svisloch: 'Свислочь'
+  isloch: 'Ислочь'
+  berezina: 'Березина'
+  neman: 'Неман'
+  narochanka: 'Нарочанка'
+  stracha: 'Страча'
+  saryanka: 'Сарьянка'
+  sluch: 'Случь'
+  viliya: 'Вилия'
+  sula: 'Сула'
+  usa: 'Уса'
+  smerd: 'Смердь'
+  other: 'Другая'

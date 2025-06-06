@@ -5,5 +5,5 @@ framework:
             enabled: true
             accents: false
             expansion_factor: 1
-            brackets: true
+            brackets: false
             parse_html: false

@@ -191,3 +191,51 @@ main:
         preposition: ''
         title: 'Self-organizing'
         description: 'A good choice for experienced tourists who ready to organise their trip on their own'
+
+order:
+  title: 'Book a trip'
+  form:
+    email: 'Your email'
+    email_placeholder: 'Enter your email'
+    start_date: 'Rafting date'
+    duration: 'Duration (days)'
+    river: 'River'
+    people_count: 'Number of participants'
+    type: 'Rafting type'
+    description: 'Additional information'
+    description_placeholder: 'Specify additional wishes or questions'
+    submit: 'Submit request'
+    days: 'days'
+    error:
+      email_required: 'Please enter your email'
+      email_invalid: 'Please enter a valid email'
+      date_required: 'Please select a date'
+      duration_required: 'Please specify the duration of the rafting'
+      duration_range: 'Duration must be between {{ min }} and {{ max }} days'
+      river_required: 'Please select a river'
+      people_required: 'Please specify the number of participants'
+      people_range: 'The number of participants must be between {{ min }} and {{ max }}'
+      type_required: 'Please select the type of rafting'
+
+# Переводы для типов сплавов
+type:
+  all_inclusive: 'All-inclusive'
+  minimum: 'Minimum services'
+  rent_only: 'Kayak rental only'
+  other: 'Other'
+
+# Переводы для рек
+river:
+  svisloch: 'Svisloch'
+  isloch: 'Isloch'
+  berezina: 'Berezina'
+  neman: 'Neman'
+  narochanka: 'Narochanka'
+  stracha: 'Stracha'
+  saryanka: 'Saryanka'
+  sluch: 'Sluch'
+  viliya: 'Viliya'
+  sula: 'Sula'
+  usa: 'Usa'
+  smerd: 'Smerd'
+  other: 'Other'

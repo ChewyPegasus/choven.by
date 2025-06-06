@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Забронировать сплав{% endblock %}
+{% block title %}{{ 'order.title'|trans }}{% endblock %}
 
 {% block head %}
     {% block stylesheets %}
@@ -13,7 +13,7 @@
 {% block body %}
 <section class="form-section">
     <div class="container">
-        <h1 class="section-title">Забронировать сплав</h1>
+        <h1 class="section-title">{{ 'order.title'|trans }}</h1>
         
         <div class="form-container">
             {{ form_start(form, {'attr': {'class': 'reservation-form'}}) }}
@@ -53,7 +53,7 @@
                         {{ form_label(form.durationDays) }}
                         <div class="duration-field">
                             {{ form_widget(form.durationDays, {'attr': {'class': 'form-control duration-days'}}) }}
-                            <span class="duration-label">дней</span>
+                            <span class="duration-label">{{ 'order.form.days'|trans }}</span>
                         </div>
                         {{ form_errors(form.durationDays) }}
                     </div>
@@ -66,7 +66,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">Отправить заявку</button>
+                    <button type="submit" class="btn-primary">{{ 'order.form.submit'|trans }}</button>
                 </div>
             {{ form_end(form) }}
         </div>

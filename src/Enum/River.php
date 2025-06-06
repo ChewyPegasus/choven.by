@@ -7,7 +7,8 @@ namespace App\Enum;
 enum River: string {
     case SVISLOCH = 'svisloch';
     case ISLOCH = 'isloch';
-    case UZLYANKA = 'uzlyanka';
+    case BEREZINA = 'berezina';
+    case NEMAN = 'neman';
     case NAROCHANKA = 'narochanka';
     case STRACHA = 'stracha';
     case SARYANKA = 'saryanka';
@@ -18,21 +19,25 @@ enum River: string {
     case SMERD = 'smerd';
     case OTHER = 'other';
 
+    /**
+     * Возвращает ключ для перевода
+     */
     public function getLabel(): string
     {
         return match($this) {
-            self::SVISLOCH => 'Свислочь',
-            self::ISLOCH => 'Ислочь',
-            self::UZLYANKA => 'Узлянка',
-            self::NAROCHANKA => 'Нарочанка',
-            self::STRACHA => 'Страча',
-            self::SARYANKA => 'Сарьянка',
-            self::SLUCH => 'Случь',
-            self::VILIYA => 'Вилия',
-            self::SULA => 'Сула',
-            self::USA => 'Уса',
-            self::SMERD => 'Смердь',
-            self::OTHER => 'Другая',
+            self::SVISLOCH => 'river.svisloch',
+            self::ISLOCH => 'river.isloch',
+            self::BEREZINA => 'river.berezina',
+            self::NEMAN => 'river.neman',
+            self::NAROCHANKA => 'river.narochanka',
+            self::STRACHA => 'river.stracha',
+            self::SARYANKA => 'river.saryanka',
+            self::SLUCH => 'river.sluch',
+            self::VILIYA => 'river.viliya',
+            self::SULA => 'river.sula',
+            self::USA => 'river.usa',
+            self::SMERD => 'river.smerd',
+            self::OTHER => 'river.other',
         };
     }
 }
