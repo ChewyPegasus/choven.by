@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Всё о сплавах{% endblock %}
+{% block title %}{{ 'info.title'|trans }}{% endblock %}
 
 {% block head %}
     {% block stylesheets %}
@@ -13,7 +13,7 @@
     <!-- Секция с техникой безопасности -->
     <section class="safety-section">
         <div class="container">
-            <h1 class="section-title">Техника безопасности</h1>
+            <h1 class="section-title">{{ 'info.safety_measures'|trans }}</h1>
             
             <div class="safety-content">
                 <div class="safety-images">
@@ -31,8 +31,8 @@
                             <i class="fas fa-life-ring"></i>
                         </div>
                         <div class="rule-content">
-                            <h3>Спасательный жилет - обязателен!</h3>
-                            <p>Независимо от опыта и умения плавать, <b>всегда</b> надевайте спасательный жилет. Непредвиденные кульбиты бывают у всех)</p>
+                            <h3>{{ 'info.rules.life_jacket.title'|trans }}</h3>
+                            <p>{{ 'info.rules.life_jacket.text'|trans }}</p>
                         </div>
                     </div>
                     
@@ -41,8 +41,8 @@
                             <i class="fas fa-tint-slash"></i>
                         </div>
                         <div class="rule-content">
-                            <h3>Оставьте праздник до возвращения на берег</h3>
-                            <p>Трезвым проще разрешить трудности на пути и доплыть до конца</p>
+                            <h3>{{ 'info.rules.party.title'|trans }}</h3>
+                            <p>{{ 'info.rules.party.text'|trans }}</p>
                         </div>
                     </div>
                     
@@ -51,8 +51,8 @@
                             <i class="fas fa-users"></i>
                         </div>
                         <div class="rule-content">
-                            <h3>Не сплавляйтесь в одиночку</h3>
-                            <p>На сплаве Вы должны видеть предыдущую лодку. В случае непредвиденной ситуации вы сможете помочь друг другу или позвать на помощь.</p>
+                            <h3>{{ 'info.rules.alone.title'|trans }}</h3>
+                            <p>{{ 'info.rules.alone.text'|trans }}</p>
                         </div>
                     </div>
                     
@@ -61,8 +61,8 @@
                             <i class="fas fa-ship"></i>
                         </div>
                         <div class="rule-content">
-                            <h3>Вёсла чтобы плыть</h3>
-                            <p>Толкаться вёслами от берегов от дна и берегов практически бесполезно. Эффективнее ими грести. Вёсла ещё и стоят денег)</p>
+                            <h3>{{ 'info.rules.oars.title'|trans }}</h3>
+                            <p>{{ 'info.rules.oars.text'|trans }}</p>
                         </div>
                     </div>
 
@@ -71,8 +71,8 @@
                             <i class="fas fa-handshake"></i>
                         </div>
                         <div class="rule-content">
-                            <h3>Обнимать лучше друга, а не дерево</h3>
-                            <p>Большинство переворотов случается, когда гребцы решают ухватиться за дерево или ветку, а река этого не хочет</p>
+                            <h3>{{ 'info.rules.hugs.title'|trans }}</h3>
+                            <p>{{ 'info.rules.hugs.text'|trans }}</p>
                         </div>
                     </div>
 
@@ -81,21 +81,21 @@
                             <i class="fas fa-mountain"></i>
                         </div>
                         <div class="rule-content">
-                            <h3>Спину ровно</h3>
-                            <p>Работает только плечевой пояс. Если вы при гребке отклоняетесь в сторону, значит Вы делаете что-то неправильно</p>
+                            <h3>{{ 'info.rules.back.title'|trans }}</h3>
+                            <p>{{ 'info.rules.back.text'|trans }}</p>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="safety-additional">
-                <h3>Дополнительные рекомендации</h3>
+                <h3>{{ 'info.additional.title'|trans }}</h3>
                 <ul>
-                    <li>Имейте при себе непромокаемую упаковку для телефона и других ценных вещей</li>
-                    <li>Возьмите с собой запасную одежду в водонепроницаемом мешке</li>
-                    <li>Используйте защиту от солнца: крем, головной убор, солнцезащитные очки</li>
-                    <li>Следуйте всем инструкциям инструктора и не отклоняйтесь от группы</li>
-                    <li>Наслаждайтесь отдыхом и тишиной белорусской природы</li>
+                    <li>{{ 'info.additional.recommendations.germetic'|trans }}</li>
+                    <li>{{ 'info.additional.recommendations.spare'|trans }}</li>
+                    <li>{{ 'info.additional.recommendations.sun_protection'|trans }}</li>
+                    <li>{{ 'info.additional.recommendations.instructions'|trans }}</li>
+                    <li>{{ 'info.additional.recommendations.joy'|trans }}</li>
                 </ul>
             </div>
         </div>
@@ -104,7 +104,7 @@
     <!-- Секция "Как проходит сплав" -->
     <section class="process-section">
         <div class="container">
-            <h2 class="section-title">Как проходит сплав</h2>
+            <h2 class="section-title">{{ 'info.process.title'|trans }}</h2>
             
             <div class="process-timeline">
                 <div class="timeline-wrapper">
@@ -113,23 +113,23 @@
                         <div class="timeline-card" id="card-1">
                             <div class="card-number">1</div>
                             <div class="card-content">
-                                <h3>Встреча и инструктаж</h3>
+                                <h3>{{ 'info.process.cards.1st.title'|trans }}</h3>
                                 <div class="card-image">
                                     <img src="{{ asset('images/process/meet.jpg') }}" alt="Встреча группы">
                                 </div>
-                                <p>Мы встречаемся в назначенном месте, знакомимся и проводим подробный инструктаж. Вы получаете всё необходимое снаряжение и экипировку для безопасного сплава.</p>
+                                <p>{{ 'info.process.cards.1st.description'|trans }}</p>
                                 <div class="card-features">
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Обучение технике гребли</span>
+                                        <span>{{ 'info.process.cards.1st.first'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Выдача снаряжения</span>
+                                        <span>{{ 'info.process.cards.1st.second'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Инструктаж по безопасности</span>
+                                        <span>{{ 'info.process.cards.1st.third'|trans }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -138,23 +138,23 @@
                         <div class="timeline-card" id="card-2">
                             <div class="card-number">2</div>
                             <div class="card-content">
-                                <h3>Старт на воде</h3>
+                                <h3>{{ 'info.process.cards.2nd.title'|trans }}</h3>
                                 <div class="card-image">
                                     <img src="{{ asset('images/process/go.jpg') }}" alt="Начало сплава">
                                 </div>
-                                <p>Мы спускаем байдарки на воду, рассаживаемся и начинаем наше приключение. Не сразу, но у Вас всё получится, вот увидите!</p>
+                                <p>{{ 'info.process.cards.2nd.description'|trans }}</p>
                                 <div class="card-features">
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Спуск байдарок на воду</span>
+                                        <span>{{ 'info.process.cards.2nd.first'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Практика техники гребли</span>
+                                        <span>{{ 'info.process.cards.2nd.second'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Первые кусты за первым поворотом</span>
+                                        <span>{{ 'info.process.cards.2nd.third'|trans }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -163,23 +163,23 @@
                         <div class="timeline-card" id="card-3">
                             <div class="card-number">3</div>
                             <div class="card-content">
-                                <h3>Активный сплав</h3>
+                                <h3>{{ 'info.process.cards.3rd.title'|trans }}</h3>
                                 <div class="card-image">
                                     <img src="{{ asset('images/process/way.jpg') }}" alt="Активный сплав">
                                 </div>
-                                <p>Мы движемся по реке, наслаждаясь красотами природы и тишиной. Делаем фотографии, общаемся и отдыхаем, полностью погружаясь в атмосферу приключения.</p>
+                                <p>{{ 'info.process.cards.3rd.description'|trans }}</p>
                                 <div class="card-features">
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Преодоление препятствий</span>
+                                        <span>{{ 'info.process.cards.3rd.first'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Проверка навыков коммуникации</span>
+                                        <span>{{ 'info.process.cards.3rd.second'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Чистый кайф от тишины и видов</span>
+                                        <span>{{ 'info.process.cards.3rd.third'|trans }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -188,23 +188,23 @@
                         <div class="timeline-card" id="card-4">
                             <div class="card-number">4</div>
                             <div class="card-content">
-                                <h3>Привал и отдых</h3>
+                                <h3>{{ 'info.process.cards.4th.title'|trans }}</h3>
                                 <div class="card-image">
                                     <img src="{{ asset('images/process/stop.jpg') }}" alt="Привал на берегу">
                                 </div>
-                                <p>В середине маршрута мы делаем остановку. Время для перекуса и отдыха.</p>
+                                <p>{{ 'info.process.cards.4th.description'|trans }}</p>
                                 <div class="card-features">
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Отдых на берегу</span>
+                                        <span>{{ 'info.process.cards.4th.first'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Перекус и первые впечатления</span>
+                                        <span>{{ 'info.process.cards.4th.second'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Купание в чистой реке</span>
+                                        <span>{{ 'info.process.cards.4th.third'|trans }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -213,23 +213,23 @@
                         <div class="timeline-card" id="card-5">
                             <div class="card-number">5</div>
                             <div class="card-content">
-                                <h3>Финиш и возвращение</h3>
+                                <h3>{{ 'info.process.cards.5th.title'|trans }}</h3>
                                 <div class="card-image">
                                     <img src="{{ asset('images/process/food.jpg') }}" alt="Финиш сплава">
                                 </div>
-                                <p>Прибываем на финиш. Расслабление, еда, баня, игры у костра</p>
+                                <p>{{ 'info.process.cards.5th.description'|trans }}</p>
                                 <div class="card-features">
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Прибытие в конечную точку</span>
+                                        <span>{{ 'info.process.cards.5th.first'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Ощущение победы</span>
+                                        <span>{{ 'info.process.cards.5th.second'|trans }}</span>
                                     </div>
                                     <div class="feature">
                                         <i class="fas fa-check-circle"></i>
-                                        <span> Льются песни, льются вина</span>
+                                        <span>{{ 'info.process.cards.5th.third'|trans }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -247,9 +247,9 @@
             </div>
             
             <div class="process-cta">
-                <h3>Готовы к приключению?</h3>
-                <p>Забронируйте сплав прямо сейчас и получите незабываемые впечатления!</p>
-                <a href="{{ path('app_order_new') }}" class="btn-primary">Забронировать сплав</a>
+                <h3>{{ 'info.process.promo.question'|trans }}</h3>
+                <p>{{ 'info.process.promo.book'|trans }}</p>
+                <a href="{{ path('app_order_new') }}" class="btn-primary">{{ 'info.process.promo.button'|trans }}</a>
             </div>
         </div>
     </section>
@@ -257,76 +257,76 @@
     <!-- Секция "FAQ" -->
     <section class="faq-section">
         <div class="container">
-            <h2 class="section-title">Часто задаваемые вопросы</h2>
+            <h2 class="section-title">{{ 'info.process.faq.title'|trans }}</h2>
             
             <div class="faq-container">
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Нужен ли опыт для участия в сплаве?</h3>
+                        <h3>{{ 'info.process.faq.1st.question'|trans }}</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Нет, опыт не требуется. Наши инструкторы проводят детальный инструктаж перед началом сплава и обучают всему необходимому. Большинство наших маршрутов подходят для новичков. Главное — иметь желание и следовать инструкциям.</p>
+                        <p>{{ 'info.process.faq.1st.answer'|trans }}</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Что включено в стоимость сплава?</h3>
+                        <h3>{{ 'info.process.faq.2nd.question'|trans }}</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>В базовую стоимость входит аренда байдарки, весел, спасательных жилетов, гермомешков для вещей, услуги инструктора и трансфер к месту старта. Дополнительные услуги, такие как питание, палатки и прочее снаряжение для ночевки, предоставляются в зависимости от выбранного пакета. Подробности можно уточнить при бронировании.</p>
+                        <p>{{ 'info.process.faq.2nd.answer'|trans }}</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Можно ли участвовать в сплаве с детьми?</h3>
+                        <h3>{{ 'info.process.faq.3rd.question'|trans }}</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Да, дети могут участвовать в сплаве в сопровождении взрослых. Для детей обязательно наличие спасательного жилета подходящего размера, который мы предоставляем. Некоторые маршруты более подходят для семейного отдыха, уточняйте информацию при бронировании.</p>
+                        <p>{{ 'info.process.faq.3rd.answer'|trans }}</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Что делать, если пойдет дождь?</h3>
+                        <h3>{{ 'info.process.faq.4th.question'|trans }}</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Легкий дождь не является препятствием для сплава, даже может добавить приключению особый шарм. Мы рекомендуем взять с собой дождевик или непромокаемую куртку. В случае сильного дождя, грозы или штормового предупреждения мы можем перенести сплав на другую дату или предложить альтернативные варианты.</p>
+                        <p>{{ 'info.process.faq.4th.answer'|trans }}</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Что взять с собой на сплав?</h3>
+                        <h3>{{ 'info.process.faq.5th.question'|trans }}</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Рекомендуем взять с собой:</p>
+                        <p>{{ 'info.process.faq.5th.answer.title'|trans }}</p>
                         <ul class="packing-list">
-                            <li>Сменную одежду и обувь</li>
-                            <li>Головной убор и солнцезащитные очки</li>
-                            <li>Крем от солнца и средство от насекомых</li>
-                            <li>Питьевую воду и перекус</li>
-                            <li>Фотоаппарат или телефон в водонепроницаемом чехле</li>
+                            <li>{{ 'info.process.faq.5th.answer.1st'|trans }}</li>
+                            <li>{{ 'info.process.faq.5th.answer.2nd'|trans }}</li>
+                            <li>{{ 'info.process.faq.5th.answer.3rd'|trans }}</li>
+                            <li>{{ 'info.process.faq.5th.answer.4th'|trans }}</li>
+                            <li>{{ 'info.process.faq.5th.answer.5th'|trans }}</li>
                         </ul>
                         <div class="download-container">
-                            <a href="{{ asset('files/Список_вещей.docx') }}" download="Список вещей" class="download-link">
-                                <i class="fas fa-download"></i> Скачать полный список вещей
+                            <a href="{{ asset('files/Список_вещей.docx') }}" download="{{ 'info.process.faq.5th.answer.file'|trans }}" class="download-link">
+                                <i class="fas fa-download"></i> {{ 'info.process.faq.5th.answer.download'|trans }}
                             </a>
                         </div>
                     </div>
@@ -334,25 +334,25 @@
                 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Возможен ли корпоративный сплав для компании?</h3>
+                        <h3>{{ 'info.process.faq.6th.question'|trans }}</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Да, мы организуем корпоративные сплавы для групп любого размера. Можем разработать индивидуальную программу с учетом ваших пожеланий, включая питание, развлечения, командные игры и даже тимбилдинг на воде. Свяжитесь с нами для обсуждения деталей.</p>
+                        <p>{{ 'info.process.faq.6th.answer'|trans }}</p>
                     </div>
                 </div>
                 
                 <div class="faq-item">
                     <div class="faq-question">
-                        <h3>Насколько безопасны сплавы?</h3>
+                        <h3>{{ 'info.process.faq.7th.question'|trans }}</h3>
                         <div class="faq-icon">
                             <i class="fas fa-chevron-down"></i>
                         </div>
                     </div>
                     <div class="faq-answer">
-                        <p>Безопасность — наш приоритет. Перед каждым сплавом проводится подробный инструктаж, выдаются спасательные жилеты. Инструкторы имеют опыт и знают маршрут. Мы выбираем преимущественно спокойные реки без сложных порогов. При соблюдении правил и рекомендаций сплав является безопасным и приятным приключением.</p>
+                        <p>{{ 'info.process.faq.7th.answer'|trans }}</p>
                     </div>
                 </div>
             </div>

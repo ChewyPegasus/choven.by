@@ -32,3 +32,102 @@ about:
   contacts:
     contact_us: 'Contact us'
     phone_number: 'Phone number'
+
+info:
+  title: 'All about rafting'
+  safety_measures: 'Safety measures'
+  rules:
+    life_jacket:
+      title: 'Life jacket is a must'
+      text: 'No matter what is your experience and how good you are in swimming always put a life jacket on. Unforeseen circumstances may appear every time with every body)'
+    party:
+      title: 'Postpone a party until you arrive to finish'
+      text: 'If you are sober it''s easier to cope with difficulties on your way'
+    alone:
+      title: 'Don''t be alone'
+      text: 'On your way you should always see previous kayak. In case of emergency you can help each other or call for help'
+    oars:
+      title: 'Oars are for rowing'
+      text: 'Oars are not designed to use them for pushing from ground or bank. It''s more efficient to row. Oars are also quiet pricefull'
+    hugs:
+      title: 'It''s better to hug each other rather than a tree'
+      text: 'Most of the flips happen when rowers think it''s a good idea to grab onto a tree or a branch. River usually doesn''t want you to do this'
+    back:
+      title: 'Back straight'
+      text: 'The only thing that moves is your shoulder girdle. If you deviate during stroke, you are doing something wrong'
+  additional:
+    title: 'Additional recommendations'
+    recommendations:
+      germetic: 'It''s better to have a waterproof case for your mobile phone or other valuable things'
+      spare: 'Take some spare clothes in waterproof bag'
+      sun_protection: 'Use protection against the sun: SPF, headdress, sunglasses'
+      instructions: 'Follow all the instructions of the instructor and always be in the group'
+      joy: 'Enjoy the holiday and the silence of Belarusian nature'
+  process:
+    title: 'How is it going'
+    cards:
+      1st:
+        title: 'Meeting and briefing'
+        description: 'We meet at the appointed place, get acquainted and have a detailed briefing. You receive all the necessary equipment and gear for safe rafting.'
+        first: 'Training the technique'
+        second: 'Getting the equipment'
+        third: 'Safety briefing'
+      2nd:
+        title: 'Start on the water'
+        description: 'We launch the kayaks, get seated and start our adventure. It won''t be quick, but you''ll get there, you''ll see!'
+        first: 'Put kayaks on water'
+        second: 'Practicing the paddling technique'
+        third: 'First bushes behind the first turn'
+      3rd:
+        title: 'Active rafting'
+        description: 'We move along the river, enjoying the beauty of nature and silence. We take photos, socialise and relax, fully immersed in the atmosphere of the adventure.'
+        first: 'Overcoming difficulties'
+        second: 'Testing communication skills'
+        third: 'Full joy of silence and views'
+      4th:
+        title: 'Break and rest'
+        description: 'In the middle of the route we make a stop. Time for a snack and a rest.'
+        first: 'Rest on the bank of the river'
+        second: 'Snack and sharing the first impression'
+        third: 'Swimming in clear water'
+      5th:
+        title: 'Finish and return'
+        description: 'We arrive at the finish line. Relaxation, food, field sauna, games by the fire. Return home'
+        first: 'Arriving at the finish line'
+        second: 'The feeling of victory'
+        third: 'The songs flow, the wines flow'
+    promo:
+      question: 'Are you ready for the adventure?'
+      book: 'Book a trip now and receive unforgettable memories!'
+      button: 'Book now'
+    faq:
+      title: 'Frequently asked questions'
+      1st:
+        question: 'Do I need an experience to participate?'
+        answer: 'No, experience is not required. Our instructors will do a detailed briefing before start. You will learn everyhting what you need. Most of our routes are suitable for the begginers. The most important is to have a will and follow the instructions'
+      2nd:
+        question: 'What is included in the cost?'
+        answer: 'Base cost includes rent of the kayaks, oars, life jackets, waterproof bags. Additional services, such as food, tents, transfer, instructor services and other equipment for camping are provided depending of the chosen package of services. Please clarify the information while booking'
+      3rd:
+        question: 'Can I take children with me?'
+        answer: 'Yes, children can participate in rafting accompanied by adults. For children there are special size life jackets which we can provide you with. Some of the routes are more suitable for family holiday, please clarify the information while booking'
+      4th:
+        question: 'What do we do if it is raining?'
+        answer: 'Gentle rain is not an obstacle for rafting trip. It can even add some more vibe to your experience. We recommend to take raincoat or waterproof jacket. In case of heavy rain, thunder or storm warning we can reschedule our trip or suggest other alternative options'
+      5th:
+        question: 'What do I need to take with me?'
+        answer:
+          title: 'We recommend to take with you:'
+          1st: 'Spare pair of shoes and reserve clothes'
+          2nd: 'Headdress and sunglasses'
+          3rd: 'SPF and insect repellent'
+          4th: 'Drink water and snacks'
+          5th: 'Photocamera or smartphone in waterproof case'
+          file: 'List_of_things'
+          download: 'Download full list of clothes'
+      6th:
+        question: 'Are corporate trips available?'
+        answer: 'Yes, we organise corporate rafting trips for groups of all sizes. We can design a tailor-made programme to suit your needs, including meals, entertainment, team building activities and even team building on the water. Contact us to discuss the details.'
+      7th:
+        question: 'How safe the trips are?'
+        answer: 'Safety is our priority. Before every trip detailed safety briefing is organised. Everybody is provided with life jackets. Instructors have experience and know the route. We mainly choose quiet rivers with no tough rapids. If you follow the rules and recommendations, trip will be safe and a pleasant adventure'
