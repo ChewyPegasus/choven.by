@@ -1,22 +1,21 @@
-ПОДТВЕРЖДЕНИЕ ЗАКАЗА
+{{ 'mailer.header.title'|trans }}
 
-Здравствуйте!
+{{ 'mailer.header.greet'|trans }}
 
-Благодарим вас за бронирование сплава. Ваш заказ #{{ order.id }} успешно зарегистрирован в нашей системе.
+{{ 'mailer.header.confirm'|trans }} #{{ order.id }}
 
-ДЕТАЛИ ЗАКАЗА:
-Река: {{ order.river.label }}
-Тип сплава: {{ order.type.label }}
-Дата начала: {{ order.startDate|date('d.m.Y') }}
-Продолжительность: {{ order.durationDays }} дней
-Количество участников: {{ order.amountOfPeople }}
+{{ 'mailer.order.title'|trans }}:
+{{ 'mailer.order.river'|trans }} {{ order.river.label }}
+{{ 'mailer.order.type'|trans }} {{ order.type.label }}
+{{ 'mailer.order.date'|trans }} {{ order.startDate|date('d.m.Y') }}
+{{ 'mailer.order.duration'|trans }} {{ order.durationDays }} дней
+{{ 'mailer.order.number'|trans }}: {{ order.amountOfPeople }}
 {% if order.description %}
-Дополнительная информация: {{ order.description }}
+{{ 'mailer.order.additional'|trans }} {{ order.description }}
 {% endif %}
 
-Наш менеджер свяжется с вами в ближайшее время для уточнения деталей.
-Если у вас возникли вопросы, пожалуйста, свяжитесь с нами по телефону или электронной почте.
+{{ 'mailer.footer.manager'|trans }}
+{{ 'mailer.footer.questions'|trans }}
 
-С уважением,
-Команда Choven.by
-Email: info@choven.by | Телефон: +375 29 705-75-85
+{{ 'mailer.footer.regards'|trans }}
+Email: info@choven.by | {{ 'mailer.footer.phone'|trans }}: +375 29 705-75-85

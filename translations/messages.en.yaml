@@ -131,3 +131,23 @@ info:
       7th:
         question: 'How safe the trips are?'
         answer: 'Safety is our priority. Before every trip detailed safety briefing is organised. Everybody is provided with life jackets. Instructors have experience and know the route. We mainly choose quiet rivers with no tough rapids. If you follow the rules and recommendations, trip will be safe and a pleasant adventure'
+
+mailer:
+  header:
+    title: 'Confirmation of order'
+    greet: 'Hello!'
+    confirm: 'Thanks for booking a trip. Your order is successfully registered in our system: '
+  order:
+    title: 'Details of order'
+    river: 'River:'
+    type: 'Trip type:'
+    date: 'Start date:'
+    duration: 'Duration:'
+    days: 'd.'
+    number: 'Number of people:'
+    additional: 'Additional information:'
+  footer:
+    manager: 'Our manager will contact you soon to flush out the details'
+    questions: 'If you still have questions, please contact us via email or phone number'
+    regards: 'Best regards, Choven-team'
+    phone: 'Phone number'

@@ -2,53 +2,53 @@
 
 {% block body %}
     <div class="header">
-        <h1>Подтверждение заказа</h1>
+        <h1>{{ 'mailer.header.title'|trans }}</h1>
     </div>
     
-    <p>Здравствуйте!</p>
-    <p>Благодарим вас за бронирование сплава. Ваш заказ успешно зарегистрирован в нашей системе.</p>
+    <p>{{ 'mailer.header.greet'|trans }}</p>
+    <p>{{ 'mailer.header.confirm'|trans }}</p>
     
     <div class="order-summary">
-        <h2>Детали заказа #{{ order.id }}</h2>
+        <h2>{{ 'mailer.order.title'|trans }} #{{ order.id }}</h2>
         
         <div class="info-row">
-            <div class="info-label">Река:</div>
+            <div class="info-label">{{ 'mailer.order.river'|trans }}</div>
             <div>{{ order.river.label }}</div>
         </div>
         
         <div class="info-row">
-            <div class="info-label">Тип сплава:</div>
+            <div class="info-label">{{ 'mailer.order.type'|trans }}</div>
             <div>{{ order.type.label }}</div>
         </div>
         
         <div class="info-row">
-            <div class="info-label">Дата начала:</div>
+            <div class="info-label">{{ 'mailer.order.date'|trans }}</div>
             <div>{{ order.startDate|date('d.m.Y') }}</div>
         </div>
         
         <div class="info-row">
-            <div class="info-label">Продолжительность:</div>
-            <div>{{ order.durationDays }} дней</div>
+            <div class="info-label">{{ 'mailer.order.duration'|trans }}</div>
+            <div>{{ order.durationDays }} {{ 'mailer.order.days'|trans }}</div>
         </div>
         
         <div class="info-row">
-            <div class="info-label">Количество участников:</div>
+            <div class="info-label">{{ 'mailer.order.number'|trans }}</div>
             <div>{{ order.amountOfPeople }}</div>
         </div>
         
         {% if order.description %}
         <div class="info-row">
-            <div class="info-label">Дополнительная информация:</div>
+            <div class="info-label">{{ 'mailer.order.additional'|trans }}</div>
             <div>{{ order.description }}</div>
         </div>
         {% endif %}
     </div>
     
-    <p>Наш менеджер свяжется с вами в ближайшее время для уточнения деталей.</p>
-    <p>Если у вас возникли вопросы, пожалуйста, свяжитесь с нами по телефону или электронной почте.</p>
+    <p>{{ 'mailer.footer.manager'|trans }}</p>
+    <p>{{ 'mailer.footer.questions'|trans }}</p>
     
     <div class="footer">
-        <p>С уважением, команда Choven.by</p>
-        <p>Email: info@choven.by | Телефон: +375 29 706-75-85</p>
+        <p>{{ 'mailer.footer.regards'|trans }}</p>
+        <p>Email: info@choven.by | {{ 'mailer.footer.phone'|trans }}: +375 29 706-75-85</p>
     </div>
 {% endblock %}
