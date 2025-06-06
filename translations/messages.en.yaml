@@ -151,3 +151,43 @@ mailer:
     questions: 'If you still have questions, please contact us via email or phone number'
     regards: 'Best regards, Choven-team'
     phone: 'Phone number'
+
+main:
+  title: 'Home page'
+  slider:
+    1st:
+      title: 'Explore water expanses'
+      text: 'Discover the wonderful world of kayaking'
+      button: 'Read more'
+    2nd:
+      title: 'Best routes'
+      text: 'We offer the most scenic routes for kayaking'
+      button: 'Learn more'
+    3rd:
+      title: 'Unforgettable memories'
+      text: 'Soulful and carefree'
+      button: 'Book now'
+  grid:
+    title: 'Our trips'
+    cards:
+      button: 'Book'
+      1st:
+        preposition: 'from'
+        title: 'All-inclusive'
+        description: 'All-weekend rafting trip with a full-service package'
+      2nd:
+        preposition: 'from'
+        title: 'Rafting on the Isloch'
+        description: 'Overnight rafting along the picturesque Isloch'
+      3rd:
+        preposition: 'from'
+        title: 'Day rafting on the Svisloch'
+        description: 'Quick, convenient and beautiful. For those who want to escape the hustle and bustle of the city for a while'
+      4th:
+        preposition: 'from'
+        title: 'Corporate rafting'
+        description: 'Fully organise a rafting trip to suit all tastes'
+      5th:
+        preposition: ''
+        title: 'Self-organizing'
+        description: 'A good choice for experienced tourists who ready to organise their trip on their own'
