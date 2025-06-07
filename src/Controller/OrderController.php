@@ -17,6 +17,7 @@ use Psr\Log\LoggerInterface;
 use App\Enum\River;
 use App\Enum\Type;
 use App\Factory\DTOFactory;
+use App\Service\OrderService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/order')]
@@ -30,23 +31,10 @@ final class OrderController extends AbstractController
         LoggerInterface $logger,
         DTOFactory $dtoFactory,
         TranslatorInterface $translator,
+        OrderService $orderService
     ): Response
     {
-        $order = new Order();
-
-        $type = $request->query->get('type');
-        $duration = $request->query->get('duration');
-        $river = $request->query->get('river');
-
-        if ($type) {
-            $order->setType(Type::from($type));
-        }
-        if ($river) {
-            $order->setRiver(River::from($river));
-        }
-        if ($duration) {
-            $order->setDuration(new \DateInterval('P' . $duration . 'D'));
-        }
+        $order = $orderService->create($request);
 
         $form = $this->createForm(OrderForm::class, $order);
         $form->handleRequest($request);
