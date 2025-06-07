@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Enum\River;
-use App\Enum\Type;
+use App\Enum\Package;
 use App\Repository\OrderRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -31,8 +31,8 @@ class Order
     #[ORM\Column]
     private ?int $amountOfPeople = null;
 
-    #[ORM\Column(enumType: Type::class)]
-    private ?Type $type = null;
+    #[ORM\Column(enumType: Package::class)]
+    private ?Package $package = null;
 
     #[ORM\Column]
     private ?\DateTime $startDate = null;
@@ -93,14 +93,14 @@ class Order
         return $this;
     }
 
-    public function getType(): ?Type
+    public function getPackage(): ?Package
     {
-        return $this->type;
+        return $this->package;
     }
 
-    public function setType(?Type $type): static
+    public function setPackage(?Package $package): static
     {
-        $this->type = $type;
+        $this->package = $package;
 
         return $this;
     }

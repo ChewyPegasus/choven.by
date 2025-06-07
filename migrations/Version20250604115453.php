@@ -26,14 +26,14 @@ final class Version20250604120000 extends AbstractMigration
                 email VARCHAR(255) NOT NULL,
                 river VARCHAR(50) NOT NULL,
                 amount_of_people INT NOT NULL,
-                type VARCHAR(50) NOT NULL,
+                package VARCHAR(50) NOT NULL,
                 start_date TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL,
                 duration VARCHAR(100) NOT NULL
             )');
 
         // Индексы (каждый в отдельном вызове)
         $this->addSql('CREATE INDEX idx_orders_river ON orders (river)');
-        $this->addSql('CREATE INDEX idx_orders_type ON orders (type)');
+        $this->addSql('CREATE INDEX idx_orders_package ON orders (package)');
         $this->addSql('CREATE INDEX idx_orders_start_date ON orders (start_date)');
 
         // Ограничения (каждое в отдельном вызове)
@@ -44,8 +44,8 @@ final class Version20250604120000 extends AbstractMigration
             )');
             
         $this->addSql('ALTER TABLE orders 
-            ADD CONSTRAINT chk_orders_type CHECK (
-                type IN (\'all_inclusive\', \'minimum\', \'rent_only\', \'other\')
+            ADD CONSTRAINT chk_orders_package CHECK (
+                package IN (\'all_inclusive\', \'minimum\', \'rent_only\', \'other\')
             )');
     }
 

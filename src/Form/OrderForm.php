@@ -6,7 +6,7 @@ namespace App\Form;
 
 use App\Entity\Order;
 use App\Enum\River;
-use App\Enum\Type;
+use App\Enum\Package;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -110,11 +110,11 @@ class OrderForm extends AbstractType
                         'notInRangeMessage' => $this->translator->trans('order.form.error.people_range')]),
                     ],
             ])
-            ->add('type', EnumType::class, [
+            ->add('package', EnumType::class, [
                 'label' => $this->translator->trans('order.form.type'),
-                'class' => Type::class,
-                'choice_label' => function(Type $type) {
-                    return $this->translator->trans($type->getLabel());
+                'class' => Package::class,
+                'choice_label' => function(Package $package) {
+                    return $this->translator->trans($package->getLabel());
                 },
                 'attr' => [
                     'class' => 'form-select',

@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\Order;
 use Symfony\Component\HttpFoundation\Request;
 use App\Enum\River;
-use App\Enum\Type;
+use App\Enum\Package;
 
 class OrderService {
     public function create(Request $request): Order {
@@ -18,7 +18,7 @@ class OrderService {
         $river = $request->query->get('river');
 
         if ($type) {
-            $order->setType(Type::from($type));
+            $order->setPackage(Package::from($type));
         }
         if ($river) {
             $order->setRiver(River::from($river));

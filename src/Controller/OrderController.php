@@ -15,7 +15,7 @@ use App\Enum\DTOType;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
 use App\Enum\River;
-use App\Enum\Type;
+use App\Enum\Package;
 use App\Factory\DTOFactory;
 use App\Service\OrderService;
 use Symfony\Contracts\Translation\TranslatorInterface;
