@@ -39,3 +39,8 @@ services:
             $senderEmail: '%app.senderEmail%'
             $siteName: '%app.site_name%'
             $siteUrl: '%app.site_url%'
+    
+    Redis:
+        class: Redis
+        calls:
+            - [connect, ['%env(REDIS_HOST)%', '%env(int:REDIS_PORT)%']]

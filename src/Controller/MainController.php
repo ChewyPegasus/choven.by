@@ -13,6 +13,11 @@ final class MainController extends AbstractController
     #[Route('/', name: 'app_main')]
     public function index(): Response
     {
-        return $this->render('main/index.html.twig');
+        $response = $this->render('main/index.html.twig');
+
+        $response->setSharedMaxAge(3600);
+        $response->setPublic();
+        
+        return $response;
     }
 }

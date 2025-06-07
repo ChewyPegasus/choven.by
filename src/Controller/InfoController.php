@@ -13,6 +13,11 @@ final class InfoController extends AbstractController
     #[Route('/info', name: 'app_info')]
     public function index(): Response
     {
-        return $this->render('info/index.html.twig');
+        $response = $this->render('info/index.html.twig');
+
+        $response->setSharedMaxAge(3600);
+        $response->setPublic();
+
+        return $response;
     }
 }
