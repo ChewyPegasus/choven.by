@@ -8,6 +8,8 @@ parameters:
     app.adminEmail: 'admin@choven.by'
     app.supported_locales: 'ru|be|en'
     app.default_locale: 'ru'
+    app.site_url: 'https://choven.by'
+    app.site_name: 'Choven.by'
 
 services:
     # default configuration for services in *this* file
@@ -31,3 +33,9 @@ services:
         arguments:
             $senderEmail: '%app.senderEmail%'
             $adminEmail: '%app.adminEmail%'
+
+    App\Service\EmailRenderer:
+        arguments:
+            $senderEmail: '%app.senderEmail%'
+            $siteName: '%app.site_name%'
+            $siteUrl: '%app.site_url%'

@@ -216,6 +216,11 @@ order:
       people_required: 'Пожалуйста, укажите количество участников'
       people_range: 'Количество участников должно быть от {{ min }} до {{ max }}'
       type_required: 'Пожалуйста, выберите тип сплава'
+  success:
+    order_created: 'Ваш заказ успешно отправлен.'
+    confirmation_sent: 'Ваш заказ успешно отправлен. На ваш email отправлено подтверждение.'
+  warning:
+    email_failed: 'Возникли проблемы при отправке письма с подтверждением. Мы свяжемся с вами в ближайшее время.'
 
 # Переводы для типов сплавов
 type:
@@ -239,3 +244,12 @@ river:
   usa: 'Уса'
   smerd: 'Смердь'
   other: 'Другая'
+
+email:
+  sender_name: 'Команда Choven.by'
+  order_confirmation:
+    subject: 'Подтверждение бронирования сплава'
+  password_reset:
+    subject: 'Восстановление пароля'
+  welcome:
+    subject: 'Добро пожаловать в Choven.by'

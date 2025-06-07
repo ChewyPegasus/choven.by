@@ -216,6 +216,11 @@ order:
       people_required: 'Please specify the number of participants'
       people_range: 'The number of participants must be between {{ min }} and {{ max }}'
       type_required: 'Please select the type of rafting'
+  success:
+    order_created: 'Your order has been successfully submitted.'
+    confirmation_sent: 'Your order has been successfully submitted. A confirmation email has been sent to your email address.'
+  warning:
+    email_failed: 'There were issues sending the confirmation email. We will contact you shortly.'
 
 # Переводы для типов сплавов
 type:
@@ -239,3 +244,12 @@ river:
   usa: 'Usa'
   smerd: 'Smerd'
   other: 'Other'
+
+email:
+  sender_name: 'Choven.by Team'
+  order_confirmation:
+    subject: 'Booking Confirmation'
+  password_reset:
+    subject: 'Password Recovery'
+  welcome:
+    subject: 'Welcome to Choven.by'

@@ -11,10 +11,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Order;
+use App\Enum\DTOType;
 use App\Service\EmailService;
 use Psr\Log\LoggerInterface;
 use App\Enum\River;
 use App\Enum\Type;
+use App\Factory\DTOFactory;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/order')]
 final class OrderController extends AbstractController
@@ -24,7 +27,9 @@ final class OrderController extends AbstractController
         Request $request, 
         EntityManagerInterface $entityManager,
         EmailService $emailService,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        DTOFactory $dtoFactory,
+        TranslatorInterface $translator,
     ): Response
     {
         $order = new Order();
@@ -54,12 +59,17 @@ final class OrderController extends AbstractController
             $entityManager->flush();
 
             try {
-                $emailService->sendOrderConfirmation($order);
-                $this->addFlash('success', 'Ваш заказ успешно отправлен. На ваш email отправлено подтверждение.');
+                $emailService->send($dtoFactory->create(
+                    DTOType::ORDER_CONFIRMATION,
+                    [
+                        'order' => $order,
+                    ],
+                ));
+                $this->addFlash('success', $translator->trans('order.success.confirmation_sent'));
             } catch (\Exception $e) {
                 $logger->error('Email sending failed: ' . $e->getMessage(), ['exception' => $e]);
-                $this->addFlash('success', 'Ваш заказ успешно отправлен.');
-                $this->addFlash('warning', 'Возникли проблемы при отправке письма с подтверждением. Мы свяжемся с вами в ближайшее время.');
+                $this->addFlash('success', $translator->trans('order.success.order_created'));
+                $this->addFlash('warning', $translator->trans('order.warning.email_failed'));
             }
 
             return $this->redirectToRoute('app_main');

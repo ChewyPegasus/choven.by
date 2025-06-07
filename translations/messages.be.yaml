@@ -196,6 +196,11 @@ order:
       people_required: 'Калі ласка, укажыце колькасць удзельнікаў'
       people_range: 'Колькасць удзельнікаў павінна быць ад {{ min }} да {{ max }}'
       type_required: 'Калі ласка, абярыце фармат сплаву'
+  success:
+    order_created: 'Ваш заказ паспяхова адпраўлены.'
+    confirmation_sent: 'Ваш заказ паспяхова адпраўлены. На ваш email адпраўлена пацверджанне.'
+  warning:
+    email_failed: 'Узніклі праблемы пры адпраўцы ліста з пацверджаннем. Мы звяжамся з вамі ў бліжэйшы час.'
 
 # Переводы для типов сплавов
 type:
@@ -219,3 +224,12 @@ river:
   usa: 'Уса'
   smerd: 'Смердзь'
   other: 'Іншая'
+
+email:
+  sender_name: 'Каманда Choven.by'
+  order_confirmation:
+    subject: 'Пацверджанне браніравання сплаву'
+  password_reset:
+    subject: 'Аднаўленне пароля'
+  welcome:
+    subject: 'Сардэчна запрашаем у Choven.by'
