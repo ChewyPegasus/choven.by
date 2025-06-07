@@ -2,25 +2,12 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Rendering;
 
 use App\Enum\EmailTemplate;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
-use Twig\Environment;
 
-class EmailRenderer
+class EmailRenderer extends Renderer
 {
-    public function __construct(
-        private Environment $twig,
-        private TranslatorInterface $translator,
-        private string $senderEmail,
-        private string $siteName,
-        private string $siteUrl
-    )
-    {
-    }
-
     public function render(EmailTemplate $template, object $entity, array $context = []): array
     {
         $context = array_merge([

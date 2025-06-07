@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\Sending;
 
 use App\DTO\DTO;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 use App\DTO\AbstractEmailDTO;
+use App\Service\Rendering\EmailRenderer;
 
-class EmailService implements Sender
+class EmailSender implements Sender
 {
     public function __construct(
         private MailerInterface $mailer,
