@@ -1,15 +1,15 @@
 <div class="popup-overlay" id="popup-minimum">
     <div class="popup-content">
         <button class="popup-close">&times;</button>
-        <h2 class="popup-title">{{ 'package.minimum.title'|trans }}</h2>
+        <h2 class="popup-title">{{ packages.minimum.name }}</h2>
         <div class="popup-description">
-            <p>{{ 'package.minimum.description'|trans }}</p>
+            <p>{{ packages.minimum.description }}</p>
         </div>
         <div class="popup-features">
             <h3>{{ 'package.features.included'|trans }}</h3>
             <ul class="feature-list">
-                {% for feature in ['package.minimum.features.equipment', 'package.minimum.features.instructor'] %}
-                    <li class="feature-item">{{ feature|trans }}</li>
+                {% for feature in packages.minimum.features %}
+                    <li class="feature-item">{{ feature }}</li>
                 {% endfor %}
             </ul>
         </div>

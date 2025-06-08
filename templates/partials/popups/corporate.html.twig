@@ -1,20 +1,20 @@
-<div class="popup-overlay" id="popup-rent_only">
+<div class="popup-overlay" id="popup-corporate">
     <div class="popup-content">
         <button class="popup-close">&times;</button>
-        <h2 class="popup-title">{{ packages.rent_only.name }}</h2>
+        <h2 class="popup-title">{{ packages.corporate.name }}</h2>
         <div class="popup-description">
-            <p>{{ packages.rent_only.description }}</p>
+            <p>{{ packages.corporate.description }}</p>
         </div>
         <div class="popup-features">
             <h3>{{ 'package.features.included'|trans }}</h3>
             <ul class="feature-list">
-                {% for feature in packages.rent_only.features %}
+                {% for feature in packages.corporate.features %}
                     <li class="feature-item">{{ feature }}</li>
                 {% endfor %}
             </ul>
         </div>
         <div class="popup-footer">
-            <a href="{{ path('app_order_new', {'type': 'rent_only'}) }}" class="btn-book-now">{{ 'package.book_now'|trans }}</a>
+            <a href="{{ path('app_order_new', {'type': 'corporate'}) }}" class="btn-book-now">{{ 'package.book_now'|trans }}</a>
         </div>
     </div>
 </div>

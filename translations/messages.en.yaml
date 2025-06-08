@@ -245,6 +245,17 @@ package:
     description: 'For experienced tourists who want to organize the trip themselves. Only necessary equipment is provided.'
     features:
       equipment: 'Rental of equipment (kayaks, paddles, life jackets)'
+  corporate:
+    title: 'Corporate rafting'
+    description: 'The perfect option for companies looking to spend time in nature, strengthen team spirit, and enjoy active recreation. We organize everything to make your corporate rafting trip unforgettable.'
+    features:
+      team_building: 'Team building on water and onshore'
+      equipment: 'Full set of equipment (kayaks, paddles, life jackets)'
+      instructor: 'Experienced instructor for guidance and briefing'
+      food: 'Meals during the route (breakfast, lunch, dinner)'
+      transport: 'Transfer to and from the starting point'
+      group_activities: 'Entertainment activities and team games'
+      networking_events: 'Events for networking and strengthening connections'
   other:
     title: 'Custom'
     description: 'A tailor-made package of services based on your preferences.'
