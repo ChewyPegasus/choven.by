@@ -136,3 +136,30 @@
         height: 180px;
     }
 }
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.btn-details {
+    padding: 8px 15px;
+    background: transparent;
+    border: 1px solid #ff6b00;
+    color: #ff6b00;
+    border-radius: 30px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-details:hover {
+    background-color: rgba(255, 107, 0, 0.1);
+}
+
+.btn-secondary {
+    flex: 1;
+    text-align: center;
+    margin-left: 10px;
+}

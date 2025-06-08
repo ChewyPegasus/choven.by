@@ -1,0 +1,20 @@
+<div class="popup-overlay" id="popup-all_inclusive">
+    <div class="popup-content">
+        <button class="popup-close">&times;</button>
+        <h2 class="popup-title">{{ 'package.all_inclusive.title'|trans }}</h2>
+        <div class="popup-description">
+            <p>{{ 'package.all_inclusive.description'|trans }}</p>
+        </div>
+        <div class="popup-features">
+            <h3>{{ 'package.features.included'|trans }}</h3>
+            <ul class="feature-list">
+                {% for feature in ['package.all_inclusive.features.transfer', 'package.all_inclusive.features.equipment', 'package.all_inclusive.features.instructor', 'package.all_inclusive.features.food', 'package.all_inclusive.features.camping'] %}
+                    <li class="feature-item">{{ feature|trans }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="popup-footer">
+            <a href="{{ path('app_order_new', {'type': 'all_inclusive'}) }}" class="btn-book-now">{{ 'package.book_now'|trans }}</a>
+        </div>
+    </div>
+</div>

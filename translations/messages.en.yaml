@@ -171,6 +171,7 @@ main:
     title: 'Our trips'
     cards:
       button: 'Book'
+      details: 'Read more'
       1st:
         preposition: 'from'
         title: 'All-inclusive'
@@ -222,12 +223,36 @@ order:
   warning:
     email_failed: 'There were issues sending the confirmation email. We will contact you shortly.'
 
-# Переводы для типов сплавов
-type:
-  all_inclusive: 'All-inclusive'
-  minimum: 'Minimum services'
-  rent_only: 'Kayak rental only'
-  other: 'Other'
+# Translations for rafting types
+package:
+  all_inclusive:
+    title: 'All-inclusive'
+    description: 'A full-service package for maximum comfort. Includes transfer to and from the starting point, all necessary equipment, an experienced instructor, meals during the trip, and camping gear.'
+    features:
+      transfer: 'Transfer to and from the starting point'
+      equipment: 'All necessary equipment (kayaks, paddles, life jackets)'
+      instructor: 'Experienced instructor throughout the route'
+      food: 'Meals during the trip (breakfast, lunch, dinner)'
+      camping: 'Camping gear (tents, sleeping bags, mats)'
+  minimum:
+    title: 'Minimum services'
+    description: 'A basic package for active holiday enthusiasts. Includes equipment, instructor services, and basic insurance.'
+    features:
+      equipment: 'All necessary equipment (kayaks, paddles, life jackets)'
+      instructor: 'Instructor for briefing and guidance'
+  rent_only:
+    title: 'Rental only'
+    description: 'For experienced tourists who want to organize the trip themselves. Only necessary equipment is provided.'
+    features:
+      equipment: 'Rental of equipment (kayaks, paddles, life jackets)'
+  other:
+    title: 'Custom'
+    description: 'A tailor-made package of services based on your preferences.'
+    features:
+      custom: 'Custom set of services'
+  features:
+    included: 'Included in the price'
+  book_now: 'Book now'
 
 # Переводы для рек
 river:

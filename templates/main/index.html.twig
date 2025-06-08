@@ -11,6 +11,7 @@
         <!-- styles -->
         <link rel="stylesheet" href="{{ asset('styles/slider.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/cards.css') }}">
+        <link rel="stylesheet" href="{{ asset('styles/popup.css') }}">
     {% endblock %}
 {% endblock %}
 
@@ -76,10 +77,13 @@
                 <div class="tour-content">
                     <h3>{{ 'main.grid.cards.1st.title'|trans }}</h3>
                     <p>{{ 'main.grid.cards.1st.description'|trans }}</p>
-                    <a href="{{ path('app_order_new', {
-                        'type': 'all_inclusive',
-                        'duration': 2,
-                    }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    <div class="card-actions">
+                        <button class="btn-details" data-package="all_inclusive">{{ 'main.grid.cards.details'|trans }}</button>
+                        <a href="{{ path('app_order_new', {
+                            'type': 'all_inclusive',
+                            'duration': 2,
+                        }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    </div>
                 </div>
             </div>
             
@@ -91,10 +95,13 @@
                 <div class="tour-content">
                     <h3>{{ 'main.grid.cards.2nd.title'|trans }}</h3>
                     <p>{{ 'main.grid.cards.2nd.description'|trans }}</p>
-                    <a href="{{ path('app_order_new', {
-                        'river': 'isloch',
-                        'duration': 2,
-                    }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    <div class="card-actions">
+                        <button class="btn-details" data-package="minimum">{{ 'main.grid.cards.details'|trans }}</button>
+                        <a href="{{ path('app_order_new', {
+                            'river': 'isloch',
+                            'duration': 2,
+                        }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    </div>
                 </div>
             </div>
             
@@ -106,10 +113,13 @@
                 <div class="tour-content">
                     <h3>{{ 'main.grid.cards.3rd.title'|trans }}</h3>
                     <p>{{ 'main.grid.cards.3rd.description'|trans }}</p>
-                    <a href="{{ path('app_order_new', {
-                        'river': 'svisloch',
-                        'duration': 1,
-                    }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    <div class="card-actions">
+                        <button class="btn-details" data-package="minimum">{{ 'main.grid.cards.details'|trans }}</button>
+                        <a href="{{ path('app_order_new', {
+                            'river': 'svisloch',
+                            'duration': 1,
+                        }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    </div>
                 </div>
             </div>
         
@@ -135,14 +145,21 @@
                 <div class="tour-content">
                     <h3>{{ 'main.grid.cards.5th.title'|trans }}</h3>
                     <p>{{ 'main.grid.cards.5th.description'|trans }}</p>
-                    <a href="{{ path('app_order_new', {
-                        'type': 'rent_only',
-                    }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    <div class="card-actions">
+                        <button class="btn-details" data-package="rent_only">{{ 'main.grid.cards.details'|trans }}</button>
+                        <a href="{{ path('app_order_new', {
+                            'type': 'rent_only',
+                        }) }}" class="btn-secondary">{{ 'main.grid.cards.button'|trans }}</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+
+{% include 'partials/popups/all_inclusive.html.twig' %}
+{% include 'partials/popups/minimum.html.twig' %}
+{% include 'partials/popups/rent_only.html.twig' %}
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -169,6 +186,53 @@
                 el: '.swiper-pagination',
                 clickable: true,
             },
+        });
+
+        const detailButtons = document.querySelectorAll('.btn-details');
+        const popups = document.querySelectorAll('.popup-overlay');
+        const closeButtons = document.querySelectorAll('.popup-close');
+        
+        // Open popup when detail button is clicked
+        detailButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const packageType = this.getAttribute('data-package');
+                const popup = document.getElementById(`popup-${packageType}`);
+                if (popup) {
+                    popup.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Prevent scrolling of background
+                }
+            });
+        });
+        
+        // Close popup when close button is clicked
+        closeButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const popup = this.closest('.popup-overlay');
+                if (popup) {
+                    popup.classList.remove('active');
+                    document.body.style.overflow = ''; // Restore scrolling
+                }
+            });
+        });
+        
+        // Close popup when clicking outside of content
+        popups.forEach(popup => {
+            popup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+        
+        // Close popup with Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                popups.forEach(popup => {
+                    popup.classList.remove('active');
+                });
+                document.body.style.overflow = '';
+            }
         });
     });
 </script>
