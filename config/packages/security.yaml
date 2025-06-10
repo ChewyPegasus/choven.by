@@ -24,6 +24,8 @@ security:
                 check_path: app_login
                 enable_csrf: true
                 default_target_path: app_main
+                username_parameter: email
+                password_parameter: password
             logout:
                 path: app_logout
                 target: app_main
@@ -40,8 +42,14 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        #  - { path: ^/admin, roles: ROLE_ADMIN }
-        #  - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/(?:ru|be|en)/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/(?:ru|be|en)/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/(?:ru|be|en)/verify/, roles: PUBLIC_ACCESS }
+        - { path: ^/change-locale/, roles: PUBLIC_ACCESS }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/register$, roles: PUBLIC_ACCESS }
+        - { path: ^/verify/, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:
