@@ -6,6 +6,7 @@ namespace App\Factory;
 
 use App\DTO\DTO;
 use App\DTO\OrderConfirmationDTO;
+use App\DTO\VerificationDTO;
 use App\Enum\DTOType;
 
 class DTOFactory
@@ -14,6 +15,10 @@ class DTOFactory
     {
         return match($type) {
             DTOType::ORDER_CONFIRMATION => new OrderConfirmationDTO($data['order']),
+            DTOType::VERIFICATION => new VerificationDTO(
+                $data['user'],
+                $data['confirmUrl'],
+            ),
         };
     }
 }

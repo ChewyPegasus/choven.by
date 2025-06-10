@@ -6,4 +6,5 @@ namespace App\Enum;
 
 enum DTOType {
     case ORDER_CONFIRMATION;
+    case VERIFICATION;
 }

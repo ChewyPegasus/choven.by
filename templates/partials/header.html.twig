@@ -17,11 +17,31 @@
                     </ul>
                 </nav>
 
-                <div class="language-switcher-container">
+                <div class="user-controls">
                     <div class="language-switcher">
                         <a href="{{ path('app_change_locale', {'locale': 'ru'}) }}" class="{{ app.request.locale == 'ru' ? 'active' : '' }}">RU</a>
                         <a href="{{ path('app_change_locale', {'locale': 'be'}) }}" class="{{ app.request.locale == 'be' ? 'active' : '' }}">BE</a>
                         <a href="{{ path('app_change_locale', {'locale': 'en'}) }}" class="{{ app.request.locale == 'en' ? 'active' : '' }}">EN</a>
+                    </div>
+                    
+                    <div class="auth-controls">
+                        {% if app.user %}
+                            <div class="user-dropdown">
+                                <button class="user-btn">
+                                    <i class="fas fa-user-circle"></i>
+                                </button>
+                                <div class="dropdown-content">
+                                    <span class="user-email">{{ app.user.email }}</span>
+                                    <a href="{{ path('app_profile') }}">{{ 'menu.profile'|trans }}</a>
+                                    <a href="{{ path('app_logout') }}">{{ 'menu.logout'|trans }}</a>
+                                </div>
+                            </div>
+                        {% else %}
+                            <a href="{{ path('app_login') }}" class="auth-icon" title="{{ 'menu.login'|trans }}">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </a>
+                            <a href="{{ path('app_register') }}" class="auth-btn">{{ 'menu.register'|trans }}</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

@@ -5,6 +5,10 @@ menu:
   about_rafting: 'Усё пра сплавы'
   about_us: 'Пра нас'
   book: 'Забраніраваць'
+  login: 'Уваход'
+  register: 'Рэгістрацыя'
+  logout: 'Выйсці'
+  profile: 'Профіль'
 
 footer:
   copyright: 'Усе права абаронены'
@@ -289,3 +293,40 @@ email:
     subject: 'Аднаўленне пароля'
   welcome:
     subject: 'Сардэчна запрашаем у Choven.by'
+    login:
+      title: Уваход у асабісты кабінет
+      form:
+        email: Email
+        password: Пароль
+        remember_me: Запомніць мяне
+        sign_in: Увайсці
+        no_account: Яшчэ няма акаўнта?
+        register: Зарэгістравацца
+
+registration:
+  email:
+    already_used: 'Гэты email ужо выкарыстоўваецца'
+    failed: 'У нашай сістэме ўзнікла памылка. Мы выправім яе як мага хутчэй.'
+  title: Рэгістрацыя
+  success: Рэгістрацыя прайшла паспяхова! Праверце вашу электронную пошту для пацверджання акаўнта.
+  form:
+    email: Email
+    password: Пароль
+    repeat_password: Паўтарыце пароль
+    agree_terms: Я згодны з умовамі выкарыстання
+    register: Зарэгістравацца
+    already_registered: Ужо зарэгістраваны?
+    sign_in: Увайсці
+    error:
+      email_required: Калі ласка, увядзіце ваш email
+      password_required: Калі ласка, увядзіце пароль
+      password_too_short: Пароль павінен утрымліваць мінімум %limit% сімвалаў
+      agree_terms: Вы павінны прыняць умовы выкарыстання
+
+verification:
+  success: Ваш email паспяхова пацверджаны! Цяпер вы можаце ўвайсці.
+  invalid_link: Няправільная спасылка пацверджання.
+  email_confirm: "Для пацверджання вашага email-адраса, калі ласка, перайдзіце па наступнай спасылцы:"
+  button: "Пацвердзіць email"
+  link_alternative: "Калі кнопка не працуе, скапіруйце і ўстаўце наступную спасылку ў адрасны радок браўзера:"
+  ignore: "Калі вы не рэгістраваліся на нашым сайце, проста ігнаруйце гэты ліст."

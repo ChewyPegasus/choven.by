@@ -5,6 +5,10 @@ menu:
   about_rafting: 'About rafting'
   about_us: 'About us'
   book: 'Book'
+  login: 'Login'
+  register: 'Register'
+  logout: 'Logout'
+  profile: 'Profile'
 
 footer:
   copyright: 'All rights reserved'
@@ -289,3 +293,43 @@ email:
     subject: 'Password Recovery'
   welcome:
     subject: 'Welcome to Choven.by'
+  verification:
+    subject: "Registration Confirmation for Choven.by"
+
+login:
+  title: 'Login to your account'
+  form:
+    email: 'Email'
+    password: 'Password'
+    remember_me: 'Remember me'
+    sign_in: 'Sign in'
+    no_account: 'Don’t have an account yet?'
+    register: 'Register'
+
+registration:
+  email:
+      already_used: 'This email is already in use'
+      failed: "There is a failure in our system. We will fix it as soon as possible"
+  title: 'Registration'
+  success: 'Registration was successful! Check your email to confirm your account.'
+  form:
+    email: 'Email'
+    password: 'Password'
+    repeat_password: 'Repeat password'
+    agree_terms: 'I agree to the terms of use'
+    register: 'Register'
+    already_registered: 'Already registered?'
+    sign_in: 'Sign in'
+    error:
+      email_required: 'Please enter your email'
+      password_required: 'Please enter your password'
+      password_too_short: 'Password must be at least %limit% characters long'
+      agree_terms: 'You must accept the terms of use'
+
+verification:
+  success: 'Your email has been successfully verified! You can now log in.'
+  invalid_link: 'Invalid verification link.'
+  email_confirm: "To confirm your email address, please click the link below:"
+  button: "Confirm Email"
+  link_alternative: "If the button doesn't work, copy and paste the following link into your browser's address bar:"
+  ignore: "If you didn't register on our website, please ignore this email."

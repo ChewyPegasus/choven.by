@@ -5,6 +5,10 @@ menu:
   about_rafting: 'Всё о сплавах'
   about_us: 'О нас'
   book: 'Забронировать'
+  login: 'Вход'
+  register: 'Регистрация'
+  logout: 'Выйти'
+  profile: 'Профиль'
 
 footer:
   copyright: 'Все права защищены'
@@ -289,3 +293,43 @@ email:
     subject: 'Восстановление пароля'
   welcome:
     subject: 'Добро пожаловать в Choven.by'
+  verification:
+    subject: "Подтверждение регистрации на Choven.by"
+
+login:
+  title: Вход в личный кабинет
+  form:
+    email: Email
+    password: Пароль
+    remember_me: Запомнить меня
+    sign_in: Войти
+    no_account: Еще нет аккаунта?
+    register: Зарегистрироваться
+
+registration:
+  email:
+      already_used: 'Этот email уже используется'
+      failed: 'В нашей системе произошла ошибка. Мы исправим её как можно скорее.'
+  title: Регистрация
+  success: Регистрация прошла успешно! Проверьте вашу электронную почту для подтверждения аккаунта.
+  form:
+    email: Email
+    password: Пароль
+    repeat_password: Повторите пароль
+    agree_terms: Я согласен с условиями использования
+    register: Зарегистрироваться
+    already_registered: Уже зарегистрированы?
+    sign_in: Войти
+    error:
+      email_required: Пожалуйста, введите ваш email
+      password_required: Пожалуйста, введите пароль
+      password_too_short: Пароль должен содержать минимум %limit% символов
+      agree_terms: Вы должны принять условия использования
+
+verification:
+  success: Ваш email успешно подтвержден! Теперь вы можете войти.
+  invalid_link: Неверная ссылка подтверждения.
+  email_confirm: "Для подтверждения вашего email-адреса, пожалуйста, перейдите по следующей ссылке:"
+  button: "Подтвердить email"
+  link_alternative: "Если кнопка не работает, скопируйте и вставьте следующую ссылку в адресную строку браузера:"
+  ignore: "Если вы не регистрировались на нашем сайте, просто проигнорируйте это письмо."
