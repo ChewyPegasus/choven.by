@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum EmailTemplate: string {
+enum EmailTemplate: string
+{
     case ORDER_CONFIRMATION = 'order_confirmation';
     case VERIFICATION = 'verification';
 

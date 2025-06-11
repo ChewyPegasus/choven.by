@@ -6,6 +6,7 @@ namespace App\Service\Sending;
 
 use App\DTO\DTO;
 
-interface Sender {
+interface Sender
+{
     function send(DTO $dto): void;
 }

@@ -7,7 +7,8 @@ namespace App\Service;
 use App\Enum\Package;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class PackageService {
+class PackageService 
+{
     public function __construct(
         private readonly TranslatorInterface $translator
     )

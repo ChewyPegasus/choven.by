@@ -8,7 +8,8 @@ use App\Enum\EmailTemplate;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
-abstract class Renderer {
+abstract class Renderer 
+{
     public function __construct(
         protected Environment $twig,
         protected TranslatorInterface $translator,

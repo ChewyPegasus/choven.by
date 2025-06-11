@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum Package: string {
+enum Package: string
+{
     case ALL_INCLUSIVE = 'all_inclusive';
     case MINIMUM = 'minimum';
     case RENT_ONLY = 'rent_only';

@@ -9,7 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Enum\River;
 use App\Enum\Package;
 
-class OrderService {
+class OrderService 
+{
     public function create(Request $request): Order {
         $order = new Order();
 

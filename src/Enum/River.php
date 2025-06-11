@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
-enum River: string {
+enum River: string
+{
     case SVISLOCH = 'svisloch';
     case ISLOCH = 'isloch';
     case BEREZINA = 'berezina';
