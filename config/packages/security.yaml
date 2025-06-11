@@ -29,9 +29,9 @@ security:
             logout:
                 path: app_logout
                 target: app_main
-            # remember_me:
-            #     secret: '%kernel.secret%'
-            #     lifetime: 604800
+            remember_me:
+                secret: '%kernel.secret%'
+                lifetime: 604800
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall

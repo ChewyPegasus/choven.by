@@ -25,7 +25,7 @@ final class RegistrationController extends AbstractController
 {
     public function __construct(
         private EmailSender $sender,
-        private EmailFactory $dtoFactory,
+        private EmailFactory $emailFactory,
         private LoggerInterface $logger,
         private UserRepository $userRepository,
     ) {}
@@ -70,7 +70,7 @@ final class RegistrationController extends AbstractController
 
             // Отправка письма с подтверждением
             try {
-                $this->sender->send($this->dtoFactory->create(
+                $this->sender->send($this->emailFactory->create(
                     EmailType::VERIFICATION,
                     [
                         'user' => $user,
