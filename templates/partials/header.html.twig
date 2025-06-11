@@ -37,10 +37,19 @@
                                 </div>
                             </div>
                         {% else %}
-                            <a href="{{ path('app_login') }}" class="auth-icon" title="{{ 'menu.login'|trans }}">
-                                <i class="fas fa-sign-in-alt"></i>
-                            </a>
-                            <a href="{{ path('app_register') }}" class="auth-btn">{{ 'menu.register'|trans }}</a>
+                            <div class="guest-dropdown">
+                                <button class="guest-btn" title="{{ 'menu.auth'|trans }}">
+                                    <i class="fas fa-question-circle"></i>
+                                </button>
+                                <div class="dropdown-content">
+                                    <a href="{{ path('app_login') }}">
+                                        <i class="fas fa-sign-in-alt"></i> {{ 'menu.login'|trans }}
+                                    </a>
+                                    <a href="{{ path('app_register') }}">
+                                        <i class="fas fa-user-plus"></i> {{ 'menu.register'|trans }}
+                                    </a>
+                                </div>
+                            </div>
                         {% endif %}
                     </div>
                 </div>

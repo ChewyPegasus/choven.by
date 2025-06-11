@@ -9,6 +9,7 @@ menu:
   register: 'Регистрация'
   logout: 'Выйти'
   profile: 'Профиль'
+  auth: 'Авторизация'
 
 footer:
   copyright: 'Все права защищены'
