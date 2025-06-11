@@ -310,6 +310,7 @@ registration:
   email:
       already_used: 'This email is already in use'
       failed: "There is a failure in our system. We will fix it as soon as possible"
+      already_exists: 'Email already regitered'
   title: 'Registration'
   success: 'Registration was successful! Check your email to confirm your account.'
   form:

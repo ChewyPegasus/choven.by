@@ -11,7 +11,8 @@ framework:
         app: cache.adapter.redis
         default_redis_provider: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%'
 
-    
+    csrf_protection:
+        enabled: true
 
     #esi: true
     #fragments: true

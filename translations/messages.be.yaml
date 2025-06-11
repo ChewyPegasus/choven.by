@@ -307,6 +307,7 @@ registration:
   email:
     already_used: 'Гэты email ужо выкарыстоўваецца'
     failed: 'У нашай сістэме ўзнікла памылка. Мы выправім яе як мага хутчэй.'
+    already_exists: 'Такі email ужо зарэгістраваны ў нашай сістэме'
   title: Рэгістрацыя
   success: Рэгістрацыя прайшла паспяхова! Праверце вашу электронную пошту для пацверджання акаўнта.
   form:
@@ -330,3 +331,14 @@ verification:
   button: "Пацвердзіць email"
   link_alternative: "Калі кнопка не працуе, скапіруйце і ўстаўце наступную спасылку ў адрасны радок браўзера:"
   ignore: "Калі вы не рэгістраваліся на нашым сайце, проста ігнаруйце гэты ліст."
+  already_confirmed: 'Ваш email паспяхова пацверджаны'
+
+login:
+  title: 'Login to your account'
+  form:
+    email: 'Email'
+    password: 'Password'
+    remember_me: 'Remember me'
+    sign_in: 'Sign in'
+    no_account: 'Don’t have an account yet?'
+    register: 'Register'
