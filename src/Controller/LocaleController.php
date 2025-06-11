@@ -63,6 +63,15 @@ class LocaleController extends AbstractController
         $query = isset($parts['query']) ? '?' . $parts['query'] : '';
         $fragment = isset($parts['fragment']) ? '#' . $parts['fragment'] : '';
         
-        return "$scheme$user$pass$host$port$path$query$fragment";
+        return sprintf('%s%s%s%s%s%s%s%s', 
+        $scheme, 
+        $user, 
+        $pass, 
+        $host, 
+        $port, 
+        $path, 
+        $query, 
+        $fragment);
+        #return "$scheme$user$pass$host$port$path$query$fragment";
     }
 }
