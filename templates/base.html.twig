@@ -61,6 +61,19 @@
         {% endblock %}
 
         <script>
+            function closeFlash(id) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.style.opacity = '0';
+                    element.style.transform = 'translateY(-20px)';
+                    element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+
+                    setTimeout(function () {
+                        element.style.display = 'none';
+                    }, 300);
+                }
+            }
+
             document.addEventListener('DOMContentLoaded', function () {
                 const closeButtons = document.querySelectorAll('.close-btn');
                 closeButtons.forEach(function (btn) {
@@ -151,19 +164,6 @@
                             dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
                         }
                     });
-                }
-
-                function closeFlash(id) {
-                    const element = document.getElementById(id);
-                    if (element) {
-                        element.style.opacity = '0';
-                        element.style.transform = 'translateY(-20px)';
-                        element.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-
-                        setTimeout(function () {
-                            element.style.display = 'none';
-                        }, 300);
-                    }
                 }
 
                 document.addEventListener('click', function (e) {
