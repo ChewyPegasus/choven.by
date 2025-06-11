@@ -1,0 +1,45 @@
+{# filepath: d:\prog\php\project\choven.by\templates\info\sections\process.html.twig #}
+<section class="process-section">
+    <div class="container">
+        <h2 class="section-title">{{ 'info.process.title'|trans }}</h2>
+        
+        <div class="process-timeline">
+            <div class="timeline-wrapper">
+                <div class="timeline-cards">
+                    {% for i in 1..5 %}
+                        <div class="timeline-card" id="card-{{ i }}">
+                            <div class="card-number">{{ i }}</div>
+                            <div class="card-content">
+                                <h3>{{ ('info.process.cards.' ~ i ~ (i == 1 ? 'st' : (i == 2 ? 'nd' : (i == 3 ? 'rd' : 'th'))) ~ '.title')|trans }}</h3>
+                                <div class="card-image">
+                                    <img src="{{ asset('images/process/' ~ (i == 1 ? 'meet' : (i == 2 ? 'go' : (i == 3 ? 'way' : (i == 4 ? 'stop' : 'food')))) ~ '.jpg') }}" alt="{{ ('info.process.cards.' ~ i ~ (i == 1 ? 'st' : (i == 2 ? 'nd' : (i == 3 ? 'rd' : 'th'))) ~ '.title')|trans }}">
+                                </div>
+                                <p>{{ ('info.process.cards.' ~ i ~ (i == 1 ? 'st' : (i == 2 ? 'nd' : (i == 3 ? 'rd' : 'th'))) ~ '.description')|trans }}</p>
+                                <div class="card-features">
+                                    {% for feature in ['first', 'second', 'third'] %}
+                                        <div class="feature">
+                                            <i class="fas fa-check-circle"></i>
+                                            <span>{{ ('info.process.cards.' ~ i ~ (i == 1 ? 'st' : (i == 2 ? 'nd' : (i == 3 ? 'rd' : 'th'))) ~ '.' ~ feature)|trans }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="timeline-navigation">
+                    {% for i in 1..5 %}
+                        <button class="nav-btn" data-target="card-{{ i }}">{{ i }}</button>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="process-cta">
+            <h3>{{ 'info.process.promo.question'|trans }}</h3>
+            <p>{{ 'info.process.promo.book'|trans }}</p>
+            <a href="{{ path('app_order_new') }}" class="btn-primary">{{ 'info.process.promo.button'|trans }}</a>
+        </div>
+    </div>
+</section>

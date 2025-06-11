@@ -1,0 +1,35 @@
+<section class="faq-section">
+    <div class="container">
+        <h2 class="section-title">{{ 'info.process.faq.title'|trans }}</h2>
+        
+        <div class="faq-container">
+            {% for i in 1..7 %}
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <h3>{{ ('info.process.faq.' ~ i ~ (i == 1 ? 'st' : (i == 2 ? 'nd' : (i == 3 ? 'rd' : 'th'))) ~ '.question')|trans }}</h3>
+                        <div class="faq-icon">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                    <div class="faq-answer">
+                        {% if i == 5 %}
+                            <p>{{ 'info.process.faq.5th.answer.title'|trans }}</p>
+                            <ul class="packing-list">
+                                {% for j in 1..5 %}
+                                    <li>{{ ('info.process.faq.5th.answer.' ~ j ~ (j == 1 ? 'st' : (j == 2 ? 'nd' : (j == 3 ? 'rd' : 'th'))))|trans }}</li>
+                                {% endfor %}
+                            </ul>
+                            <div class="download-container">
+                                <a href="{{ asset('files/Список_вещей.docx') }}" download="{{ 'info.process.faq.5th.answer.file'|trans }}" class="download-link">
+                                    <i class="fas fa-download"></i> {{ 'info.process.faq.5th.answer.download'|trans }}
+                                </a>
+                            </div>
+                        {% else %}
+                            <p>{{ ('info.process.faq.' ~ i ~ (i == 1 ? 'st' : (i == 2 ? 'nd' : (i == 3 ? 'rd' : 'th'))) ~ '.answer')|trans }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
