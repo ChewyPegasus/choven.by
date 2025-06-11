@@ -137,6 +137,7 @@ class Order
     public function setDurationDays(int $days): self
     {
         $this->duration = new \DateInterval("P{$days}D");
+        
         return $this;
     }
 }

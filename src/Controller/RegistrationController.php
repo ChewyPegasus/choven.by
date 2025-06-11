@@ -49,6 +49,7 @@ final class RegistrationController extends AbstractController
             $existingUser = $this->userRepository->findOneBy(['email' => $user->getEmail()]);
             if ($existingUser) {
                 $this->addFlash('error', $translator->trans('registration.email.already_exists'));
+                
                 return $this->redirectToRoute('app_register');
             }
 
@@ -106,12 +107,14 @@ final class RegistrationController extends AbstractController
         
         if (!$user) {
             $this->addFlash('error', $translator->trans('verification.invalid_link'));
+            
             return $this->redirectToRoute('app_main');
         }
 
         // Если пользователь уже подтвержден
         if ($user->isConfirmed()) {
             $this->addFlash('info', $translator->trans('verification.already_confirmed'));
+            
             return $this->redirectToRoute('app_login');
         }
 
@@ -120,6 +123,7 @@ final class RegistrationController extends AbstractController
         $manager->flush();
 
         $this->addFlash('success', $translator->trans('verification.success'));
+
         return $this->redirectToRoute('app_login');
     }
 }

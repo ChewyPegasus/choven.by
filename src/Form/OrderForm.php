@@ -82,6 +82,7 @@ class OrderForm extends AbstractType
                 'label' => $this->translator->trans('order.form.river'),
                 'class' => River::class,
                 'choice_label' => function(River $river) {
+                    
                     return $this->translator->trans($river->getLabel());
                 },
                 'attr' => [
@@ -114,6 +115,7 @@ class OrderForm extends AbstractType
                 'label' => $this->translator->trans('order.form.type'),
                 'class' => Package::class,
                 'choice_label' => function(Package $package) {
+
                     return $this->translator->trans($package->getLabel());
                 },
                 'attr' => [
