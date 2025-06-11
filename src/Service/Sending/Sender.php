@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Sending;
 
 use App\DTO\DTO;
+use App\Factory\EmailFactory;
 use App\Service\Rendering\EmailRenderer;
 use Symfony\Component\Mailer\MailerInterface;
 
@@ -15,6 +16,7 @@ abstract class Sender
         protected EmailRenderer $renderer,
         protected string $senderEmail,
         protected string $adminEmail,
+        protected EmailFactory $emailFactory,
     )
     {
     }

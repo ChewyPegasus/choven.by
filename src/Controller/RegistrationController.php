@@ -70,7 +70,7 @@ final class RegistrationController extends AbstractController
 
             // Отправка письма с подтверждением
             try {
-                $this->sender->send($this->emailFactory->create(
+                $this->sender->send($this->emailFactory->createDTO(
                     EmailType::VERIFICATION,
                     [
                         'user' => $user,

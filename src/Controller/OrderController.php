@@ -47,7 +47,7 @@ final class OrderController extends AbstractController
             $entityManager->flush();
 
             try {
-                $sender->send($emailFactory->create(
+                $sender->send($emailFactory->createDTO(
                     EmailType::ORDER_CONFIRMATION,
                     [
                         'order' => $order,
