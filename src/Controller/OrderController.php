@@ -11,12 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Order;
-use App\Enum\DTOType;
+use App\Enum\EmailType;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
 use App\Enum\River;
 use App\Enum\Package;
-use App\Factory\DTOFactory;
+use App\Factory\EmailFactory;
 use App\Service\OrderService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -29,7 +29,7 @@ final class OrderController extends AbstractController
         EntityManagerInterface $entityManager,
         EmailSender $sender,
         LoggerInterface $logger,
-        DTOFactory $dtoFactory,
+        EmailFactory $dtoFactory,
         TranslatorInterface $translator,
         OrderService $orderService
     ): Response
@@ -48,7 +48,7 @@ final class OrderController extends AbstractController
 
             try {
                 $sender->send($dtoFactory->create(
-                    DTOType::ORDER_CONFIRMATION,
+                    EmailType::ORDER_CONFIRMATION,
                     [
                         'order' => $order,
                     ],

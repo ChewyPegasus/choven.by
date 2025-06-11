@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Enum\DTOType;
+use App\Enum\EmailType;
 use App\Enum\Role;
-use App\Factory\DTOFactory;
+use App\Factory\EmailFactory;
 use App\Form\RegistrationForm;
 use App\Repository\UserRepository;
 use App\Service\Sending\EmailSender;
@@ -25,7 +25,7 @@ final class RegistrationController extends AbstractController
 {
     public function __construct(
         private EmailSender $sender,
-        private DTOFactory $dtoFactory,
+        private EmailFactory $dtoFactory,
         private LoggerInterface $logger,
         private UserRepository $userRepository,
     ) {}
@@ -71,7 +71,7 @@ final class RegistrationController extends AbstractController
             // Отправка письма с подтверждением
             try {
                 $this->sender->send($this->dtoFactory->create(
-                    DTOType::VERIFICATION,
+                    EmailType::VERIFICATION,
                     [
                         'user' => $user,
                         'confirmUrl' => $this->generateUrl(

@@ -7,15 +7,15 @@ namespace App\Factory;
 use App\DTO\DTO;
 use App\DTO\OrderConfirmationDTO;
 use App\DTO\VerificationDTO;
-use App\Enum\DTOType;
+use App\Enum\EmailType;
 
-class DTOFactory
+class EmailFactory
 {
-    public function create(DTOType $type, array $data): DTO
+    public function create(EmailType $type, array $data): DTO
     {
         return match($type) {
-            DTOType::ORDER_CONFIRMATION => new OrderConfirmationDTO($data['order']),
-            DTOType::VERIFICATION => new VerificationDTO(
+            EmailType::ORDER_CONFIRMATION => new OrderConfirmationDTO($data['order']),
+            EmailType::VERIFICATION => new VerificationDTO(
                 $data['user'],
                 $data['confirmUrl'],
             ),
