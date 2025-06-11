@@ -12,9 +12,8 @@ use App\Enum\EmailTemplate;
 readonly abstract class AbstractEmailDTO implements DTO
 {
     abstract public function getEmailTemplate(): EmailTemplate;
-    
-    public function getAdditionalContext(): array
-    {
-        return [];
-    }
+
+    abstract public function getEmail(): string;
+
+    abstract public function getContext(): array;
 }

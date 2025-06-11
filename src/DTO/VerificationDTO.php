@@ -9,32 +9,50 @@ use App\Enum\EmailTemplate;
 
 readonly class VerificationDTO extends AbstractEmailDTO
 {
+    private string $email;
+    private int $id;
+    private string $confirmationCode;
+
     public function __construct(
-        private User $user,
+        User $user,
         private string $confirmUrl,
     )
     {
+        $this->id = $user->getId();
+        $this->email = $user->getEmail();
+        $this->confirmationCode = $user->getConfirmationCode();
     }
 
-    public function getEntity(): object
-    {
-        return $this->user;
-    }
-
-    public function getConfirmUrl(): ?string
+    public function getConfirmUrl(): string
     {
         return $this->confirmUrl;
+    }
+    
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+    
+    public function getId(): int
+    {
+        return $this->id;
+    }
+    
+    public function getConfirmationCode(): string
+    {
+        return $this->confirmationCode;
     }
 
     public function getEmailTemplate(): EmailTemplate
     {
         return EmailTemplate::VERIFICATION;
     }
-    
-    public function getAdditionalContext(): array
+
+    public function getContext(): array
     {
         return [
             'confirmUrl' => $this->confirmUrl,
+            'email' => $this->email
         ];
     }
 }

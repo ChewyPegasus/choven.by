@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Service\Rendering;
 
+use App\DTO\AbstractEmailDTO;
+use App\DTO\DTO;
 use App\Enum\EmailTemplate;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
@@ -20,5 +22,7 @@ abstract class Renderer
     {
     }
 
-    abstract public function render(EmailTemplate $template, object $entity, array $context = []): array;
+    abstract public function renderFromDTO(AbstractEmailDTO $dto, array $context = []): array;
+
+    abstract public function render(EmailTemplate $template, array $context = []): array;
 }

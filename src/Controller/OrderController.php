@@ -29,7 +29,7 @@ final class OrderController extends AbstractController
         EntityManagerInterface $entityManager,
         EmailSender $sender,
         LoggerInterface $logger,
-        EmailFactory $dtoFactory,
+        EmailFactory $emailFactory,
         TranslatorInterface $translator,
         OrderService $orderService
     ): Response
@@ -47,7 +47,7 @@ final class OrderController extends AbstractController
             $entityManager->flush();
 
             try {
-                $sender->send($dtoFactory->create(
+                $sender->send($emailFactory->create(
                     EmailType::ORDER_CONFIRMATION,
                     [
                         'order' => $order,

@@ -9,37 +9,37 @@
     <p>{{ 'mailer.header.confirm'|trans }}</p>
     
     <div class="order-summary">
-        <h2>{{ 'mailer.order.title'|trans }} #{{ order.id }}</h2>
+        <h2>{{ 'mailer.order.title'|trans }} #{{ dto.id }}</h2>
         
         <div class="info-row">
             <div class="info-label">{{ 'mailer.order.river'|trans }}</div>
-            <div>{{ order.river.label|trans }}</div>
+            <div>{{ dto.river.label|trans }}</div>
         </div>
         
         <div class="info-row">
             <div class="info-label">{{ 'mailer.order.type'|trans }}</div>
-            <div>{{ order.package.label|trans }}</div>
+            <div>{{ dto.package.label|trans }}</div>
         </div>
         
         <div class="info-row">
             <div class="info-label">{{ 'mailer.order.date'|trans }}</div>
-            <div>{{ order.startDate|date('d.m.Y') }}</div>
+            <div>{{ dto.startDate|date('d.m.Y') }}</div>
         </div>
         
         <div class="info-row">
             <div class="info-label">{{ 'mailer.order.duration'|trans }}</div>
-            <div>{{ order.durationDays }} {{ 'mailer.order.days'|trans }}</div>
+            <div>{{ dto.durationDays }} {{ 'mailer.order.days'|trans }}</div>
         </div>
         
         <div class="info-row">
             <div class="info-label">{{ 'mailer.order.number'|trans }}</div>
-            <div>{{ order.amountOfPeople }}</div>
+            <div>{{ dto.amountOfPeople }}</div>
         </div>
         
-        {% if order.description %}
+        {% if dto.description %}
         <div class="info-row">
             <div class="info-label">{{ 'mailer.order.additional'|trans }}</div>
-            <div>{{ order.description }}</div>
+            <div>{{ dto.description }}</div>
         </div>
         {% endif %}
     </div>

@@ -11,34 +11,21 @@ use Symfony\Component\Mime\Email;
 use App\DTO\AbstractEmailDTO;
 use App\Service\Rendering\EmailRenderer;
 
-class EmailSender implements Sender
+class EmailSender extends Sender
 {
-    public function __construct(
-        private MailerInterface $mailer,
-        private EmailRenderer $renderer,
-        private string $senderEmail,
-        private string $adminEmail,
-    )
-    {
-    }
-
     public function send(DTO $dto): void
     {
         if (!$dto instanceof AbstractEmailDTO) {
             throw new \InvalidArgumentException('DTO must be instance of AbstractEmailDTO for email sending');
         }
 
-        $entity = $dto->getEntity();
+        $recipientEmail = $dto->getEmail();
         
-        $recipientEmail = method_exists($entity, 'getEmail') 
-            ? $entity->getEmail() 
-            : $this->adminEmail;
+        $context = method_exists($dto, 'getContext') 
+            ? $dto->getContext() 
+            : [];
         
-
-        $template = $dto->getEmailTemplate();
-        $additionalContext = $dto->getAdditionalContext();
-        
-        $emailData = $this->renderer->render($template, $entity, $additionalContext);
+        $emailData = $this->renderer->renderFromDTO($dto);
         
         $email = (new Email())
             ->from(new Address($emailData['sender_email'], $emailData['sender_name']))
