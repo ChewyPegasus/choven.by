@@ -10,100 +10,14 @@
 {% endblock %}
 
 {% block body %}
-    <!-- Секция с историей -->
-    <section class="about-section">
-        <div class="container">
-            <h2 class="section-title">{{ 'about.history.title'|trans }}</h2>
-            
-            <div class="history-container">
-                <p>{{ 'about.history.start'|trans }}<span class="history-highlight">{{ 'about.history.love'|trans }}</span></p>
-                
-                <p>{{ 'about.history.first_kayaks'|trans }}</p>
-                
-                <p>{{ 'about.history.growing'|trans }}<span class="history-highlight">{{ 'about.history.born'|trans }}</span>.</p>
-                
-                <p>{{ 'about.history.today'|trans }}</p>
-                
-                <p {{ 'about.history.no_change'|trans }}<span class="history-highlight">{{ 'about.history.first_goal'|trans }}</span> {{ 'about.history.second_goal'|trans }}</p>
-            </div>
-        </div>
-    </section>
+    <!-- История -->
+    {% include 'partials/about/history.html.twig' %}
     
-    <!-- Секция с фотогалереей -->
-    <section class="about-section" style="background-color: #f9f9f9;">
-        <div class="container">
-            <h2 class="section-title">{{ 'about.photogallery'|trans }}</h2>
-            
-            <div class="gallery-container">
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/banya.jpg') }}" alt="Баня">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/city.jpg') }}" alt="Город с реки">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/dragonfly.jpg') }}" alt="Стрекоза на пальце">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/on_the_go.jpg') }}" alt="Живописные пейзажи">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/road.jpg') }}" alt="Лесная дорога">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/sky.jpg') }}" alt="Ночное небо">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/zatoka.jpg') }}" alt="Небольшая заводь">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/finish.jpg') }}" alt="Станция">
-                </div>
-                <div class="gallery-item">
-                    <img src="{{ asset('images/gallery/stop.jpg') }}" alt="Красота природы">
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Фотогалерея -->
+    {% include 'partials/about/photogallery.html.twig' %}
     
-    <!-- Секция с контактами -->
-    <section class="about-section">
-        <div class="container">
-            <h2 class="section-title">{{ 'about.contacts.contact_us'|trans }}</h2>
-            
-            <div class="contact-container">
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="fas fa-phone-alt"></i>
-                    </div>
-                    <div class="contact-title">{{ 'about.contacts.phone_number'|trans }}</div>
-                    <div class="contact-value">
-                        <a href="tel:+375291234567">+375 (29) 706-75-85</a>
-                    </div>
-                </div>
-                
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="fab fa-instagram"></i>
-                    </div>
-                    <div class="contact-title">Instagram</div>
-                    <div class="contact-value">
-                        <a href="https://www.instagram.com/sergei_shpoka/" target="_blank">@sergei_shpoka</a>
-                    </div>
-                </div>
-                
-                <div class="contact-item">
-                    <div class="contact-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <div class="contact-title">Email</div>
-                    <div class="contact-value">
-                        <a href="mailto:info@choven.by">info@choven.by</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Контакты -->
+    {% include 'partials/about/contacts.html.twig' %}
 {% endblock %}
 
 {% block javascripts %}
