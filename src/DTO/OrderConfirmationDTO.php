@@ -7,7 +7,7 @@ namespace App\DTO;
 use App\Entity\Order;
 use App\Enum\EmailTemplate;
 
-class OrderConfirmationDTO extends AbstractEmailDTO
+readonly class OrderConfirmationDTO extends AbstractEmailDTO
 {
     public function __construct(private Order $order)
     {

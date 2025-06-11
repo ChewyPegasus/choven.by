@@ -9,7 +9,7 @@ use App\Enum\EmailTemplate;
 /**
  * Базовый класс для всех DTO, связанных с отправкой писем
  */
-abstract class AbstractEmailDTO implements DTO
+readonly abstract class AbstractEmailDTO implements DTO
 {
     abstract public function getEmailTemplate(): EmailTemplate;
     

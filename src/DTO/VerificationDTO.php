@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace App\DTO;
 
-use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\EmailTemplate;
 
-class VerificationDTO extends AbstractEmailDTO
+readonly class VerificationDTO extends AbstractEmailDTO
 {
     public function __construct(
         private User $user,
