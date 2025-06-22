@@ -44,3 +44,21 @@ services:
         class: Redis
         calls:
             - [connect, ['%env(REDIS_HOST)%', '%env(int:REDIS_PORT)%']]
+    
+    App\Command\KafkaConsumeOrdersCommand:
+        arguments:
+            $orderTopic: '%kafka.order_topic%'
+
+    App\Service\Messaging\Producer\KafkaProducer:
+        arguments:
+            $bootstrapServers: '%kafka.bootstrap_servers%'
+    
+    App\Service\Messaging\Consumer\KafkaConsumer:
+        arguments:
+            $bootstrapServers: '%kafka.bootstrap_servers%'
+            $groupId: '%kafka.group_id%'
+            $autoOffsetReset: '%kafka.auto_offset_reset%'
+
+    App\Controller\OrderController:
+        arguments:
+            $orderTopic: '%kafka.order_topic%'

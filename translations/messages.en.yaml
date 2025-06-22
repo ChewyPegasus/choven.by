@@ -9,7 +9,7 @@ menu:
   register: 'Register'
   logout: 'Logout'
   profile: 'Profile'
-  menu: 'Authorization'
+  auth: 'Authorization'
 
 footer:
   copyright: 'All rights reserved'
