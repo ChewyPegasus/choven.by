@@ -5,7 +5,7 @@ framework:
     # Note that the session will be started ONLY if you read or write from it.
     session:
         enabled: true
-        handler_id: 'redis://localhost:%env(REDIS_PORT)%'
+        handler_id: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%'
     
     cache:
         app: cache.adapter.redis

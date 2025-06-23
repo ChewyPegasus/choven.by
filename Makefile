@@ -22,35 +22,35 @@ help:
 	@echo "  docker-php        - Enter the php container"
 
 install:
-	@composer install
+	@echo "Installing dependencies inside the PHP container..."
+	@docker-compose exec -u www-data php composer install
 
 docker:
 	@docker-compose up -d --build
 
 db:
-	@php bin/console doctrine:database:create --if-not-exists
-	@php bin/console doctrine:migrations:migrate --no-interaction
+	@docker-compose exec -u www-data php php bin/console doctrine:database:create --if-not-exists
+	@docker-compose exec -u www-data php php bin/console doctrine:migrations:migrate --no-interaction
 
 migrations:
-	@php bin/console make:migration
+	@docker-compose exec -u www-data php php bin/console make:migration
 
 server:
-	@symfony serve -d
+	@echo "The application is served by the Nginx container. Please access it at http://localhost"
 
 clear:
-	@php bin/console cache:clear
+	@docker-compose exec -u www-data php php bin/console cache:clear
 
 build:
 	composer install --no-dev --optimize-autoloader
 	php bin/console cache:clear --env=prod
 	npm run build
 
-dev: install docker server
+dev: docker install db clear server
 
-run: docker db server kafka-start
+run: docker install db clear
 
 stop: kafka-stop
-	@symfony server:stop
 	@docker-compose down
 
 kafka-start:
@@ -66,4 +66,4 @@ kafka-status:
 	@docker-compose ps consumer
 
 docker-php:
-	docker-compose exec php bash
+	docker-compose exec -u www-data php bash

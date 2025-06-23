@@ -40,6 +40,9 @@ class Order
     #[ORM\Column]
     private ?\DateInterval $duration = null;
 
+    #[ORM\Column(length: 5, nullable: true)]
+    private ?string $locale = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +141,18 @@ class Order
     {
         $this->duration = new \DateInterval("P{$days}D");
         
+        return $this;
+    }
+
+    public function getLocale(): ?string
+    {
+        return $this->locale;
+    }
+
+    public function setLocale(?string $locale): static
+    {
+        $this->locale = $locale;
+
         return $this;
     }
 }

@@ -93,6 +93,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - .:/var/www
+    command: sh -c "chown -R www-data:www-data /var/www/var && php-fpm"
     depends_on:
       database:
         condition: service_healthy
