@@ -24,6 +24,7 @@ help:
 install:
 	@echo "Installing dependencies inside the PHP container..."
 	@docker-compose exec -u www-data php composer install
+	@docker-compose exec -u www-data php php bin/console asset-map:compile
 
 docker:
 	@docker-compose up -d --build
@@ -46,9 +47,9 @@ build:
 	php bin/console cache:clear --env=prod
 	npm run build
 
-dev: docker install db clear server
+dev: docker install db server
 
-run: docker install db clear
+run: docker install db
 
 stop: kafka-stop
 	@docker-compose down
