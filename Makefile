@@ -68,3 +68,6 @@ kafka-status:
 
 docker-php:
 	docker-compose exec -u www-data php bash
+
+compile-assets:
+	docker-compose exec -u www-data php php bin/console asset-map:compile

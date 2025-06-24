@@ -28,7 +28,9 @@ document.addEventListener('turbo:submit-end', function (event) {
     if (event.detail.formSubmission.formElement.getAttribute('data-no-csrf-js') === 'true') {
         return;
     }
-    removeCsrfToken(event.detail.formSubmission.formElement);
+    if (event.detail.success) {
+        removeCsrfToken(event.detail.formSubmission.formElement);
+    }
 });
 
 export function generateCsrfToken (formElement) {
@@ -43,7 +45,7 @@ export function generateCsrfToken (formElement) {
 
     if (!csrfCookie && nameCheck.test(csrfToken)) {
         csrfField.setAttribute('data-csrf-protection-cookie-value', csrfCookie = csrfToken);
-        csrfField.defaultValue = csrfToken = btoa(String.fromCharCode.apply(null, (window.crypto || window.msCrypto).getRandomValues(new Uint8Array(18))));
+        csrfField.value = csrfToken = btoa(String.fromCharCode.apply(null, (window.crypto || window.msCrypto).getRandomValues(new Uint8Array(18))));
         csrfField.dispatchEvent(new Event('change', { bubbles: true }));
     }
 

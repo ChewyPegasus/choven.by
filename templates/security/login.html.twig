@@ -15,7 +15,7 @@
         <h1 class="section-title">{{ 'login.title'|trans }}</h1>
         
         <div class="form-container">
-            <form method="post" data-no-csrf-js="true">
+            <form method="post">
                 {% if error %}
                     <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
                 {% endif %}
@@ -35,7 +35,7 @@
                     <label class="form-check-label" for="remember_me">{{ 'login.form.remember_me'|trans }}</label>
                 </div>
 
-                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <input type="hidden" name="_csrf_token" value="authenticate">
 
                 <div class="form-group">
                     <button class="btn btn-primary" type="submit">{{ 'login.form.sign_in'|trans }}</button>
