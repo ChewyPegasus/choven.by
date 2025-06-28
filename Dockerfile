@@ -1,10 +1,6 @@
 FROM php:8.2-fpm
 
-# Установка Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
-    apt-get install -y nodejs
-
-# Установка системных зависимостей, включая acl для прав доступа
+# Installation of system dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -19,21 +15,21 @@ RUN apt-get update && apt-get install -y \
     zip \
     intl
 
-# Установка расширения rdkafka
+# rdkafka installation
 RUN pecl install rdkafka && \
     docker-php-ext-enable rdkafka
 
-# Установка Composer
+# Composer installation
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Настройка Git для работы со смонтированными томами
+# Configuring Git to work with mounted directories
 RUN git config --global --add safe.directory /var/www
 
-# Создание пользователя www-data с правильными правами
+# Creating www-data user with proper access rights
 RUN usermod -u 1000 www-data && \
     groupmod -g 1000 www-data
 
-# Настройка рабочей директории
+# Configuring working directory
 WORKDIR /var/www
 
 EXPOSE 9000

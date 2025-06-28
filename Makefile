@@ -15,7 +15,6 @@ help:
 	@echo "  make run          - Start the entire project (docker + db + server)"
 	@echo "  make dev          - Install and start the project for development"
 	@echo "  make stop         - Stop all processes"
-	@echo "  make build        - Build the project for production"
 	@echo "  make kafka-start  - Start Kafka order consumer (in background)"
 	@echo "  make kafka-stop   - Stop Kafka order consumer"
 	@echo "  make kafka-status - Check if Kafka consumer is running"
@@ -41,11 +40,6 @@ server:
 
 clear:
 	@docker-compose exec -u www-data php php bin/console cache:clear
-
-build:
-	composer install --no-dev --optimize-autoloader
-	php bin/console cache:clear --env=prod
-	npm run build
 
 dev: docker install db server
 
