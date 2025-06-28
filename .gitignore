@@ -18,6 +18,9 @@
 /public/assets/
 /assets/vendor/
 .phpunit.result.cache
+/.platform/
+/.composer/
+/data/
 
 # Docker
 /compose.override.yaml
