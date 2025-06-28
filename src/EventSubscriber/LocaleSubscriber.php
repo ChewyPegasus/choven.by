@@ -21,15 +21,15 @@ class LocaleSubscriber implements EventSubscriberInterface
     {
         $request = $event->getRequest();
         
-        // Проверяем, есть ли локаль в URL
+        // Check if locale exists in URL
         if ($locale = $request->attributes->get('_locale')) {
             $request->getSession()->set('_locale', $locale);
         } 
-        // Если нет локали в URL, пробуем получить из сессии
+        // If no locale in URL, try to get it from session
         elseif ($locale = $request->getSession()->get('_locale')) {
             $request->setLocale($locale);
         } else {
-            // Если нет локали ни в URL, ни в сессии, используем дефолтную
+            // If no locale in URL or session, use default
             $request->setLocale($this->defaultLocale);
         }
     }

@@ -53,7 +53,7 @@ final class OrderController extends AbstractController
             $entityManager->flush();
 
             try {
-                $kafkaProducer->publish(
+                $kafkaProducer->produce(
                     $this->orderTopic,
                     json_encode(['id' => $order->getId()]),
                     'order_' . $order->getId(),

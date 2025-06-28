@@ -6,5 +6,5 @@ namespace App\Service\Messaging\Producer;
 
 interface Producer
 {
-    public function publish(string $topic, string $message, ?string $key = null);
+    public function produce(string $topic, string $message, ?string $key = null);
 }

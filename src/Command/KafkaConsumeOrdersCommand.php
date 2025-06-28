@@ -79,7 +79,7 @@ class KafkaConsumeOrdersCommand extends Command
 
                             $output->writeln(sprintf('Email for order %d sent successfully in locale "%s".', $order->getId(), $this->localeSwitcher->getLocale()));
                         } finally {
-                            // Сбрасываем локаль на дефолтную, чтобы не влиять на следующее сообщение
+                            // Resetting locale on the default one not to influence on the next message
                             $this->localeSwitcher->reset();
                         }
 

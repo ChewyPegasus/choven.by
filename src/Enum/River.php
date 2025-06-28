@@ -21,7 +21,7 @@ enum River: string
     case OTHER = 'other';
 
     /**
-     * Возвращает ключ для перевода
+     * Returning key for translation
      */
     public function getLabel(): string
     {

@@ -30,7 +30,7 @@ class KafkaProducer implements ProducerInterface
         $this->context = $connectionFactory->createContext();
     }
 
-    public function publish(string $topic, string $message, ?string $key = null)
+    public function produce(string $topic, string $message, ?string $key = null)
     {
         try {
             $kafkaTopic = $this->context->createTopic($topic);

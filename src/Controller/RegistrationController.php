@@ -68,7 +68,7 @@ final class RegistrationController extends AbstractController
             $manager->persist($user);
             $manager->flush();
 
-            // Отправка письма с подтверждением
+            // Sending verification letter
             try {
                 $this->sender->send($this->emailFactory->createDTO(
                     EmailType::VERIFICATION,
@@ -111,7 +111,7 @@ final class RegistrationController extends AbstractController
             return $this->redirectToRoute('app_main');
         }
 
-        // Если пользователь уже подтвержден
+        // If the user is already confirmed
         if ($user->isConfirmed()) {
             $this->addFlash('info', $translator->trans('verification.already_confirmed'));
             

@@ -15,31 +15,31 @@ class LocaleController extends AbstractController
     #[Route('/change-locale/{locale}', name: 'app_change_locale')]
     public function changeLocale(string $locale, Request $request): Response
     {
-        // Проверяем, что локаль допустима
+        // Check that the locale is allowed
         if (!in_array($locale, ['ru', 'be', 'en'])) {
             $locale = 'ru';
         }
         
-        // Получаем предыдущий URL
+        // Get the previous URL
         $referer = $request->headers->get('referer');
         
         if ($referer) {
-            // Если есть referer, сохраняем его
+            // If referer exists, save it
             $url = $referer;
             
-            // Разбираем URL
+            // Parse the URL
             $parts = parse_url($url);
             
             if (isset($parts['path'])) {
                 $path = $parts['path'];
                 
-                // Находим текущую локаль в URL и заменяем на новую
+                // Find the current locale in the URL and replace it with the new one
                 $pattern = '~^/(' . implode('|', ['ru', 'be', 'en']) . ')/~';
                 if (preg_match($pattern, $path, $matches)) {
                     $newPath = preg_replace($pattern, '/' . $locale . '/', $path);
                     $parts['path'] = $newPath;
                     
-                    // Собираем URL обратно
+                    // Rebuild the URL
                     $url = $this->buildUrl($parts);
                     
                     return $this->redirect($url);
@@ -47,7 +47,7 @@ class LocaleController extends AbstractController
             }
         }
         
-        // Если не удалось определить URL для редиректа, перенаправляем на главную с новой локалью
+        // If unable to determine the redirect URL, redirect to the homepage with the new locale
         return $this->redirectToRoute('app_main', ['_locale' => $locale]);
     }
     
@@ -75,3 +75,4 @@ class LocaleController extends AbstractController
         #return "$scheme$user$pass$host$port$path$query$fragment";
     }
 }
+
