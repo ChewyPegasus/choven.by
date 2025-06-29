@@ -8,7 +8,6 @@ use App\Enum\EmailTemplate;
 
 /**
  * Basic class for all DTO that connected with mail sending
- * Базовый класс для всех DTO, связанных с отправкой писем
  */
 readonly abstract class AbstractEmailDTO implements DTO
 {
