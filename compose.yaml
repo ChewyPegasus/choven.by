@@ -112,11 +112,13 @@ services:
       - choven_net
     command: >
       bash -c "
-        echo 'Waiting for Kafka to be ready...' &&
-        cub kafka-ready -b kafka:9092 1 60 &&
-        echo 'Creating topic orders...' &&
-        kafka-topics --create --topic orders --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:9092 &&
-        echo 'Topic created successfully. Kafka setup completed.'
+      echo 'Waiting for Kafka to be ready...' &&
+      cub kafka-ready -b kafka:9092 1 60 &&
+      echo 'Creating topic orders...' &&
+      kafka-topics --create --topic orders --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:9092 &&
+      echo 'Creating topic registrations...' &&
+      kafka-topics --create --topic registrations --partitions 1 --replication-factor 1 --if-not-exists --bootstrap-server kafka:9092 &&
+      echo 'Topics created successfully. Kafka setup completed.'
       "
 
   php:
@@ -186,7 +188,7 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=${REDIS_PORT:-6379}
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-    command: sh -c "sleep 60 && php bin/console app:kafka:consume-orders"
+    command: sh -c "sleep 60 && php bin/console app:kafka:consume"
     volumes:
       - .:/var/www
     networks:

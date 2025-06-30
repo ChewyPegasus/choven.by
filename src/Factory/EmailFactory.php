@@ -20,6 +20,7 @@ class EmailFactory
             EmailType::VERIFICATION => new VerificationDTO(
                 $data['user'],
                 $data['confirmUrl'],
+                $data['locale'] ?? null,
             ),
         };
     }

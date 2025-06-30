@@ -12,15 +12,18 @@ readonly class VerificationDTO extends AbstractEmailDTO
     private string $email;
     private int $id;
     private string $confirmationCode;
+    private string $locale;
 
     public function __construct(
         User $user,
         private string $confirmUrl,
+        ?string $locale = null,
     )
     {
         $this->id = $user->getId();
         $this->email = $user->getEmail();
         $this->confirmationCode = $user->getConfirmationCode();
+        $this->locale = $locale ?? 'ru';
     }
 
     public function getConfirmUrl(): string
@@ -48,11 +51,18 @@ readonly class VerificationDTO extends AbstractEmailDTO
         return EmailTemplate::VERIFICATION;
     }
 
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
     public function getContext(): array
     {
         return [
             'confirmUrl' => $this->confirmUrl,
-            'email' => $this->email
+            'email' => $this->email,
+            'id' => $this->id,
+            'locale' => $this->locale,
         ];
     }
 }

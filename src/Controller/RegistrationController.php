@@ -10,6 +10,7 @@ use App\Enum\Role;
 use App\Factory\EmailFactory;
 use App\Form\RegistrationForm;
 use App\Repository\UserRepository;
+use App\Service\Messaging\Producer\Producer;
 use App\Service\Sending\EmailSender;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
@@ -28,6 +29,7 @@ final class RegistrationController extends AbstractController
         private EmailFactory $emailFactory,
         private LoggerInterface $logger,
         private UserRepository $userRepository,
+        private string $registrationTopic,
     ) {}
 
     #[Route('/register', name: 'app_register')]
@@ -36,6 +38,7 @@ final class RegistrationController extends AbstractController
         UserPasswordHasherInterface $hasher,
         EntityManagerInterface $manager,
         TranslatorInterface $translator,
+        Producer $producer,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_main');
@@ -70,17 +73,22 @@ final class RegistrationController extends AbstractController
 
             // Sending verification letter
             try {
-                $this->sender->send($this->emailFactory->createDTO(
-                    EmailType::VERIFICATION,
-                    [
-                        'user' => $user,
-                        'confirmUrl' => $this->generateUrl(
-                            'app_verify_email',
-                            ['code' => $user->getConfirmationCode()],
-                            UrlGeneratorInterface::ABSOLUTE_URL
-                        )
-                    ]
-                ));
+                $producer->produce(
+                    $this->registrationTopic,
+                    $this->emailFactory->createDTO(
+                        EmailType::VERIFICATION,
+                        [
+                            'user' => $user,
+                            'confirmUrl' => $this->generateUrl(
+                                'app_verify_email',
+                                ['code' => $user->getConfirmationCode()],
+                                UrlGeneratorInterface::ABSOLUTE_URL
+                            ),
+                            'locale' => $request->getLocale(),
+                        ]
+                    ),
+                    'user_' . $user->getId(),
+                );
                 $this->addFlash('success', $translator->trans('registration.success'));
             } catch (\Exception $e) {
                 $this->logger->error('Welcome email sending failed: ' . $e->getMessage(), ['exception' => $e]);

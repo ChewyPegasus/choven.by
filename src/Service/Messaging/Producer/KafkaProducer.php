@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Service\Messaging\Producer;
 
+use App\DTO\AbstractEmailDTO;
+use App\DTO\OrderDTO;
+use App\DTO\VerificationDTO;
 use Enqueue\RdKafka\RdKafkaConnectionFactory;
 use Psr\Log\LoggerInterface;
 use Interop\Queue\Context;
@@ -30,11 +33,24 @@ class KafkaProducer implements ProducerInterface
         $this->context = $connectionFactory->createContext();
     }
 
-    public function produce(string $topic, string $message, ?string $key = null)
+    public function produce(string $topic, AbstractEmailDTO $dto, ?string $key = null)
     {
         try {
             $kafkaTopic = $this->context->createTopic($topic);
-            $kafkaMessage = $this->context->createMessage($message);
+
+            $messageData = [
+                'type' => $this->getDTOType($dto),
+                'id' => $dto->getContext()['id'],
+            ];
+
+            $this->addDTOSpecificData(
+                $messageData,
+                $dto,
+            );
+
+            $kafkaMessage = $this->context->createMessage(
+                json_encode($messageData, JSON_THROW_ON_ERROR),
+            );
 
             if ($key !== null) {
                 $kafkaMessage->setProperty('key', $key);
@@ -47,19 +63,38 @@ class KafkaProducer implements ProducerInterface
                 'Message published to Kafka',
                 [
                     'topic' => $topic,
+                    'type' => $messageData['type'],
                     'key' => $key,
                 ]
-            );
+                );
         } catch (\Exception $e) {
             $this->logger->error(
                 'Failed to publish message to Kafka',
                 [
-                    'topic' => $kafkaTopic,
+                    'topic' => $topic,
                     'error' => $e->getMessage(),
-                    'exception' => $e,
+                    'type' => $e,
                 ]
             );
+
             throw $e;
+        }
+    }
+
+    private function getDTOType(AbstractEmailDTO $dto): string
+    {
+        return match(true) {
+            $dto instanceof OrderDTO => 'order',
+            $dto instanceof VerificationDTO => 'verification',
+            default => 'unknown',
+        };
+    }
+
+    private function addDTOSpecificData(array &$messageData, AbstractEmailDTO $dto): void
+    {
+        if ($dto instanceof VerificationDTO) {
+            $messageData['confirmUrl'] = $dto->getConfirmUrl();
+            $messageData['locale'] = $dto->getLocale();
         }
     }
 }

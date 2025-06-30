@@ -3,4 +3,5 @@ parameters:
     kafka.group_id: 'choven_consumer'
     kafka.auto_offset_reset: 'earliest'
     kafka.order_topic: 'orders'
+    kafka.registration_topic: 'registrations'
     kafka.email_topic: 'emails'

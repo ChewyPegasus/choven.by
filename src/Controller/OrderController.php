@@ -14,10 +14,9 @@ use App\Entity\Order;
 use App\Enum\EmailType;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
-use App\Enum\River;
-use App\Enum\Package;
 use App\Factory\EmailFactory;
 use App\Service\Messaging\Producer\KafkaProducer;
+use App\Service\Messaging\Producer\Producer;
 use App\Service\OrderService;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -34,10 +33,10 @@ final class OrderController extends AbstractController
         EntityManagerInterface $entityManager,
         EmailSender $sender,
         LoggerInterface $logger,
-        EmailFactory $emailFactory,
         TranslatorInterface $translator,
         OrderService $orderService,
-        KafkaProducer $kafkaProducer,
+        Producer $producer,
+        EmailFactory $emailFactory,
     ): Response
     {
         $order = $orderService->create($request);
@@ -53,9 +52,14 @@ final class OrderController extends AbstractController
             $entityManager->flush();
 
             try {
-                $kafkaProducer->produce(
+                $producer->produce(
                     $this->orderTopic,
-                    json_encode(['id' => $order->getId()]),
+                    $emailFactory->createDTO(
+                        EmailType::ORDER_CONFIRMATION,
+                        [
+                            'order' => $order,
+                        ]
+                    ),
                     'order_' . $order->getId(),
                 );
 
@@ -72,9 +76,6 @@ final class OrderController extends AbstractController
             return $this->redirectToRoute('app_main');
         }
 
-        // return $this->render('order/new.html.twig', [
-        //     'form' => $form->createView(),
-        // ]);
         return $this->render('order/new.html.twig', [
             'order' => $order,
             'form' => $form,

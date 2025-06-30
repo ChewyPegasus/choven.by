@@ -45,9 +45,10 @@ services:
         calls:
             - [connect, ['%env(REDIS_HOST)%', '%env(int:REDIS_PORT)%']]
     
-    App\Command\KafkaConsumeOrdersCommand:
+    App\Command\KafkaConsumeCommand:
         arguments:
             $orderTopic: '%kafka.order_topic%'
+            $registrationTopic: '%kafka.registration_topic%'
 
     App\Service\Messaging\Producer\KafkaProducer:
         arguments:
@@ -62,3 +63,7 @@ services:
     App\Controller\OrderController:
         arguments:
             $orderTopic: '%kafka.order_topic%'
+
+    App\Controller\RegistrationController:
+        arguments:
+            $registrationTopic: '%kafka.registration_topic%'
