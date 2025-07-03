@@ -193,6 +193,31 @@ services:
       - .:/var/www
     networks:
       - choven_net
+  
+  cron:
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    container_name: cron
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - APP_ENV=${APP_ENV:-prod}
+      - APP_DEBUG=${APP_DEBUG:-0}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-password}@database:5432/${POSTGRES_DB:-choven}
+      - REDIS_HOST=redis
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    volumes:
+      - .:/var/www
+    networks:
+      - choven_net
 
 volumes:
   postgres_data:

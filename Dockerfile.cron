@@ -1,0 +1,37 @@
+FROM php:8.2-cli
+
+# Installation of system dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libpq-dev \
+    libzip-dev \
+    librdkafka-dev \
+    libicu-dev \
+    cron \
+    && docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    zip \
+    intl
+
+# rdkafka installation
+RUN pecl install rdkafka && \
+    docker-php-ext-enable rdkafka
+
+# Composer installation
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set up cron job with absolute path to PHP
+RUN echo "* * * * * cd /var/www && /usr/local/bin/php bin/console app:email:retry >> /var/log/cron.log 2>&1" > /etc/cron.d/email-retry
+RUN chmod 0644 /etc/cron.d/email-retry
+RUN crontab /etc/cron.d/email-retry
+
+# Create log file
+RUN touch /var/log/cron.log && chmod 666 /var/log/cron.log
+
+# Working directory
+WORKDIR /var/www
+
+# Start cron in foreground
+CMD ["cron", "-f"]

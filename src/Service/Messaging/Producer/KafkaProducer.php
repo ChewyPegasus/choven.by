@@ -33,9 +33,15 @@ class KafkaProducer implements ProducerInterface
         $this->context = $connectionFactory->createContext();
     }
 
+    /**
+     * @throws \Exception If Kafka is unavailable or another error occurs
+     */
     public function produce(string $topic, AbstractEmailDTO $dto, ?string $key = null)
     {
         try {
+            // Check Kafka availability before sending
+            $this->checkKafkaAvailability();
+            
             $kafkaTopic = $this->context->createTopic($topic);
 
             $messageData = [
@@ -66,19 +72,49 @@ class KafkaProducer implements ProducerInterface
                     'type' => $messageData['type'],
                     'key' => $key,
                 ]
-                );
+            );
         } catch (\Exception $e) {
             $this->logger->error(
                 'Failed to publish message to Kafka',
                 [
                     'topic' => $topic,
                     'error' => $e->getMessage(),
-                    'type' => $e,
+                    'type' => get_class($e),
                 ]
             );
 
             throw $e;
         }
+    }
+
+    /**
+     * Checks Kafka availability
+     * 
+     * @throws \Exception If Kafka is unavailable
+     */
+    private function checkKafkaAvailability(): void
+    {
+        // Parse connection string to get host and port
+        $servers = explode(',', $this->bootstrapServers);
+        $server = $servers[0]; // Take the first server from the list
+        
+        // Remove protocol if it exists
+        if (strpos($server, '://') !== false) {
+            $server = explode('://', $server)[1];
+        }
+        
+        // Split host and port
+        list($host, $port) = explode(':', $server);
+        
+        // Try to connect to the server
+        $socket = @fsockopen($host, (int)$port, $errno, $errstr, 2); // 2 seconds timeout
+        
+        if (!$socket) {
+            $this->logger->error("Kafka connection error: $errstr ($errno)");
+            throw new \Exception("Failed to connect to Kafka at $host:$port: $errstr ($errno)");
+        }
+        
+        fclose($socket);
     }
 
     private function getDTOType(AbstractEmailDTO $dto): string

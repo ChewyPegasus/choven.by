@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\EmailQueue;
 use App\Form\OrderForm;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,7 +16,6 @@ use App\Enum\EmailType;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
 use App\Factory\EmailFactory;
-use App\Service\Messaging\Producer\KafkaProducer;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\OrderService;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -31,7 +31,6 @@ final class OrderController extends AbstractController
     public function new(
         Request $request, 
         EntityManagerInterface $entityManager,
-        EmailSender $sender,
         LoggerInterface $logger,
         TranslatorInterface $translator,
         OrderService $orderService,
@@ -67,10 +66,17 @@ final class OrderController extends AbstractController
             } catch (\Exception $e) {
                 $logger->error('Kafka publishing failed: ' . $e->getMessage(), ['exception' => $e]);
 
-                // Send email as fallback
-                $this->sendConfirmationEmail($order, $sender, $emailFactory, $logger, $translator);
-
-                $this->addFlash('success', $translator->trans('order.success.order_created'));
+                // Saving to email queue for retry
+                $emailQueue = new EmailQueue();
+                $emailQueue->setEmailType(EmailType::ORDER_CONFIRMATION->value)
+                        ->setContext(['order' => $order->getId()])
+                        ->setLocale($request->getLocale());
+                
+                $entityManager->persist($emailQueue);
+                $entityManager->flush();
+                
+                // Notifying user that email will be sent later
+                $this->addFlash('info', $translator->trans('order.info.email_queued'));
             }
 
             return $this->redirectToRoute('app_main');

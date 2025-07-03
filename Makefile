@@ -18,8 +18,12 @@ help:
 	@echo "  make kafka-start  - Start Kafka order consumer (in background)"
 	@echo "  make kafka-stop   - Stop Kafka order consumer"
 	@echo "  make kafka-status - Check if Kafka consumer is running"
-	@echo "  docker-php        - Enter the php container"
-
+	@echo "  make docker-php   - Enter the php container"
+	@echo "  make cron-start   - Start the cron container"
+	@echo "  make cron-stop    - Stop the cron container"
+	@echo "  make cron-logs    - Logs from cron container"
+	@echo "  make cron-status  - Status of cron container"
+	
 install:
 	@echo "Installing dependencies inside the PHP container..."
 	@docker-compose exec -u www-data php composer install
@@ -65,3 +69,21 @@ docker-php:
 
 compile-assets:
 	docker-compose exec -u www-data php php bin/console asset-map:compile
+
+cron-start:
+	@echo "Starting cron container..."
+	@docker-compose up -d cron
+
+cron-stop:
+	@echo "Stopping cron container..."
+	@docker-compose stop cron
+
+cron-logs:
+	@docker-compose exec cron tail -f /var/log/cron.log
+
+cron-status:
+	@echo "Cron container status:"
+	@docker-compose ps cron
+
+query:
+	docker-compose exec php bin/console doctrine:query:sql "$(q)"

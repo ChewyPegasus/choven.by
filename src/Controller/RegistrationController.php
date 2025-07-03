@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\EmailQueue;
 use App\Entity\User;
 use App\Enum\EmailType;
 use App\Enum\Role;
@@ -30,6 +31,7 @@ final class RegistrationController extends AbstractController
         private LoggerInterface $logger,
         private UserRepository $userRepository,
         private string $registrationTopic,
+        private EntityManagerInterface $entityManager,
     ) {}
 
     #[Route('/register', name: 'app_register')]
@@ -91,8 +93,26 @@ final class RegistrationController extends AbstractController
                 );
                 $this->addFlash('success', $translator->trans('registration.success'));
             } catch (\Exception $e) {
-                $this->logger->error('Welcome email sending failed: ' . $e->getMessage(), ['exception' => $e]);
-                $this->addFlash('warning', $translator->trans('registration.email.failed'));
+                $this->logger->error('Kafka publishing failed for registration email: ' . $e->getMessage(), ['exception' => $e]);
+                
+                // Save to email queue for retry
+                $emailQueue = new EmailQueue();
+                $emailQueue->setEmailType(EmailType::VERIFICATION->value)
+                           ->setContext([
+                                'user' => $user->getId(),
+                                'confirmUrl' => $this->generateUrl(
+                                    'app_verify_email',
+                                    ['code' => $user->getConfirmationCode()],
+                                    UrlGeneratorInterface::ABSOLUTE_URL
+                                )
+                            ])
+                           ->setLocale($request->getLocale());
+                
+                $this->entityManager->persist($emailQueue);
+                $this->entityManager->flush();
+                
+                // Notify user that email will be sent later
+                $this->addFlash('info', $translator->trans('registration.info.email_queued'));
             }
 
             return $this->redirectToRoute('app_main');

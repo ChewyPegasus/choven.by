@@ -227,6 +227,8 @@ order:
     confirmation_sent: 'Your order has been successfully submitted. A confirmation email has been sent to your email address.'
   warning:
     email_failed: 'There were issues sending the confirmation email. We will contact you shortly.'
+  info:
+    email_queued: "We're experiencing technical difficulties with our email service. Your registration confirmation will be sent shortly."
 
 # Translations for rafting types
 package:

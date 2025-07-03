@@ -67,3 +67,8 @@ services:
     App\Controller\RegistrationController:
         arguments:
             $registrationTopic: '%kafka.registration_topic%'
+
+    App\Service\EmailRetryService:
+        arguments:
+            $orderTopic: '%kafka.order_topic%'
+            $registrationTopic: '%kafka.registration_topic%'
