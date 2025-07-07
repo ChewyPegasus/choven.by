@@ -128,8 +128,8 @@ info:
           3rd: 'SPF and insect repellent'
           4th: 'Drink water and snacks'
           5th: 'Photocamera or smartphone in waterproof case'
-          file: 'List_of_things'
-          download: 'Download full list of clothes'
+          file: 'Checklist'
+          download: 'Download full list'
       6th:
         question: 'Are corporate trips available?'
         answer: 'Yes, we organise corporate rafting trips for groups of all sizes. We can design a tailor-made programme to suit your needs, including meals, entertainment, team building activities and even team building on the water. Contact us to discuss the details.'

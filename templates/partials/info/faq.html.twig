@@ -20,7 +20,8 @@
                                 {% endfor %}
                             </ul>
                             <div class="download-container">
-                                <a href="{{ asset('files/Список_вещей.docx') }}" download="{{ 'info.process.faq.5th.answer.file'|trans }}" class="download-link">
+                                <a href="{{ asset('files/' ~ ('info.process.faq.5th.answer.file'|trans) ~ '.docx') }}"
+                                download="{{ 'info.process.faq.5th.answer.file'|trans }}" class="download-link">
                                     <i class="fas fa-download"></i> {{ 'info.process.faq.5th.answer.download'|trans }}
                                 </a>
                             </div>
