@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Messaging\Consumer;
 
 use App\Service\Messaging\Consumer\Consumer as ConsumerInterface;
-use Enqueue\RdKafka\RdKafkaConnectionFactory;
+use App\Service\Messaging\Factory\KafkaConnectionFactory;
 use Interop\Queue\Consumer;
 use Interop\Queue\Context;
 use Interop\Queue\Message;
@@ -21,17 +21,14 @@ class KafkaConsumer implements ConsumerInterface
         private readonly string $groupId,
         private readonly string $autoOffsetReset,
         private readonly LoggerInterface $logger,
+        private readonly KafkaConnectionFactory $connectionFactory,
     )
     {
-        $connectionFactory = new RdKafkaConnectionFactory([
-            'global' => [
-                'bootstrap.servers' => $this->bootstrapServers,
-                'group.id' => $this->groupId,
-                'auto.offset.reset' => $this->autoOffsetReset,
-            ]
-        ]);
-
-        $this->context = $connectionFactory->createContext();
+        $this->context = $this->connectionFactory->createConsumerContext(
+            $this->bootstrapServers,
+            $this->groupId,
+            $this->autoOffsetReset
+        );
     }
 
     public function subscribe(string $topic): void

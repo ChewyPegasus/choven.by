@@ -7,7 +7,7 @@ namespace App\Service\Messaging\Producer;
 use App\DTO\AbstractEmailDTO;
 use App\DTO\OrderDTO;
 use App\DTO\VerificationDTO;
-use Enqueue\RdKafka\RdKafkaConnectionFactory;
+use App\Service\Messaging\Factory\KafkaConnectionFactory;
 use Psr\Log\LoggerInterface;
 use Interop\Queue\Context;
 use App\Service\Messaging\Producer\Producer as ProducerInterface;
@@ -19,18 +19,13 @@ class KafkaProducer implements ProducerInterface
     public function __construct(
         private readonly string $bootstrapServers,
         private readonly LoggerInterface $logger,
+        private readonly KafkaConnectionFactory $connectionFactory,
     )
     {
-        $connectionFactory = new RdKafkaConnectionFactory([
-            'global' => [
-                'bootstrap.servers' => $this->bootstrapServers,
-                'socket.timeout.ms' => '5000',
-                'metadata.request.timeout.ms' => '5000',
-                'message.timeout.ms' => '5000',
-            ]
-        ]);
-
-        $this->context = $connectionFactory->createContext();
+        $$this->context = $this->connectionFactory->createProducerContext(
+            $this->bootstrapServers,
+            5000
+        );
     }
 
     /**
