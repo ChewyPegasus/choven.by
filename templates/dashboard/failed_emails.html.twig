@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Управление неудачными письмами{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <style>
+            .admin-panel {
+                padding: 30px 0;
+            }
+            .admin-title {
+                margin-bottom: 30px;
+                border-bottom: 2px solid #f0f0f0;
+                padding-bottom: 10px;
+            }
+            .email-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 20px;
+            }
+            .email-table th, .email-table td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .email-table th {
+                background-color: #f8f8f8;
+                font-weight: 600;
+            }
+            .email-table tr:hover {
+                background-color: #f9f9f9;
+            }
+            .badge {
+                display: inline-block;
+                padding: 4px 8px;
+                border-radius: 4px;
+                font-size: 0.8em;
+            }
+            .badge-danger {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            .pagination {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+            }
+            .pagination a, .pagination span {
+                margin: 0 5px;
+                padding: 8px 12px;
+                border: 1px solid #dee2e6;
+                text-decoration: none;
+                color: #333;
+                border-radius: 4px;
+            }
+            .pagination a:hover {
+                background-color: #f0f0f0;
+            }
+            .pagination .active {
+                background-color: #007bff;
+                color: white;
+                border-color: #007bff;
+            }
+            .pagination .disabled {
+                color: #aaa;
+                pointer-events: none;
+            }
+            .detail-link {
+                color: #007bff;
+                text-decoration: none;
+            }
+            .detail-link:hover {
+                text-decoration: underline;
+            }
+        </style>
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <section class="admin-panel">
+        <div class="container">
+            <h1 class="admin-title">Управление неудачными письмами</h1>
+            
+            {% if failedEmails is empty %}
+                <p>Неудачных писем не найдено.</p>
+            {% else %}
+                <table class="email-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Тип письма</th>
+                            <th>Попытки</th>
+                            <th>Дата создания</th>
+                            <th>Последняя попытка</th>
+                            <th>Локаль</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for email in failedEmails %}
+                            <tr>
+                                <td>{{ email.id }}</td>
+                                <td>{{ email.emailType }}</td>
+                                <td><span class="badge badge-danger">{{ email.attempts }}</span></td>
+                                <td>{{ email.createdAt|date('d.m.Y H:i:s') }}</td>
+                                <td>{{ email.lastAttemptAt|date('d.m.Y H:i:s') }}</td>
+                                <td>{{ email.locale|default('default') }}</td>
+                                <td>
+                                    <a href="{{ path('app_admin_failed_email_details', {'id': email.id}) }}" class="detail-link">Детали</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                
+                {% if totalPages > 1 %}
+                    <div class="pagination">
+                        {% if currentPage > 1 %}
+                            <a href="{{ path('app_admin_failed_emails', {'page': currentPage - 1}) }}">&laquo; Предыдущая</a>
+                        {% else %}
+                            <span class="disabled">&laquo; Предыдущая</span>
+                        {% endif %}
+                        
+                        {% for i in 1..totalPages %}
+                            {% if i == currentPage %}
+                                <span class="active">{{ i }}</span>
+                            {% else %}
+                                <a href="{{ path('app_admin_failed_emails', {'page': i}) }}">{{ i }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if currentPage < totalPages %}
+                            <a href="{{ path('app_admin_failed_emails', {'page': currentPage + 1}) }}">Следующая &raquo;</a>
+                        {% else %}
+                            <span class="disabled">Следующая &raquo;</span>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

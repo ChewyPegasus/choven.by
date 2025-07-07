@@ -87,3 +87,6 @@ cron-status:
 
 query:
 	docker-compose exec php bin/console doctrine:query:sql "$(q)"
+
+admin:
+	docker-compose exec php php bin/console app:user:make-admin "$(admin)"

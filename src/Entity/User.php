@@ -26,7 +26,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     
     private ?string $plainPassword = null;
 
-    #[ORM\Column(type: Types::ARRAY)]
+    #[ORM\Column(type: 'json')]
     private array $roles = [];
 
     #[ORM\Column(length: 20, nullable: true)]
@@ -93,6 +93,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles = $roles;
 
+        return $this;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array('ROLE_ADMIN', $this->roles);
+    }
+
+    public function addRole(string|Role $role): self
+    {
+        $roleValue = $role instanceof Role ? $role : $role;
+        if (!in_array($roleValue, $this->roles)) {
+            $this->roles[] = $roleValue;
+        }
+        
         return $this;
     }
 
