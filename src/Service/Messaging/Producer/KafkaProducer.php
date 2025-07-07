@@ -22,7 +22,7 @@ class KafkaProducer implements ProducerInterface
         private readonly KafkaConnectionFactory $connectionFactory,
     )
     {
-        $$this->context = $this->connectionFactory->createProducerContext(
+        $this->context = $this->connectionFactory->createProducerContext(
             $this->bootstrapServers,
             5000
         );

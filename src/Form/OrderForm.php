@@ -23,7 +23,7 @@ use Symfony\Component\Validator\Constraints\Range;
 class OrderForm extends AbstractType
 {
 
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 

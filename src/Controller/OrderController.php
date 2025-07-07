@@ -23,7 +23,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[Route('/order')]
 final class OrderController extends AbstractController
 {
-    public function __construct(private string $orderTopic)
+    public function __construct(private readonly string $orderTopic)
     {
     }
 
@@ -86,19 +86,6 @@ final class OrderController extends AbstractController
             'order' => $order,
             'form' => $form,
         ]);
-    }
-
-    private function sendConfirmationEmail(Order $order, EmailSender $sender, EmailFactory $emailFactory, LoggerInterface $logger, TranslatorInterface $translator): void
-    {
-        try {
-            $sender->send($emailFactory->createDTO(
-                EmailType::ORDER_CONFIRMATION,
-                ['order' => $order]
-            ));
-        } catch (\Exception $emailException) {
-            $logger->error('Email sending failed: ' . $emailException->getMessage(), ['exception' => $emailException]);
-            $this->addFlash('warning', $translator->trans('order.warning.email_failed'));
-        }
     }
 
     #[Route('/{id}', name: 'app_order_show', methods: ['GET'])]

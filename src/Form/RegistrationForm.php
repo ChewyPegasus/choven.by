@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 #[UniqueEntity(fields: ['email'], message: 'registration.email.already_used')]
 class RegistrationForm extends AbstractType
 {
-    public function __construct(private TranslatorInterface $translator)
+    public function __construct(private readonly TranslatorInterface $translator)
     {
     }
 

@@ -26,12 +26,12 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class RegistrationController extends AbstractController
 {
     public function __construct(
-        private EmailSender $sender,
-        private EmailFactory $emailFactory,
-        private LoggerInterface $logger,
-        private UserRepository $userRepository,
-        private string $registrationTopic,
-        private EntityManagerInterface $entityManager,
+        private readonly EmailSender $sender,
+        private readonly EmailFactory $emailFactory,
+        private readonly LoggerInterface $logger,
+        private readonly UserRepository $userRepository,
+        private readonly string $registrationTopic,
+        private readonly EntityManagerInterface $entityManager,
     ) {}
 
     #[Route('/register', name: 'app_register')]
