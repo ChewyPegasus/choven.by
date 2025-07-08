@@ -41,7 +41,7 @@
             {% else %}
                 <div class="row">
                     {% for order in upcomingOrders %}
-                        <div class="col-md-6 mb-4">
+                        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
                             <div class="card">
                                 <div class="card-header">
                                     <span class="badge bg-primary float-end">{{ order.startDate|date('d.m.Y') }}</span>
@@ -74,7 +74,7 @@
             {% else %}
                 <div class="row">
                     {% for order in pastOrders %}
-                        <div class="col-md-6 mb-4">
+                        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
                             <div class="card">
                                 <div class="card-header">
                                     <span class="badge bg-secondary float-end">{{ order.startDate|date('d.m.Y') }}</span>
