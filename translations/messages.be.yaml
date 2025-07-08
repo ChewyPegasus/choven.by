@@ -230,7 +230,6 @@ order:
   info:
      email_queued: 'У нас узніклі тэхнічныя цяжкасці з адпраўкай email. Пацверджанне рэгістрацыі будзе адпраўлена ў бліжэйшы час.'
 
-# Переводы для типов сплавов
 package:
   all_inclusive:
     title: 'Усё ўключана'
@@ -272,7 +271,6 @@ package:
     included: 'Уключана ў кошт'
   book_now: 'Забраніраваць зараз'
 
-# Переводы для рек
 river:
   svisloch: 'Свіслач'
   isloch: 'Іслач'
@@ -345,3 +343,14 @@ login:
     sign_in: 'Sign in'
     no_account: 'Don’t have an account yet?'
     register: 'Register'
+
+profile:
+  orders:
+    title: 'Мае заказы'
+    upcoming: 'Будучыя'
+    past: 'Мінулыя'
+    no_upcoming: 'У вас няма будучых сплаваў.'
+    no_past: 'У вас няма мінулых сплаваў.'
+    days: 'дні'
+    people: 'удзельнікаў'
+    details: 'Падрабязней'

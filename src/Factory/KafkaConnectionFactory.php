@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Messaging\Factory;
+namespace App\Factory;
 
 use Enqueue\RdKafka\RdKafkaConnectionFactory;
 use Interop\Queue\Context;

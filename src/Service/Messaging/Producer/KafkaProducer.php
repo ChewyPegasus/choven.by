@@ -7,7 +7,7 @@ namespace App\Service\Messaging\Producer;
 use App\DTO\AbstractEmailDTO;
 use App\DTO\OrderDTO;
 use App\DTO\VerificationDTO;
-use App\Service\Messaging\Factory\KafkaConnectionFactory;
+use App\Factory\KafkaConnectionFactory;
 use Psr\Log\LoggerInterface;
 use Interop\Queue\Context;
 use App\Service\Messaging\Producer\Producer as ProducerInterface;

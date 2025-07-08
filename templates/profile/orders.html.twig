@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'profile.orders.title'|trans }}{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/orders.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+<div class="container my-5">
+    <h1 class="mb-4">{{ 'profile.orders.title'|trans }}</h1>
+    
+    <div class="tab-container mb-4">
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" href="#upcoming" role="tab">
+                    {{ 'profile.orders.upcoming'|trans }}
+                    {% if upcomingOrders|length > 0 %}
+                        <span class="badge bg-primary">{{ upcomingOrders|length }}</span>
+                    {% endif %}
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="past-tab" data-bs-toggle="tab" href="#past" role="tab">
+                    {{ 'profile.orders.past'|trans }}
+                    {% if pastOrders|length > 0 %}
+                        <span class="badge bg-secondary">{{ pastOrders|length }}</span>
+                    {% endif %}
+                </a>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
+            {% if upcomingOrders is empty %}
+                <div class="alert alert-info">{{ 'profile.orders.no_upcoming'|trans }}</div>
+            {% else %}
+                <div class="row">
+                    {% for order in upcomingOrders %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <span class="badge bg-primary float-end">{{ order.startDate|date('d.m.Y') }}</span>
+                                    {{ 'river.'~order.river.value|trans }}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ 'package.'~order.package.value|trans }}</h5>
+                                    <ul class="list-group list-group-flush mb-3">
+                                        <li class="list-group-item">
+                                            <i class="fas fa-calendar-alt me-2"></i> {{ order.durationDays }} {{ 'profile.orders.days'|trans }}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="fas fa-users me-2"></i> {{ order.amountOfPeople }} {{ 'profile.orders.people'|trans }}
+                                        </li>
+                                    </ul>
+                                    <a href="{{ path('app_order_show', {'id': order.id}) }}" class="btn btn-primary">
+                                        {{ 'profile.orders.details'|trans }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="tab-pane fade" id="past" role="tabpanel">
+            {% if pastOrders is empty %}
+                <div class="alert alert-info">{{ 'profile.orders.no_past'|trans }}</div>
+            {% else %}
+                <div class="row">
+                    {% for order in pastOrders %}
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <span class="badge bg-secondary float-end">{{ order.startDate|date('d.m.Y') }}</span>
+                                    {{ 'river.'~order.river.value|trans }}
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ 'package.'~order.package.value|trans }}</h5>
+                                    <ul class="list-group list-group-flush mb-3">
+                                        <li class="list-group-item">
+                                            <i class="fas fa-calendar-alt me-2"></i> {{ order.durationDays }} {{ 'profile.orders.days'|trans }}
+                                        </li>
+                                        <li class="list-group-item">
+                                            <i class="fas fa-users me-2"></i> {{ order.amountOfPeople }} {{ 'profile.orders.people'|trans }}
+                                        </li>
+                                    </ul>
+                                    <a href="{{ path('app_order_show', {'id': order.id}) }}" class="btn btn-secondary">
+                                        {{ 'profile.orders.details'|trans }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/orders.js') }}"></script>
+{% endblock %}

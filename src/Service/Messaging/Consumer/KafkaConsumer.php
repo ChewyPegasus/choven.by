@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Messaging\Consumer;
 
 use App\Service\Messaging\Consumer\Consumer as ConsumerInterface;
-use App\Service\Messaging\Factory\KafkaConnectionFactory;
+use App\Factory\KafkaConnectionFactory;
 use Interop\Queue\Consumer;
 use Interop\Queue\Context;
 use Interop\Queue\Message;

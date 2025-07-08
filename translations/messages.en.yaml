@@ -230,7 +230,6 @@ order:
   info:
     email_queued: "We're experiencing technical difficulties with our email service. Your registration confirmation will be sent shortly."
 
-# Translations for rafting types
 package:
   all_inclusive:
     title: 'All-inclusive'
@@ -272,7 +271,6 @@ package:
     included: 'Included in the price'
   book_now: 'Book now'
 
-# Переводы для рек
 river:
   svisloch: 'Svisloch'
   isloch: 'Isloch'
@@ -337,3 +335,14 @@ verification:
   button: "Confirm Email"
   link_alternative: "If the button doesn't work, copy and paste the following link into your browser's address bar:"
   ignore: "If you didn't register on our website, please ignore this email."
+
+profile:
+  orders:
+    title: 'My Orders'
+    upcoming: 'Upcoming'
+    past: 'Past'
+    no_upcoming: 'You have no upcoming rafting trips.'
+    no_past: 'You have no past rafting trips.'
+    days: 'days'
+    people: 'people'
+    details: 'View Details'

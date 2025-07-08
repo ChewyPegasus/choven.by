@@ -46,6 +46,10 @@ final class OrderController extends AbstractController
             $durationDays = $form->get('durationDays')->getData();
             $order->setDurationDays($durationDays);
             $order->setLocale($request->getLocale());
+
+            if ($this->getUser()) {
+                $order->setUser($this->getUser());
+            }
             
             $entityManager->persist($order);
             $entityManager->flush();

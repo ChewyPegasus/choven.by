@@ -43,6 +43,10 @@ class Order
     #[ORM\Column(length: 5, nullable: true)]
     private ?string $locale = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'orders')]
+    #[ORM\JoinColumn(name: 'user_id', referencedColumnName: 'id', nullable: true)]
+    private ?User $user = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -153,6 +157,17 @@ class Order
     {
         $this->locale = $locale;
 
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
         return $this;
     }
 }

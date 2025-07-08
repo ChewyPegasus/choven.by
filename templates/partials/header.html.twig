@@ -32,8 +32,13 @@
                                 </button>
                                 <div class="dropdown-content">
                                     <span class="user-email">{{ app.user.email }}</span>
-                                    <a href="{{ path('app_main') }}">{{ 'menu.profile'|trans }}</a>
-                                    <a href="{{ path('app_logout') }}">{{ 'menu.logout'|trans }}</a>
+                                    <a href="{{ path('app_profile_orders') }}">
+                                        <i class="fas fa-list me-2"></i>{{ 'profile.orders.title'|trans }}
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="{{ path('app_logout') }}">
+                                        <i class="fas fa-sign-out-alt me-2"></i>{{ 'menu.logout'|trans }}
+                                    </a>
                                 </div>
                             </div>
                         {% else %}
