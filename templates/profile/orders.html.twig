@@ -45,10 +45,10 @@
                             <div class="card">
                                 <div class="card-header">
                                     <span class="badge bg-primary float-end">{{ order.startDate|date('d.m.Y') }}</span>
-                                    {{ 'river.'~order.river.value|trans }}
+                                    {{ ('river.'~order.river.value)|trans }}
                                 </div>
                                 <div class="card-body">
-                                    <h5 class="card-title">{{ 'package.'~order.package.value|trans }}</h5>
+                                    <h5 class="card-title">{{ ('package.'~order.package.value~'.title')|trans }}</h5>
                                     <ul class="list-group list-group-flush mb-3">
                                         <li class="list-group-item">
                                             <i class="fas fa-calendar-alt me-2"></i> {{ order.durationDays }} {{ 'profile.orders.days'|trans }}
