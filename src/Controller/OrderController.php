@@ -39,7 +39,15 @@ final class OrderController extends AbstractController
     ): Response
     {
         $order = $orderService->create($request);
-        $form = $this->createForm(OrderForm::class, $order);
+
+        $currentUser = $this->getUser();
+        if ($currentUser) {
+            $order->setEmail($currentUser->getUserIdentifier());
+        }
+
+        $form = $this->createForm(OrderForm::class, $order, [
+            'is_authenticated' => $currentUser !== null,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

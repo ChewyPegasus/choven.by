@@ -199,3 +199,10 @@ label[for$="[minutes]"], label[for$="[seconds]"], label[for$="[invert]"] {
     margin: 0 auto;
     padding: 0 15px;
 }
+
+.form-control[readonly] {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+    border-color: #dee2e6;
+    color: #6c757d;
+}

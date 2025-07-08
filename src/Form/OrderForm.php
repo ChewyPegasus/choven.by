@@ -35,8 +35,9 @@ class OrderForm extends AbstractType
                 'attr' => [
                     'placeholder' => $this->translator->trans('order.form.email_placeholder'),
                     'class' => 'form-control',
+                    'readonly' => $options['is_authenticated'],
                 ],
-                'constraints' => [
+                'constraints' => $options['is_authenticated'] ? [] : [
                     new NotBlank([
                         'message' => $this->translator->trans('order.form.error.email_required'),
                     ]),
@@ -143,6 +144,7 @@ class OrderForm extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Order::class,
+            'is_authenticated' => false,
         ]);
     }
 }
