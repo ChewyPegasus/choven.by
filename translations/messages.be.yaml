@@ -319,11 +319,18 @@ registration:
     register: Зарэгістравацца
     already_registered: Ужо зарэгістраваны?
     sign_in: Увайсці
+    phone: 'Нумар тэлефона'
+    phone_placeholder: '+375XXXXXXXXX'
+    email_placeholder: 'example@email.com'
     error:
       email_required: Калі ласка, увядзіце ваш email
       password_required: Калі ласка, увядзіце пароль
       password_too_short: Пароль павінен утрымліваць мінімум %limit% сімвалаў
       agree_terms: Вы павінны прыняць умовы выкарыстання
+      phone_required: 'Калі ласка, увядзіце нумар тэлефона'
+      phone_invalid: 'Увядзіце карэктны нумар тэлефона ў фармаце +375XXXXXXXXX'
+  phone:
+    already_used: 'Гэты нумар тэлефона ужо выкарыстоўваецца'
 
 verification:
   success: Ваш email паспяхова пацверджаны! Цяпер вы можаце ўвайсці.
@@ -343,6 +350,8 @@ login:
     sign_in: 'Sign in'
     no_account: 'Don’t have an account yet?'
     register: 'Register'
+    identifier: 'Email ці тэлефон'
+    identifier_placeholder: 'Увядзіце email ці нумар тэлефона'
 
 profile:
   orders:

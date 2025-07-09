@@ -58,6 +58,12 @@ final class RegistrationController extends AbstractController
                 return $this->redirectToRoute('app_register');
             }
 
+            $existingUserByPhone = $this->userRepository->findOneBy(['phone' => $user->getPhone()]);
+            if ($existingUserByPhone) {
+                $this->addFlash('error', $translator->trans('registration.phone.already_used'));
+                return $this->redirectToRoute('app_register');
+            }
+
             $confirmationCode = bin2hex(random_bytes(10));
             $user->setConfirmationCode($confirmationCode);
             $user->setIsConfirmed(false);

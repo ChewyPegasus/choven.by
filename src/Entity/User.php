@@ -40,6 +40,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
     private Collection $orders;
 
+    #[ORM\Column(length: 20, unique: true)]
+    private ?string $phone = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -179,5 +182,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $this->roles[] = Role::USER;
         $this->orders = new ArrayCollection();
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(string $phone): static
+    {
+        $this->phone = $phone;
+        return $this;
     }
 }

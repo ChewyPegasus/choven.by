@@ -304,8 +304,10 @@ login:
     password: 'Password'
     remember_me: 'Remember me'
     sign_in: 'Sign in'
-    no_account: 'Don’t have an account yet?'
+    no_account: "Don't have an account yet?"
     register: 'Register'
+    identifier: 'Email or phone'
+    identifier_placeholder: 'Enter email or phone number'
 
 registration:
   email:
@@ -322,11 +324,18 @@ registration:
     register: 'Register'
     already_registered: 'Already registered?'
     sign_in: 'Sign in'
+    phone: 'Telephone number'
+    phone_placeholder: '+375XXXXXXXXX'
+    email_placeholder: 'example@email.com'
     error:
       email_required: 'Please enter your email'
       password_required: 'Please enter your password'
       password_too_short: 'Password must be at least %limit% characters long'
       agree_terms: 'You must accept the terms of use'
+      phone_required: 'Please enter your phone number'
+      phone_invalid: 'Enter a valid phone number in the format +375XXXXXXXXX'
+  phone:
+    already_used: 'This phone number is already in use'
 
 verification:
   success: 'Your email has been successfully verified! You can now log in.'

@@ -306,6 +306,8 @@ login:
     sign_in: Войти
     no_account: Еще нет аккаунта?
     register: Зарегистрироваться
+    identifier: 'Email или телефон'
+    identifier_placeholder: 'Введите email или номер телефона'
 
 registration:
   email:
@@ -321,11 +323,18 @@ registration:
     register: Зарегистрироваться
     already_registered: Уже зарегистрированы?
     sign_in: Войти
+    phone: 'Номер телефона'
+    phone_placeholder: '+375XXXXXXXXX'
+    email_placeholder: 'example@email.com'
     error:
       email_required: Пожалуйста, введите ваш email
       password_required: Пожалуйста, введите пароль
       password_too_short: Пароль должен содержать минимум %limit% символов
       agree_terms: Вы должны принять условия использования
+      phone_required: 'Пожалуйста, введите номер телефона'
+      phone_invalid: 'Введите корректный номер телефона в формате +375XXXXXXXXX'
+  phone:
+    already_used: 'Этот номер телефона уже используется'
 
 verification:
   success: Ваш email успешно подтвержден! Теперь вы можете войти.

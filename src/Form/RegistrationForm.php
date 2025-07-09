@@ -11,11 +11,13 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[UniqueEntity(fields: ['email'], message: 'registration.email.already_used')]
@@ -36,6 +38,22 @@ class RegistrationForm extends AbstractType
                 'constraints' => [
                     new NotBlank([
                         'message' => $this->translator->trans('registration.form.error.email_required'),
+                    ]),
+                ],
+            ])
+            ->add('phone', TelType::class, [
+                'label' => $this->translator->trans('registration.form.phone'),
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => $this->translator->trans('registration.form.phone_placeholder'),
+                ],
+                'constraints' => [
+                    new NotBlank([
+                        'message' => $this->translator->trans('registration.form.error.phone_required'),
+                    ]),
+                    new Regex([
+                        'pattern' => '/^\+375\d{9}$/',
+                        'message' => $this->translator->trans('registration.form.error.phone_invalid'),
                     ]),
                 ],
             ])
