@@ -13,6 +13,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.4",
         "doctrine/orm": "^3.3",
         "enqueue/rdkafka": "^0.10.26",
+        "giggsey/libphonenumber-for-php": "^9.0",
         "phpdocumentor/reflection-docblock": "^5.6",
         "phpstan/phpdoc-parser": "^2.1",
         "predis/predis": "^3.0",

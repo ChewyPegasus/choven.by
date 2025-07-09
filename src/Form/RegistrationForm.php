@@ -5,22 +5,22 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\User;
+use App\Form\Type\PhoneNumberType;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
-use Symfony\Component\Form\Extension\Core\Type\TelType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[UniqueEntity(fields: ['email'], message: 'registration.email.already_used')]
+#[UniqueEntity(fields: ['phone'], message: 'registration.phone.already_used')]
 class RegistrationForm extends AbstractType
 {
     public function __construct(private readonly TranslatorInterface $translator)
@@ -41,21 +41,8 @@ class RegistrationForm extends AbstractType
                     ]),
                 ],
             ])
-            ->add('phone', TelType::class, [
+            ->add('phone', PhoneNumberType::class, [
                 'label' => $this->translator->trans('registration.form.phone'),
-                'attr' => [
-                    'class' => 'form-control',
-                    'placeholder' => $this->translator->trans('registration.form.phone_placeholder'),
-                ],
-                'constraints' => [
-                    new NotBlank([
-                        'message' => $this->translator->trans('registration.form.error.phone_required'),
-                    ]),
-                    new Regex([
-                        'pattern' => '/^\+375\d{9}$/',
-                        'message' => $this->translator->trans('registration.form.error.phone_invalid'),
-                    ]),
-                ],
             ])
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,

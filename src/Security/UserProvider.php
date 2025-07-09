@@ -6,6 +6,8 @@ namespace App\Security;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use libphonenumber\PhoneNumberUtil;
+use libphonenumber\NumberParseException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,9 +24,30 @@ class UserProvider implements UserProviderInterface
         $user = null;
         
         if (str_contains($identifier, '@')) {
+            // This is an email
             $user = $this->userRepository->findOneBy(['email' => $identifier]);
         } else {
-            $user = $this->userRepository->findOneBy(['phone' => $identifier]);
+            // Try to find by phone number
+            $phoneUtil = PhoneNumberUtil::getInstance();
+            try {
+                $phoneNumber = $phoneUtil->parse($identifier, 'BY');
+                $formattedPhone = $phoneUtil->format($phoneNumber, \libphonenumber\PhoneNumberFormat::E164);
+                
+                // Search for user by formatted phone number
+                $users = $this->userRepository->findAll();
+                foreach ($users as $potentialUser) {
+                    if ($potentialUser->getPhone()) {
+                        $userPhoneFormatted = $phoneUtil->format($potentialUser->getPhone(), \libphonenumber\PhoneNumberFormat::E164);
+                        if ($userPhoneFormatted === $formattedPhone) {
+                            $user = $potentialUser;
+                            break;
+                        }
+                    }
+                }
+            } catch (NumberParseException $e) {
+                // If parsing as phone failed, try to find as email
+                $user = $this->userRepository->findOneBy(['email' => $identifier]);
+            }
         }
 
         if (!$user) {

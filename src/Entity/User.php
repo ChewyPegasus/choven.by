@@ -8,11 +8,16 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use libphonenumber\PhoneNumber;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: 'users')]
+#[UniqueEntity(fields: ['email'], message: 'user.email.already_exists')]
+#[UniqueEntity(fields: ['phone'], message: 'user.phone.already_exists')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -21,7 +26,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
+    #[Assert\NotBlank(message: 'user.email.not_blank')]
+    #[Assert\Email(message: 'user.email.invalid')]
     private ?string $email = null;
+
+    #[ORM\Column(type: 'phone_number', unique: true, nullable: true)]
+    #[Assert\NotBlank(message: 'user.phone.not_blank')]
+    private ?PhoneNumber $phone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
@@ -39,9 +50,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
     private Collection $orders;
-
-    #[ORM\Column(length: 20, unique: true)]
-    private ?string $phone = null;
 
     public function getId(): ?int
     {
@@ -189,9 +197,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->phone;
     }
 
-    public function setPhone(string $phone): static
+    public function setPhone(?PhoneNumber $phone): static
     {
         $this->phone = $phone;
         return $this;
+    }
+
+    public function getPhoneString(): ?string
+    {
+        if ($this->phone === null) {
+            return null;
+        }
+
+        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        return $phoneUtil->format($this->phone, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
     }
 }
