@@ -197,7 +197,14 @@ main:
         preposition: ''
         title: 'Self-organizing'
         description: 'A good choice for experienced tourists who ready to organise their trip on their own'
-
+  maps:
+    title: 'Interactive route maps'
+    description: 'Explore our routes on an interactive map. Choose a suitable route and learn more details.'
+    routes:
+      title: 'Available routes'
+    show_route: 'Show on map'
+    show_all: 'All routes'
+    reset: 'Reset'
 order:
   title: 'Book a trip'
   form:

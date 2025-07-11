@@ -12,6 +12,10 @@
         <link rel="stylesheet" href="{{ asset('styles/slider.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/cards.css') }}">
         <link rel="stylesheet" href="{{ asset('styles/popup.css') }}">
+
+        <!-- Leaflet CSS -->
+        <link rel="stylesheet" href="{{ asset('styles/maps.css') }}">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     {% endblock %}
 {% endblock %}
 
@@ -23,12 +27,26 @@
     <!-- Photo grid -->
     {% include 'partials/cards/grid.html.twig' %}
 
+    <!-- Interactive Maps -->
+    {% include 'partials/maps/interactive_map.html.twig' %}
+
     <!-- Popups -->
     {% include 'partials/popups/all_inclusive.html.twig' %}
     {% include 'partials/popups/minimum.html.twig' %}
     {% include 'partials/popups/rent_only.html.twig' %}
     {% include 'partials/popups/corporate.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Routes data -->
+    <script>
+        window.routesData = {{ routesJson|raw }};
+    </script>
+    <script src="{{ asset('js/main.js') }}"></script>
+    <script src="{{ asset('js/maps.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-    <script src="{{ asset('js/main.js') }}"></script>
 {% endblock %}

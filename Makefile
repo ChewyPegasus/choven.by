@@ -90,3 +90,6 @@ query:
 
 admin:
 	docker-compose exec php php bin/console app:user:make-admin "$(admin)"
+
+git-log:
+	git log --graph --oneline --decorate

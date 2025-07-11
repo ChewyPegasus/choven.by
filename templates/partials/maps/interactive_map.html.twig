@@ -1,0 +1,52 @@
+<section class="maps-section">
+    <div class="container">
+        <h2 class="section-title">{{ 'main.maps.title'|trans }}</h2>
+        <p class="section-description">{{ 'main.maps.description'|trans }}</p>
+        
+        <div class="map-container">
+            <!-- Route selection panel -->
+            <div class="routes-panel">
+                <h3>{{ 'main.maps.routes.title'|trans }}</h3>
+                <div class="routes-list">
+                    {% for routeId, route in routes %}
+                        <div class="route-card" data-route="{{ routeId }}">
+                            <div class="route-header">
+                                <h4>{{ route.name }}</h4>
+                                <span class="route-difficulty difficulty-{{ route.difficulty|lower|replace({' ': '-'}) }}">
+                                    {{ route.difficulty }}
+                                </span>
+                            </div>
+                            <p class="route-description">{{ route.description }}</p>
+                            <div class="route-info">
+                                <span class="route-duration">
+                                    <i class="fas fa-clock"></i>
+                                    {{ route.duration }}
+                                </span>
+                                <span class="route-distance">
+                                    <i class="fas fa-route"></i>
+                                    {{ route.distance }}
+                                </span>
+                            </div>
+                            <button class="btn-show-route" data-route="{{ routeId }}">
+                                {{ 'main.maps.show_route'|trans }}
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Map -->
+            <div class="map-wrapper">
+                <div id="interactive-map"></div>
+                <div class="map-controls">
+                    <button id="show-all-routes" class="btn-map-control">
+                        {{ 'main.maps.show_all'|trans }}
+                    </button>
+                    <button id="reset-map" class="btn-map-control">
+                        {{ 'main.maps.reset'|trans }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
