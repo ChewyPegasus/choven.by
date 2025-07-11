@@ -362,3 +362,21 @@ profile:
     days: 'дней'
     people: 'человек'
     details: 'Подробнее'
+
+routes:
+  isloch:
+    description: 'Живописный маршрут по одной из красивейших рек Беларуси'
+    duration: '2 дня'
+    distance: '35 км'
+  svisloch:
+    description: 'Короткий городской маршрут, идеальный для новичков'
+    duration: '1 день'
+    distance: '18 км'
+  berezina:
+    description: 'Длинный маршрут по легендарной реке с ночевкой в палатках'
+    duration: '3-4 дня'
+    distance: '65 км'
+  difficulty:
+    easy: 'Легкая'
+    medium: 'Средняя'
+    high: 'Высокая'

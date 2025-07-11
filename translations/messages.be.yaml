@@ -371,3 +371,21 @@ profile:
     days: 'дні'
     people: 'удзельнікаў'
     details: 'Падрабязней'
+
+routes:
+  isloch:
+    description: 'Маляўнічы маршрут па адной з самых прыгожых рэк Беларусі'
+    duration: '2 дні'
+    distance: '35 км'
+  svisloch:
+    description: 'Кароткі гарадскі маршрут, ідэальны для пачаткоўцаў'
+    duration: '1 дзень'
+    distance: '18 км'
+  berezina:
+    description: 'Доўгі маршрут па легендарнай рацэ з начэўкай у палатках'
+    duration: '3–4 дні'
+    distance: '65 км'
+  difficulty:
+    easy: 'Лёгкі'
+    medium: 'Сярэдні'
+    high: 'Складаны'

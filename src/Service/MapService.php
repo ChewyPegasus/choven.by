@@ -4,73 +4,83 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use Symfony\Contracts\Translation\TranslatorInterface;
+
 class MapService
 {
-    private array $routes = [
-        'isloch' => [
-            'name' => 'Река Ислочь',
-            'description' => 'Живописный маршрут по реке Ислочь',
-            'coordinates' => [
-                [53.9006, 27.5590], // Начальная точка
-                [53.8956, 27.5645],
-                [53.8906, 27.5700],
-                [53.8856, 27.5755],
-                [53.8806, 27.5810], // Конечная точка
+    private TranslatorInterface $translator;
+    
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
+    private function getRoutes(): array
+    {
+        return [
+            'isloch' => [
+                'name' => $this->translator->trans('river.isloch'),
+                'description' => $this->translator->trans('routes.isloch.description'),
+                'coordinates' => [
+                    [53.8976, 27.5455],
+                    [53.8845, 27.4983],
+                    [53.8712, 27.4521],
+                    [53.8579, 27.4059],
+                    [53.8446, 27.3597],
+                ],
+                'center' => [53.8712, 27.4521],
+                'zoom' => 11,
+                'duration' => $this->translator->trans('routes.isloch.duration'),
+                'difficulty' => $this->translator->trans('routes.difficulty.medium'),
+                'distance' => $this->translator->trans('routes.isloch.distance')
             ],
-            'center' => [53.8906, 27.5700],
-            'zoom' => 13,
-            'duration' => '2 дня',
-            'difficulty' => 'Средняя',
-            'distance' => '25 км'
-        ],
-        'svisloch' => [
-            'name' => 'Река Свислочь',
-            'description' => 'Короткий маршрут для новичков',
-            'coordinates' => [
-                [53.9000, 27.5500],
-                [53.8950, 27.5550],
-                [53.8900, 27.5600],
-                [53.8850, 27.5650],
-                [53.8800, 27.5700],
+            'svisloch' => [
+                'name' => $this->translator->trans('river.svisloch'),
+                'description' => $this->translator->trans('routes.svisloch.description'),
+                'coordinates' => [
+                    [53.9067, 27.5615],
+                    [53.8934, 27.5234],
+                    [53.8801, 27.4853],
+                    [53.8668, 27.4472],
+                ],
+                'center' => [53.8868, 27.5044],
+                'zoom' => 12,
+                'duration' => $this->translator->trans('routes.svisloch.duration'),
+                'difficulty' => $this->translator->trans('routes.difficulty.easy'),
+                'distance' => $this->translator->trans('routes.svisloch.distance')
             ],
-            'center' => [53.8900, 27.5600],
-            'zoom' => 13,
-            'duration' => '1 день',
-            'difficulty' => 'Легкая',
-            'distance' => '15 км'
-        ],
-        'all_inclusive' => [
-            'name' => 'All Inclusive маршрут',
-            'description' => 'Полный пакет с ночевкой',
-            'coordinates' => [
-                [53.9200, 27.5300],
-                [53.9150, 27.5350],
-                [53.9100, 27.5400],
-                [53.9050, 27.5450],
-                [53.9000, 27.5500],
-                [53.8950, 27.5550],
-                [53.8900, 27.5600],
-            ],
-            'center' => [53.9050, 27.5450],
-            'zoom' => 12,
-            'duration' => '2-3 дня',
-            'difficulty' => 'Высокая',
-            'distance' => '40 км'
-        ]
-    ];
+            'berezina' => [
+                'name' => $this->translator->trans('river.berezina'),
+                'description' => $this->translator->trans('routes.berezina.description'),
+                'coordinates' => [
+                    [53.7820, 28.3450],
+                    [53.7341, 28.4521],
+                    [53.6862, 28.5592],
+                    [53.6383, 28.6663],
+                    [53.5904, 28.7734],
+                ],
+                'center' => [53.6862, 28.5592],
+                'zoom' => 10,
+                'duration' => $this->translator->trans('routes.berezina.duration'),
+                'difficulty' => $this->translator->trans('routes.difficulty.high'),
+                'distance' => $this->translator->trans('routes.berezina.distance')
+            ]
+        ];
+    }
 
     public function getAllRoutes(): array
     {
-        return $this->routes;
+        return $this->getRoutes();
     }
 
     public function getRoute(string $routeId): ?array
     {
-        return $this->routes[$routeId] ?? null;
+        $routes = $this->getRoutes();
+        return $routes[$routeId] ?? null;
     }
 
     public function getRoutesForJson(): string
     {
-        return json_encode($this->routes, JSON_UNESCAPED_UNICODE);
+        return json_encode($this->getRoutes(), JSON_UNESCAPED_UNICODE);
     }
 }

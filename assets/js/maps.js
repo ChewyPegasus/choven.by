@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!mapElement) return;
 
     const routes = window.routesData || {};
-    const map = L.map('interactive-map').setView([53.9, 27.57], 10);
+    const map = L.map('interactive-map').setView([53.9, 27.56], 8);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
             smoothFactor: 1
         }).addTo(map);
 
+        const markers = [];
+
         const startMarker = L.marker(routeData.coordinates[0], {
             icon: L.divIcon({
                 className: 'route-marker start-marker',
@@ -34,6 +36,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 iconSize: [30, 30]
             })
         }).addTo(map);
+        markers.push(startMarker);
+
+        for (let i = 1; i < routeData.coordinates.length - 1; i++) {
+            const waypoint = L.circleMarker(routeData.coordinates[i], {
+                radius: 6,
+                fillColor: '#ff6b00',
+                color: '#fff',
+                weight: 2,
+                opacity: 1,
+                fillOpacity: 0.8
+            }).addTo(map);
+
+            markers.push(waypoint);
+        }
 
         const endMarker = L.marker(routeData.coordinates[routeData.coordinates.length - 1], {
             icon: L.divIcon({
@@ -42,6 +58,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 iconSize: [30, 30]
             })
         }).addTo(map);
+        markers.push(endMarker);
 
         const popupContent = `
             <div class="route-popup">
@@ -58,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
         polyline.bindPopup(popupContent);
 
         routeLayers[routeId] = polyline;
-        routeMarkers[routeId] = [startMarker, endMarker];
+        routeMarkers[routeId] = markers;
 
         return polyline;
     }
@@ -69,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const routeData = routes[routeId];
         const polyline = createRoute(routeId, routeData);
 
-        map.setView(routeData.center, routeData.zoom);
+        map.fitBounds(polyline.getBounds(), { padding: [20, 20] });
 
         setTimeout(() => {
             polyline.openPopup();
@@ -102,8 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         if (allCoordinates.length > 0) {
-            const group = new L.featureGroup(Object.values(routeLayers));
-            map.fitBounds(group.getBounds().pad(0.1));
+            const group = L.featureGroup(Object.values(routeLayers));
+            map.fitBounds(group.getBounds(), { padding: [30, 30] });
         }
 
         document.querySelectorAll('.route-card').forEach(card => {
@@ -131,10 +148,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.route-card').forEach(card => {
         card.addEventListener('click', function() {
             const routeId = this.getAttribute('data-route');
+
             if (this.classList.contains('active')) {
                 hideRoute(routeId);
                 this.classList.remove('active');
-                map.setView([53.9, 27.57], 10);
+                map.setView([53.9, 27.56], 8);
             } else {
                 clearAllRoutes();
                 showRoute(routeId);
@@ -155,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('reset-map').addEventListener('click', function() {
         clearAllRoutes();
-        map.setView([53.9, 27.57], 10);
+        map.setView([53.9, 27.56], 8);
         document.querySelectorAll('.route-card').forEach(card => {
             card.classList.remove('active');
         });
@@ -163,6 +181,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const firstRoute = Object.keys(routes)[0];
     if (firstRoute) {
-        showRoute(firstRoute);
+        setTimeout(() => {
+            showRoute(firstRoute);
+        }, 1000);
     }
 });

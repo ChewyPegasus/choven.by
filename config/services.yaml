@@ -72,3 +72,7 @@ services:
         arguments:
             $orderTopic: '%kafka.order_topic%'
             $registrationTopic: '%kafka.registration_topic%'
+
+    App\Service\MapService:
+        arguments:
+            $translator: '@translator'

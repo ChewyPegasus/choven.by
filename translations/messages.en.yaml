@@ -362,3 +362,21 @@ profile:
     days: 'days'
     people: 'people'
     details: 'View Details'
+
+routes:
+  isloch:
+    description: 'Scenic route along one of the most beautiful rivers in Belarus'
+    duration: '2 days'
+    distance: '35 km'
+  svisloch:
+    description: 'Short urban route, perfect for beginners'
+    duration: '1 day'
+    distance: '18 km'
+  berezina:
+    description: 'Long route along the legendary river with camping overnight'
+    duration: '3-4 days'
+    distance: '65 km'
+  difficulty:
+    easy: 'Easy'
+    medium: 'Medium'
+    high: 'High'
