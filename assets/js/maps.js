@@ -56,17 +56,17 @@ document.addEventListener('DOMContentLoaded', function() {
             start: { 
                 html: '<i class="fas fa-play"></i>', 
                 className: 'marker-start',
-                size: [35, 35]
+                size: [40, 40]
             },
             end: { 
                 html: '<i class="fas fa-flag-checkered"></i>', 
                 className: 'marker-end',
-                size: [35, 35]
+                size: [40, 40]
             },
             point: { 
                 html: `<span class="waypoint-number">${index}</span>`, 
                 className: 'marker-waypoint',
-                size: [25, 25]
+                size: [30, 30]
             }
         };
 
@@ -75,7 +75,11 @@ document.addEventListener('DOMContentLoaded', function() {
             className: markerConfig.className,
             html: markerConfig.html,
             iconSize: markerConfig.size,
-            iconAnchor: [markerConfig.size[0]/2, markerConfig.size[1]]
+            // Центрируем иконку. Это правильный способ.
+            iconAnchor: [markerConfig.size[0] / 2, markerConfig.size[1] / 2], 
+            // Позиционируем попап над центром иконки.
+            popupAnchor: [0, -markerConfig.size[1] / 2]
+            // УДАЛЕНО: htmlAnchor - это нестандартное свойство, которое вызывало ошибку.
         });
     }
 
@@ -105,16 +109,24 @@ document.addEventListener('DOMContentLoaded', function() {
         const polylineCoords = routeData.points.map(point => point.coordinates);
         console.log('Координаты ломаной:', polylineCoords);
 
-        // Создаем ломаную линию (соединяет точки прямыми отрезками)
+        // Создаем основную линию маршрута
         const polyline = L.polyline(polylineCoords, {
             color: routeData.color,
-            weight: 4,
+            weight: 5,
             opacity: 0.8,
-            smoothFactor: 0, // Отключаем сглаживание для четких углов
-            dashArray: '8,4' // Пунктирная линия для лучшей видимости
+            smoothFactor: 1,
+            dashArray: null
         });
 
-        // Добавляем попап к линии маршрута с переводами
+        // Создаем тень линии для лучшей видимости
+        const shadowLine = L.polyline(polylineCoords, {
+            color: '#000000',
+            weight: 7,
+            opacity: 0.3,
+            smoothFactor: 1
+        });
+
+        // Добавляем попап к линии маршрута
         const routePopup = `
             <div class="route-popup">
                 <h4>${routeData.name}</h4>
@@ -140,27 +152,57 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
         `;
         polyline.bindPopup(routePopup);
+        
+        allLayers.push(shadowLine);
         allLayers.push(polyline);
 
-        // Создаем маркеры для всех точек
+        // ИСПРАВЛЯЕМ создание маркеров - обрабатываем все типы точек правильно
         let waypointCounter = 1;
+        
         routeData.points.forEach((point, index) => {
             console.log(`Создаем маркер ${index + 1}:`, point);
             
-            let markerIndex = index + 1;
-            if (point.type === 'point') {
-                markerIndex = waypointCounter;
-                waypointCounter++;
+            let markerIcon;
+            let currentType = point.type;
+
+            // Обработка случая, если тип точки не указан
+            if (!currentType) {
+                console.warn(`Тип для точки ${index + 1} не указан, используется 'point'`);
+                currentType = 'point';
+            }
+            
+            // Создаем маркер в зависимости от типа точки
+            switch (currentType) {
+                case 'start':
+                    markerIcon = createMarkerIcon('start', null);
+                    console.log('Создан стартовый маркер');
+                    break;
+                case 'end':
+                    markerIcon = createMarkerIcon('end', null);
+                    console.log('Создан финишный маркер');
+                    break;
+                case 'point':
+                    markerIcon = createMarkerIcon('point', waypointCounter);
+                    waypointCounter++;
+                    console.log(`Создан промежуточный маркер #${waypointCounter - 1}`);
+                    break;
+                default:
+                    console.warn(`Неизвестный тип точки: ${currentType}. Используется стандартный маркер.`);
+                    markerIcon = createMarkerIcon('point', waypointCounter);
+                    waypointCounter++;
+                    break;
             }
 
-            // Создаем маркер
-            const marker = L.marker(point.coordinates, {
-                icon: createMarkerIcon(point.type, markerIndex)
+            // Создаем маркер с правильными координатами
+            const marker = L.marker([point.coordinates[0], point.coordinates[1]], {
+                icon: markerIcon
             });
 
             // Добавляем попап к маркеру
             marker.bindPopup(createPointPopup(point));
             allLayers.push(marker);
+            
+            console.log(`Маркер добавлен на координаты: [${point.coordinates[0]}, ${point.coordinates[1]}]`);
         });
 
         // Группируем все элементы маршрута

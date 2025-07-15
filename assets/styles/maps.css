@@ -104,7 +104,7 @@
     right: 10px;
     display: flex;
     gap: 5px;
-    z-index: 1000;
+    z-index: 400;
 }
 
 .btn-map-control {
@@ -123,68 +123,116 @@
     border-color: #ff6b00;
 }
 
+
+
 /* СТИЛИ ДЛЯ МАРКЕРОВ НА КАРТЕ */
 
 /* Общие стили для всех маркеров */
 .map-marker {
+    /* border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+    transition: all 0.3s ease;
+    border: 3px solid white; */
+}
+
+/* .map-marker:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+} */
+
+/* Стартовые маркеры */
+.marker-start {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    font-size: 18px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-}
-
-/* Стартовые маркеры */
-.start-marker {
-    background: #28a745;
-    border: 3px solid white;
-    color: white;
-    font-size: 14px;
-    animation: pulse 2s infinite;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+    animation: pulse-start 2s infinite;
+    position: relative;
 }
 
 /* Финишные маркеры */
-.end-marker {
-    background: #dc3545;
-    border: 3px solid white;
+.marker-end {
+    background: linear-gradient(135deg, #dc3545, #fd7e14);
     color: white;
-    font-size: 14px;
-    animation: pulse 2s infinite;
+    font-size: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid white;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    animation: pulse-end 2s infinite;
+    position: relative;
 }
 
 /* Промежуточные точки */
-.point-marker {
-    background: #ff6b00;
-    border: 2px solid white;
+.marker-waypoint {
+    background: linear-gradient(135deg, #ff6b00, #ff8533);
+    border: 3px solid white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 8px rgba(255, 107, 0, 0.4);
+    position: relative;
 }
 
-.point-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: white;
+.marker-waypoint:hover {
+    transform: scale(1.15);
+    box-shadow: 0 5px 15px rgba(255, 107, 0, 0.6);
+}
+
+.waypoint-number {
+    color: white;
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 /* Анимация пульсации для старта и финиша */
-@keyframes pulse {
+@keyframes pulse-start {
     0%, 100% {
         transform: scale(1);
-        opacity: 1;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
     }
     50% {
-        transform: scale(1.1);
-        opacity: 0.8;
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+    }
+}
+
+@keyframes pulse-end {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
     }
 }
 
 /* СТИЛИ ДЛЯ ПОПАПОВ */
 
 /* Попапы точек */
-.point-popup h4 {
-    margin: 0 0 10px 0;
+.point-popup {
+    min-width: 200px;
+    padding: 5px;
+}
+
+.point-popup h5 {
+    margin: 0 0 8px 0;
     color: #ff6b00;
     font-size: 16px;
+    font-weight: 600;
 }
 
 .point-popup p {
@@ -195,16 +243,57 @@
 }
 
 /* Попапы маршрутов */
-.route-popup h3 {
+.route-popup {
+    min-width: 250px;
+    padding: 5px;
+}
+
+.route-popup h4 {
     margin: 0 0 10px 0;
     color: #333;
     font-size: 18px;
+    font-weight: 600;
 }
 
 .route-popup p {
-    margin: 0;
+    margin: 0 0 15px 0;
     color: #666;
     font-size: 14px;
+    line-height: 1.4;
+}
+
+.route-stats {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.route-stats .stat {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 8px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.route-stats .stat i {
+    color: #ff6b00;
+}
+
+.points-count {
+    padding: 4px 8px;
+    background: #e9ecef;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #666;
+}
+
+.points-count i {
+    color: #ff6b00;
+    margin-right: 5px;
 }
 
 /* АДАПТИВНОСТЬ */
@@ -291,4 +380,8 @@
 .route-points i {
     color: #ff6b00;
     margin-right: 4px;
+}
+
+div.leaflet-top.leaflet-left {
+    z-index: 400;
 }
