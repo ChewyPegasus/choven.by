@@ -372,41 +372,44 @@ routes:
     high: 'High'
   isloch:
     description: 'Scenic route along one of the most beautiful rivers in Belarus'
-    duration: '2 days'
-    distance: '35 km'
+    duration: 'from 1 to 11 h'
+    distance: 'to 40 km'
     points:
-      start:
-        name: 'Minsk city center'
-        description: 'Starting point in the city center with full infrastructure'
-      borovlyany:
-        name: 'Borovlyany'
-        description: 'First stop with an opportunity to replenish supplies'
-      zaslavl:
-        name: 'Zaslavl'
-        description: 'Historic town with a museum and restaurants'
-      radoshkovichi:
-        name: 'Radoshkovichi'
-        description: 'Great place for overnight camping'
-      end:
-        name: 'Recreation base'
-        description: 'Finish with full service for relaxation'
+      borov:
+        name: 'Borovikovshchina village'
+        description: 'Convenient water entry. Next section: Borovikovshchina-Goluby - 4.5h'
+      golubi:
+        name: 'Goluby village'
+        description: 'Equipped campsite with all amenities. Next section: Goluby-Yatskovo - 0.5h'
+      yatskovo:
+        name: 'Yatskovo-Zamostnye village'
+        description: 'Convenient water entry. Next section: Yatskovo-Belokorets - 3h'
+      belokorec:
+        name: 'Belokorets eco-trail'
+        description: 'Equipped campsite with all amenities. Next section: Belokorets-Dorogun - 2.5h'
+      dorogun:
+        name: 'Dorogun village'
+        description: 'Equipped campsite with all amenities. Next section: Dorogun-bridge - 0.5h'
+      most:
+        name: 'Bridge'
+        description: 'Convenient water entry. Further pickup only at the border'
   svisloch:
     description: 'Short urban route, ideal for beginners'
-    duration: '1 day'
-    distance: '18 km'
+    duration: '2 hours'
+    distance: '7 km'
     points:
       start:
-        name: 'Malinovka Metro'
-        description: 'Convenient starting point with metro and parking'
+        name: 'Denisovskaya Street'
+        description: 'Convenient starting point with public transport stop'
       park:
-        name: 'Pavlova Park'
-        description: 'Beautiful park for relaxation and photo sessions'
-      bridge:
-        name: 'Bridge over Svisloch'
-        description: 'Picturesque spot with a great view of the river'
+        name: 'Loshitsky Park'
+        description: 'Beautiful park embankment is pleasing to the eye'
+      ruins:
+        name: 'Mill ruins'
+        description: 'Historic landmark perfectly visible from the river'
       end:
-        name: 'Central district'
-        description: 'Finish in the center with cafes and public transport'
+        name: 'Dvorishchi'
+        description: 'Finish just before Chizhovka reservoir with convenient car access'
   berezina:
     description: 'Long route along the legendary river with overnight camping'
     duration: '3-4 days'

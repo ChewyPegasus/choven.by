@@ -28,34 +28,40 @@ class MapService
                 'description' => $this->translator->trans('routes.isloch.description'),
                 'points' => [
                     [
-                        'coordinates' => [53.9012, 27.5623],
+                        'coordinates' => [53.957456, 26.737684],
                         'type' => 'start',
-                        'name' => $this->translator->trans('routes.isloch.points.start.name'),
-                        'description' => $this->translator->trans('routes.isloch.points.start.description')
+                        'name' => $this->translator->trans('routes.isloch.points.borov.name'),
+                        'description' => $this->translator->trans('routes.isloch.points.borov.description')
                     ],
                     [
-                        'coordinates' => [53.8800, 27.5200],
+                        'coordinates' => [54.009733, 26.642532],
                         'type' => 'point',
-                        'name' => $this->translator->trans('routes.isloch.points.borovlyany.name'),
-                        'description' => $this->translator->trans('routes.isloch.points.borovlyany.description')
+                        'name' => $this->translator->trans('routes.isloch.points.golubi.name'),
+                        'description' => $this->translator->trans('routes.isloch.points.golubi.description')
                     ],
                     [
-                        'coordinates' => [53.8600, 27.4800],
+                        'coordinates' => [54.013528, 26.607166],
                         'type' => 'point',
-                        'name' => $this->translator->trans('routes.isloch.points.zaslavl.name'),
-                        'description' => $this->translator->trans('routes.isloch.points.zaslavl.description')
+                        'name' => $this->translator->trans('routes.isloch.points.yatskovo.name'),
+                        'description' => $this->translator->trans('routes.isloch.points.yatskovo.description')
                     ],
                     [
-                        'coordinates' => [53.8400, 27.4400],
+                        'coordinates' => [54.024217, 26.484207],
                         'type' => 'point',
-                        'name' => $this->translator->trans('routes.isloch.points.radoshkovichi.name'),
-                        'description' => $this->translator->trans('routes.isloch.points.radoshkovichi.description')
+                        'name' => $this->translator->trans('routes.isloch.points.belokorec.name'),
+                        'description' => $this->translator->trans('routes.isloch.points.belokorec.description')
                     ],
                     [
-                        'coordinates' => [53.8200, 27.4000],
+                        'coordinates' => [54.013380, 26.414221],
+                        'type' => 'point',
+                        'name' => $this->translator->trans('routes.isloch.points.dorogun.name'),
+                        'description' => $this->translator->trans('routes.isloch.points.dorogun.description')
+                    ],
+                    [
+                        'coordinates' => [54.000518, 26.373943],
                         'type' => 'end',
-                        'name' => $this->translator->trans('routes.isloch.points.end.name'),
-                        'description' => $this->translator->trans('routes.isloch.points.end.description')
+                        'name' => $this->translator->trans('routes.isloch.points.most.name'),
+                        'description' => $this->translator->trans('routes.isloch.points.most.description')
                     ]
                 ]
             ],
@@ -68,25 +74,25 @@ class MapService
                 'description' => $this->translator->trans('routes.svisloch.description'),
                 'points' => [
                     [
-                        'coordinates' => [53.9100, 27.5700],
+                        'coordinates' => [53.875663, 27.584552],
                         'type' => 'start',
                         'name' => $this->translator->trans('routes.svisloch.points.start.name'),
                         'description' => $this->translator->trans('routes.svisloch.points.start.description')
                     ],
                     [
-                        'coordinates' => [53.8950, 27.5500],
+                        'coordinates' => [53.856594, 27.580547],
                         'type' => 'point',
                         'name' => $this->translator->trans('routes.svisloch.points.park.name'),
                         'description' => $this->translator->trans('routes.svisloch.points.park.description')
                     ],
                     [
-                        'coordinates' => [53.8800, 27.5300],
+                        'coordinates' => [53.853520, 27.586773],
                         'type' => 'point',
-                        'name' => $this->translator->trans('routes.svisloch.points.bridge.name'),
-                        'description' => $this->translator->trans('routes.svisloch.points.bridge.description')
+                        'name' => $this->translator->trans('routes.svisloch.points.ruins.name'),
+                        'description' => $this->translator->trans('routes.svisloch.points.ruins.description')
                     ],
                     [
-                        'coordinates' => [53.8650, 27.5100],
+                        'coordinates' => [53.848692, 27.589894],
                         'type' => 'end',
                         'name' => $this->translator->trans('routes.svisloch.points.end.name'),
                         'description' => $this->translator->trans('routes.svisloch.points.end.description')
