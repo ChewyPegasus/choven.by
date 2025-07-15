@@ -205,6 +205,8 @@ main:
     show_route: 'Show on map'
     show_all: 'All routes'
     reset: 'Reset'
+    points: 'points'
+
 order:
   title: 'Book a trip'
   form:
@@ -364,19 +366,90 @@ profile:
     details: 'View Details'
 
 routes:
-  isloch:
-    description: 'Scenic route along one of the most beautiful rivers in Belarus'
-    duration: '2 days'
-    distance: '35 km'
-  svisloch:
-    description: 'Short urban route, perfect for beginners'
-    duration: '1 day'
-    distance: '18 km'
-  berezina:
-    description: 'Long route along the legendary river with camping overnight'
-    duration: '3-4 days'
-    distance: '65 km'
   difficulty:
     easy: 'Easy'
     medium: 'Medium'
     high: 'High'
+  isloch:
+    description: 'Scenic route along one of the most beautiful rivers in Belarus'
+    duration: '2 days'
+    distance: '35 km'
+    points:
+      start:
+        name: 'Minsk city center'
+        description: 'Starting point in the city center with full infrastructure'
+      borovlyany:
+        name: 'Borovlyany'
+        description: 'First stop with an opportunity to replenish supplies'
+      zaslavl:
+        name: 'Zaslavl'
+        description: 'Historic town with a museum and restaurants'
+      radoshkovichi:
+        name: 'Radoshkovichi'
+        description: 'Great place for overnight camping'
+      end:
+        name: 'Recreation base'
+        description: 'Finish with full service for relaxation'
+  svisloch:
+    description: 'Short urban route, ideal for beginners'
+    duration: '1 day'
+    distance: '18 km'
+    points:
+      start:
+        name: 'Malinovka Metro'
+        description: 'Convenient starting point with metro and parking'
+      park:
+        name: 'Pavlova Park'
+        description: 'Beautiful park for relaxation and photo sessions'
+      bridge:
+        name: 'Bridge over Svisloch'
+        description: 'Picturesque spot with a great view of the river'
+      end:
+        name: 'Central district'
+        description: 'Finish in the center with cafes and public transport'
+  berezina:
+    description: 'Long route along the legendary river with overnight camping'
+    duration: '3-4 days'
+    distance: '65 km'
+    points:
+      start:
+        name: 'Borisov'
+        description: 'Historic city - starting point of a big adventure'
+      berezino:
+        name: 'Berezino'
+        description: 'District center with shops and fuel station'
+      camping:
+        name: 'Camping spot'
+        description: 'Equipped campsite by the river'
+      rapids:
+        name: 'Berezina rapids'
+        description: 'The most exciting part of the route'
+      end:
+        name: 'Berezina base'
+        description: 'Finish with shower, restaurant, and transfer'
+
+facilities:
+  parking: 'Parking'
+  cafe: 'Cafe'
+  equipment_rental: 'Equipment rental'
+  rest_area: 'Rest area'
+  shop: 'Shop'
+  historical_site: 'Historical site'
+  restaurant: 'Restaurant'
+  museum: 'Museum'
+  camping: 'Camping'
+  bonfire_area: 'Bonfire area'
+  shower: 'Shower'
+  sauna: 'Sauna'
+  metro_station: 'Metro station'
+  park: 'Park'
+  playground: 'Playground'
+  scenic_view: 'Scenic view'
+  photo_spot: 'Photo spot'
+  public_transport: 'Public transport'
+  guide_briefing: 'Guide briefing'
+  fuel_station: 'Fuel station'
+  fishing: 'Fishing'
+  overnight: 'Overnight'
+  adventure_spot: 'Adventure spot'
+  transport: 'Transfer'

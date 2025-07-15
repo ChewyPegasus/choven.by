@@ -205,6 +205,7 @@ main:
     show_route: 'Паказаць на карце'
     show_all: 'Усе маршруты'
     reset: 'Скінуць'
+    points: 'кропак'
 
 order:
   title: 'Забраніраваць сплаў'
@@ -373,19 +374,90 @@ profile:
     details: 'Падрабязней'
 
 routes:
+  difficulty:
+    easy: 'Лёгкая'
+    medium: 'Сярэдняя'
+    high: 'Высокая'
   isloch:
     description: 'Маляўнічы маршрут па адной з самых прыгожых рэк Беларусі'
     duration: '2 дні'
     distance: '35 км'
+    points:
+      start:
+        name: 'Цэнтр Мінска'
+        description: 'Стартовая кропка ў цэнтры горада з поўнай інфраструктурай'
+      borovlyany:
+        name: 'Бараўляны'
+        description: 'Першая прыпынак з магчымасцю папоўніць запасы'
+      zaslavl:
+        name: 'Заслаўе'
+        description: 'Гістарычны горад з музеем і рэстаранамі'
+      radoshkovichi:
+        name: 'Радашковічы'
+        description: 'Выдатнае месца для начлегу з кемпінгам'
+      end:
+        name: 'База адпачынку'
+        description: 'Фініш з поўным сэрвісам для адпачынку'
   svisloch:
     description: 'Кароткі гарадскі маршрут, ідэальны для пачаткоўцаў'
     duration: '1 дзень'
     distance: '18 км'
+    points:
+      start:
+        name: 'Метро Малінаўка'
+        description: 'Зручная стартовая кропка з метро і паркоўкай'
+      park:
+        name: 'Парк Паўлава'
+        description: 'Прыгожы парк для адпачынку і фотасесій'
+      bridge:
+        name: 'Мост праз Свіслач'
+        description: 'Маляўнічае месца з выдатным выглядам на раку'
+      end:
+        name: 'Цэнтральны раён'
+        description: 'Фініш у цэнтры з кафэ і грамадскім транспартам'
   berezina:
-    description: 'Доўгі маршрут па легендарнай рацэ з начэўкай у палатках'
-    duration: '3–4 дні'
+    description: 'Доўгі маршрут па легендарнай рацэ з начлегам у палатках'
+    duration: '3-4 дні'
     distance: '65 км'
-  difficulty:
-    easy: 'Лёгкі'
-    medium: 'Сярэдні'
-    high: 'Складаны'
+    points:
+      start:
+        name: 'Барысаў'
+        description: 'Гістарычны горад — адпраўная кропка вялікага прыгоды'
+      berezino:
+        name: 'Бярэзіна'
+        description: 'Раённы цэнтр з магазінамі і запраўкай'
+      camping:
+        name: 'Месца начлегу'
+        description: 'Абсталяваная стаянка для палатак каля ракі'
+      rapids:
+        name: 'Парогі Бярэзіны'
+        description: 'Самая захапляльная частка маршруту'
+      end:
+        name: 'База Бярэзіна'
+        description: 'Фініш з душам, рэстаранам і трансферам'
+
+facilities:
+  parking: 'Паркоўка'
+  cafe: 'Кафэ'
+  equipment_rental: 'Арэнда рыштунку'
+  rest_area: 'Зона адпачынку'
+  shop: 'Магазін'
+  historical_site: 'Гістарычнае месца'
+  restaurant: 'Рэстаран'
+  museum: 'Музей'
+  camping: 'Кемпінг'
+  bonfire_area: 'Месца для вогнішча'
+  shower: 'Душ'
+  sauna: 'Саўна'
+  metro_station: 'Метро'
+  park: 'Парк'
+  playground: 'Дзіцячая пляцоўка'
+  scenic_view: 'Маляўнічы від'
+  photo_spot: 'Месца для фота'
+  public_transport: 'Грамадскі транспарт'
+  guide_briefing: 'Інструктаж'
+  fuel_station: 'Запраўка'
+  fishing: 'Рыбалка'
+  overnight: 'Начлег'
+  adventure_spot: 'Экстрэмальнае месца'
+  transport: 'Трансфер'

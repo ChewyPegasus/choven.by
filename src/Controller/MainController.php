@@ -23,11 +23,16 @@ final class MainController extends AbstractController
     {
         $packages = $packageService->getAllPackages();
         $routes = $mapService->getAllRoutes();
+        $routesJson = $mapService->getRoutesForJson();
+        $labels = $mapService->getTranslatedLabels();
+        $labelsJson = json_encode($labels, JSON_UNESCAPED_UNICODE);
 
         return $this->createCacheableResponse('main/index.html.twig', [
             'packages' => $packages,
             'routes' => $routes,
-            'routesJson' => $mapService->getRoutesForJson(),
+            'routesJson' => $routesJson,
+            'labels' => $labels,
+            'labelsJson' => $labelsJson,
         ]);
     }
 }

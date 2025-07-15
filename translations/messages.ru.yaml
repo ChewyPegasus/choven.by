@@ -205,6 +205,7 @@ main:
     show_route: 'Показать на карте'
     show_all: 'Все маршруты'
     reset: 'Сбросить'
+    points: 'точек'
 
 order:
   title: 'Забронировать сплав'
@@ -364,19 +365,90 @@ profile:
     details: 'Подробнее'
 
 routes:
-  isloch:
-    description: 'Живописный маршрут по одной из красивейших рек Беларуси'
-    duration: '2 дня'
-    distance: '35 км'
-  svisloch:
-    description: 'Короткий городской маршрут, идеальный для новичков'
-    duration: '1 день'
-    distance: '18 км'
-  berezina:
-    description: 'Длинный маршрут по легендарной реке с ночевкой в палатках'
-    duration: '3-4 дня'
-    distance: '65 км'
   difficulty:
     easy: 'Легкая'
     medium: 'Средняя'
     high: 'Высокая'
+  isloch:
+    description: 'Живописный маршрут по одной из красивейших рек Беларуси'
+    duration: '2 дня'
+    distance: '35 км'
+    points:
+      start:
+        name: 'Центр Минска'
+        description: 'Стартовая точка в центре города с полной инфраструктурой'
+      borovlyany:
+        name: 'Боровляны'
+        description: 'Первая остановка с возможностью пополнить запасы'
+      zaslavl:
+        name: 'Заславль'
+        description: 'Исторический город с музеем и ресторанами'
+      radoshkovichi:
+        name: 'Радошковичи'
+        description: 'Отличное место для ночевки с кемпингом'
+      end:
+        name: 'База отдыха'
+        description: 'Финиш с полным сервисом для отдыха'
+  svisloch:
+    description: 'Короткий городской маршрут, идеальный для новичков'
+    duration: '1 день'
+    distance: '18 км'
+    points:
+      start:
+        name: 'Метро Малиновка'
+        description: 'Удобная стартовая точка с метро и парковкой'
+      park:
+        name: 'Парк Павлова'
+        description: 'Красивый парк для отдыха и фотосессий'
+      bridge:
+        name: 'Мост через Свислочь'
+        description: 'Живописное место с отличным видом на реку'
+      end:
+        name: 'Центральный район'
+        description: 'Финиш в центре с кафе и общественным транспортом'
+  berezina:
+    description: 'Длинный маршрут по легендарной реке с ночевкой в палатках'
+    duration: '3-4 дня'
+    distance: '65 км'
+    points:
+      start:
+        name: 'Борисов'
+        description: 'Исторический город - отправная точка большого приключения'
+      berezino:
+        name: 'Березино'
+        description: 'Районный центр с магазинами и заправкой'
+      camping:
+        name: 'Место ночевки'
+        description: 'Оборудованная стоянка для палаток у реки'
+      rapids:
+        name: 'Пороги Березины'
+        description: 'Самая захватывающая часть маршрута'
+      end:
+        name: 'База Березина'
+        description: 'Финиш с душем, рестораном и трансфером'
+
+facilities:
+  parking: 'Парковка'
+  cafe: 'Кафе'
+  equipment_rental: 'Аренда снаряжения'
+  rest_area: 'Зона отдыха'
+  shop: 'Магазин'
+  historical_site: 'Историческое место'
+  restaurant: 'Ресторан'
+  museum: 'Музей'
+  camping: 'Кемпинг'
+  bonfire_area: 'Место для костра'
+  shower: 'Душ'
+  sauna: 'Сауна'
+  metro_station: 'Метро'
+  park: 'Парк'
+  playground: 'Детская площадка'
+  scenic_view: 'Живописный вид'
+  photo_spot: 'Место для фото'
+  public_transport: 'Общественный транспорт'
+  guide_briefing: 'Инструктаж'
+  fuel_station: 'Заправка'
+  fishing: 'Рыбалка'
+  overnight: 'Ночевка'
+  adventure_spot: 'Экстремальное место'
+  transport: 'Трансфер'
