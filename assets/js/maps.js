@@ -75,11 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
             className: markerConfig.className,
             html: markerConfig.html,
             iconSize: markerConfig.size,
-            // Центрируем иконку. Это правильный способ.
             iconAnchor: [markerConfig.size[0] / 2, markerConfig.size[1] / 2], 
-            // Позиционируем попап над центром иконки.
             popupAnchor: [0, -markerConfig.size[1] / 2]
-            // УДАЛЕНО: htmlAnchor - это нестандартное свойство, которое вызывало ошибку.
         });
     }
 

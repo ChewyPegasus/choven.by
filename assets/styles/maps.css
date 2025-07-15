@@ -200,22 +200,22 @@
 /* Анимация пульсации для старта и финиша */
 @keyframes pulse-start {
     0%, 100% {
-        transform: scale(1);
+        /* transform: scale(1); */
         box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
     }
     50% {
-        transform: scale(1.05);
+        /* transform: scale(1.05); */
         box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
     }
 }
 
 @keyframes pulse-end {
     0%, 100% {
-        transform: scale(1);
+        /* transform: scale(1); */
         box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
     }
     50% {
-        transform: scale(1.05);
+        /* transform: scale(1.05); */
         box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
     }
 }
