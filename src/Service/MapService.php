@@ -99,46 +99,6 @@ class MapService
                     ]
                 ]
             ],
-            'berezina' => [
-                'name' => $this->translator->trans('river.berezina'),
-                'color' => '#dc3545',
-                'difficulty' => $this->translator->trans('routes.difficulty.high'),
-                'duration' => $this->translator->trans('routes.berezina.duration'),
-                'distance' => $this->translator->trans('routes.berezina.distance'),
-                'description' => $this->translator->trans('routes.berezina.description'),
-                'points' => [
-                    [
-                        'coordinates' => [53.7800, 28.3400],
-                        'type' => 'start',
-                        'name' => $this->translator->trans('routes.berezina.points.start.name'),
-                        'description' => $this->translator->trans('routes.berezina.points.start.description')
-                    ],
-                    [
-                        'coordinates' => [53.7600, 28.3800],
-                        'type' => 'point',
-                        'name' => $this->translator->trans('routes.berezina.points.berezino.name'),
-                        'description' => $this->translator->trans('routes.berezina.points.berezino.description')
-                    ],
-                    [
-                        'coordinates' => [53.7400, 28.4200],
-                        'type' => 'point',
-                        'name' => $this->translator->trans('routes.berezina.points.camping.name'),
-                        'description' => $this->translator->trans('routes.berezina.points.camping.description')
-                    ],
-                    [
-                        'coordinates' => [53.7200, 28.4600],
-                        'type' => 'point',
-                        'name' => $this->translator->trans('routes.berezina.points.rapids.name'),
-                        'description' => $this->translator->trans('routes.berezina.points.rapids.description')
-                    ],
-                    [
-                        'coordinates' => [53.7000, 28.5000],
-                        'type' => 'end',
-                        'name' => $this->translator->trans('routes.berezina.points.end.name'),
-                        'description' => $this->translator->trans('routes.berezina.points.end.description')
-                    ]
-                ]
-            ]
         ];
     }
 
