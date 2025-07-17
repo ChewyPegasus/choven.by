@@ -7,7 +7,7 @@ namespace App\Service;
 use App\Entity\EmailQueue;
 use App\Entity\FailedEmail;
 use App\Entity\User;
-use App\Enum\EmailType;
+use App\Enum\EmailTemplate;
 use App\Factory\EmailFactory;
 use App\Repository\EmailQueueRepository;
 use App\Repository\FailedEmailRepository;
@@ -51,8 +51,8 @@ class EmailRetryService
     private function initTopicMap(): void
     {
         $this->topicMap = [
-            EmailType::ORDER_CONFIRMATION->value => $this->orderTopic,
-            EmailType::VERIFICATION->value => $this->registrationTopic,
+            EmailTemplate::ORDER_CONFIRMATION->value => $this->orderTopic,
+            EmailTemplate::VERIFICATION->value => $this->registrationTopic,
         ];
     }
 
@@ -60,7 +60,7 @@ class EmailRetryService
     {
         // Register context handlers for different email types
         $this->contextHandlers = [
-            EmailType::VERIFICATION->value => [$this, 'processVerificationContext'],
+            EmailTemplate::VERIFICATION->value => [$this, 'processVerificationContext'],
         ];
     }
 
@@ -163,7 +163,7 @@ class EmailRetryService
                 return;
             }
             
-            $emailTypeEnum = EmailType::from($emailType);
+            $emailTypeEnum = EmailTemplate::from($emailType);
             $emailDto = $this->emailFactory->createDTO($emailTypeEnum, $context);
             
             // Try sending methods in sequence
@@ -267,7 +267,7 @@ class EmailRetryService
     /**
      * Try to send email directly via EmailSender
      */
-    private function sendDirectly(EmailQueue $queuedEmail, EmailType $emailType, $emailDto): bool
+    private function sendDirectly(EmailQueue $queuedEmail, EmailTemplate $emailType, $emailDto): bool
     {
         try {
             // Send email directly
@@ -304,17 +304,20 @@ class EmailRetryService
     /**
      * Handle a failed email - either keep in queue or move to failed_emails
      */
-    private function handleFailedEmail(EmailQueue $queuedEmail, string $error): void
+    private function handleFailedEmail(
+        EmailQueue $queuedEmail, 
+        string $error,
+    ): void
     {
         // If max attempts reached, move to failed_emails table
         if ($queuedEmail->getAttempts() >= self::MAX_ATTEMPTS) {
-            // Create a new FailedEmail entity with data from the queue
-            $failedEmail = new FailedEmail();
-            $failedEmail->setEmailType($queuedEmail->getEmailType())
-                        ->setContext($queuedEmail->getContext())
-                        ->setError($error)
-                        ->setAttempts($queuedEmail->getAttempts())
-                        ->setCreatedAt($queuedEmail->getCreatedAt());
+            $failedEmail = $this->emailFactory->createFailedEmail(
+                $queuedEmail->getEmailType(),
+                $queuedEmail->getContext(),
+                $error,
+                $queuedEmail->getAttempts(),
+                $queuedEmail->getCreatedAt(),
+            );
             
             // Copy optional fields if present
             if ($queuedEmail->getLastAttemptAt()) {

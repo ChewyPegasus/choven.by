@@ -12,18 +12,22 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Order;
-use App\Enum\EmailType;
+use App\Enum\EmailTemplate;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
 use App\Factory\EmailFactory;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\OrderService;
+use EmailQueueFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/order')]
 final class OrderController extends AbstractController
 {
-    public function __construct(private readonly string $orderTopic)
+    public function __construct(
+        private readonly string $orderTopic,
+        private readonly EmailFactory $emailFactory,
+        )
     {
     }
 
@@ -66,7 +70,7 @@ final class OrderController extends AbstractController
                 $producer->produce(
                     $this->orderTopic,
                     $emailFactory->createDTO(
-                        EmailType::ORDER_CONFIRMATION,
+                        EmailTemplate::ORDER_CONFIRMATION,
                         [
                             'order' => $order,
                         ]
@@ -79,10 +83,13 @@ final class OrderController extends AbstractController
                 $logger->error('Kafka publishing failed: ' . $e->getMessage(), ['exception' => $e]);
 
                 // Saving to email queue for retry
-                $emailQueue = new EmailQueue();
-                $emailQueue->setEmailType(EmailType::ORDER_CONFIRMATION->value)
-                        ->setContext(['order' => $order->getId()])
-                        ->setLocale($request->getLocale());
+                $emailQueue = $this->emailFactory->createEmailQueue(
+                    EmailTemplate::ORDER_CONFIRMATION->value,
+                    [
+                        'order' => $order->getId()
+                    ],
+                    $request->getLocale(),
+                );
                 
                 $entityManager->persist($emailQueue);
                 $entityManager->flush();

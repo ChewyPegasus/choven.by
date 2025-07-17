@@ -49,10 +49,6 @@ class PhoneNumberType extends AbstractType implements DataTransformerInterface
 
     public function transform($value): string
     {
-        if ($value === null) {
-            return '';
-        }
-
         if ($value instanceof PhoneNumber) {
             $phoneUtil = PhoneNumberUtil::getInstance();
             return $phoneUtil->format($value, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\DTO\AbstractEmailDTO;
-use App\Enum\EmailType;
 use App\Factory\EmailFactory;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
@@ -27,18 +26,16 @@ use Symfony\Component\Translation\LocaleSwitcher;
 )]
 class KafkaConsumeCommand extends Command
 {
-    private MessageProcessorRegistry $processorRegistry;
-
     public function __construct(
         private readonly KafkaConsumer $consumer,
-        private readonly string $orderTopic,
-        private readonly string $registrationTopic,
+        private readonly array $topics,
         private readonly LoggerInterface $logger,
         private readonly OrderRepository $orderRepository,
         private readonly UserRepository $userRepository,
         private readonly EmailSender $sender,
         private readonly EmailFactory $emailFactory,
-        private readonly LocaleSwitcher $localeSwitcher
+        private readonly LocaleSwitcher $localeSwitcher,
+        private readonly MessageProcessorRegistry $processorRegistry,
     ) {
         parent::__construct();
         
@@ -48,9 +45,6 @@ class KafkaConsumeCommand extends Command
     
     private function initProcessorRegistry(): void
     {
-        $this->processorRegistry = new MessageProcessorRegistry();
-        
-        //Register processors for different types of messages
         $this->processorRegistry->registerProcessor(
             'order',
             new OrderMessageProcessor(
@@ -84,12 +78,10 @@ class KafkaConsumeCommand extends Command
         $output->writeln('Starting Kafka consumer for multiple topics...');
         $this->localeSwitcher->reset();
 
-        if (!$this->processTopic($input, $output, $this->orderTopic)) {
-            return Command::FAILURE;
-        }
-
-        if (!$this->processTopic($input, $output, $this->registrationTopic)) {
-            return Command::FAILURE;
+        foreach ($this->topics as $topicName => $topicValue) {
+            if (!$this->processTopic($input, $output, $topicValue)) {
+                return Command::FAILURE;
+            }
         }
 
         return Command::SUCCESS;

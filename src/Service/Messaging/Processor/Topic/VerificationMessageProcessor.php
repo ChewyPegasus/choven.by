@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Messaging\Processor\Topic;
 
-use App\Enum\EmailType;
+use App\Enum\EmailTemplate;
 use App\Factory\EmailFactory;
 use App\Repository\UserRepository;
 use App\Service\Messaging\Processor\MessageProcessorInterface;
@@ -51,7 +51,7 @@ class VerificationMessageProcessor implements MessageProcessorInterface
                 $this->localeSwitcher->setLocale($messageData['locale']);
             }
 
-            $emailDto = $this->emailFactory->createDTO(EmailType::VERIFICATION, [
+            $emailDto = $this->emailFactory->createDTO(EmailTemplate::VERIFICATION, [
                 'user' => $user,
                 'confirmUrl' => $confirmUrl,
                 'locale' => $messageData['locale'] ?? null,

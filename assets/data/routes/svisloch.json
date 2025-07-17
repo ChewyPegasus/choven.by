@@ -1,0 +1,34 @@
+{
+    "name": "river.svisloch",
+    "color": "#28a745",
+    "difficulty": "routes.difficulty.easy",
+    "duration": "routes.svisloch.duration",
+    "distance": "routes.svisloch.distance",
+    "description": "routes.svisloch.description",
+    "points": [
+        {
+            "coordinates": [53.875663, 27.584552],
+            "type": "start",
+            "name": "routes.svisloch.points.start.name",
+            "description": "routes.svisloch.points.start.description"
+        },
+        {
+            "coordinates": [53.856594, 27.580547],
+            "type": "point",
+            "name": "routes.svisloch.points.park.name",
+            "description": "routes.svisloch.points.park.description"
+        },
+        {
+            "coordinates": [53.853520, 27.586773],
+            "type": "point",
+            "name": "routes.svisloch.points.ruins.name",
+            "description": "routes.svisloch.points.ruins.description"
+        },
+        {
+            "coordinates": [53.848692, 27.589894],
+            "type": "end",
+            "name": "routes.svisloch.points.end.name",
+            "description": "routes.svisloch.points.end.description"
+        }
+    ]
+}

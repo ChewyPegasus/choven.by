@@ -7,9 +7,12 @@ namespace App\Factory;
 use App\DTO\DTO;
 use App\DTO\OrderDTO;
 use App\DTO\VerificationDTO;
+use App\Entity\EmailQueue;
+use App\Entity\FailedEmail;
 use App\Entity\Order;
 use App\Entity\User;
-use App\Enum\EmailType;
+use App\Enum\EmailTemplate;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -21,11 +24,11 @@ class EmailFactory
     ) {
     }
 
-    public function createDTO(EmailType $type, array $data): DTO
+    public function createDTO(EmailTemplate $type, array $data): DTO
     {
         return match($type) {
-            EmailType::ORDER_CONFIRMATION => $this->createOrderDTO($data),
-            EmailType::VERIFICATION => $this->createVerificationDTO($data),
+            EmailTemplate::ORDER_CONFIRMATION => $this->createOrderDTO($data),
+            EmailTemplate::VERIFICATION => $this->createVerificationDTO($data),
         };
     }
 
@@ -71,5 +74,37 @@ class EmailFactory
             ->subject($emailData['subject'])
             ->html($emailData['html_content'])
             ->text($emailData['text_content']);
+    }
+
+    public function createEmailQueue(
+        string $emailType,
+        array $context,
+        ?string $locale, 
+    ): EmailQueue 
+    {
+        $email = new EmailQueue();
+        $email->setEmailType($emailType)
+            ->setContext($context)
+            ->setLocale($locale)
+        ;
+        return $email;
+    }
+
+    public function createFailedEmail(
+        string $emailType,
+        array $context,
+        ?string $error,
+        int $attempts,
+        DateTimeImmutable $createdAt,
+    ): FailedEmail
+    {
+        $email = new FailedEmail;
+        $email->setEmailType($emailType)
+            ->setContext($context)
+            ->setError($error)
+            ->setAttempts($attempts)
+            ->setCreatedAt($createdAt)
+        ;
+        return $email;
     }
 }

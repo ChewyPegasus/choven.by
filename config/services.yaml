@@ -11,6 +11,9 @@ parameters:
     app.site_url: 'https://choven.by'
     app.site_name: 'Choven.by'
 
+    kafka.topics:
+        order: '%kafka.order_topic%'
+        registration: '%kafka.registration_topic%'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -47,8 +50,7 @@ services:
     
     App\Command\KafkaConsumeCommand:
         arguments:
-            $orderTopic: '%kafka.order_topic%'
-            $registrationTopic: '%kafka.registration_topic%'
+            $topics: '%kafka.topics%'
 
     App\Service\Messaging\Producer\KafkaProducer:
         arguments:
@@ -64,10 +66,6 @@ services:
         arguments:
             $orderTopic: '%kafka.order_topic%'
 
-    App\Controller\RegistrationController:
-        arguments:
-            $registrationTopic: '%kafka.registration_topic%'
-
     App\Service\EmailRetryService:
         arguments:
             $orderTopic: '%kafka.order_topic%'
@@ -76,3 +74,7 @@ services:
     App\Service\MapService:
         arguments:
             $translator: '@translator'
+
+    App\Service\Registration\UserRegistrationService:
+        arguments:
+            $registrationTopic: '%kafka.registration_topic%'

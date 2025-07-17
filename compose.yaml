@@ -125,7 +125,8 @@ services:
     container_name: php
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: ./docker/Dockerfile
+    image: choven-php
     restart: unless-stopped
     volumes:
       - .:/var/www
@@ -167,14 +168,14 @@ services:
       - choven_net
 
   consumer:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: choven-php
     container_name: consumer
     restart: unless-stopped
     working_dir: /var/www
     user: www-data
     depends_on:
+      php:
+        condition: service_started
       kafka:
         condition: service_healthy
       database:
@@ -197,7 +198,7 @@ services:
   cron:
     build:
       context: .
-      dockerfile: Dockerfile.cron
+      dockerfile: ./docker/Dockerfile.cron
     container_name: cron
     restart: unless-stopped
     depends_on:

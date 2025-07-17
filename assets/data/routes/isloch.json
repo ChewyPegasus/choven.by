@@ -1,0 +1,46 @@
+{
+    "name": "river.isloch",
+    "color": "#ff6b00",
+    "difficulty": "routes.difficulty.medium",
+    "duration": "routes.isloch.duration",
+    "distance": "routes.isloch.distance",
+    "description": "routes.isloch.description",
+    "points": [
+        {
+            "coordinates": [53.957456, 26.737684],
+            "type": "start",
+            "name": "routes.isloch.points.borov.name",
+            "description": "routes.isloch.points.borov.description"
+        },
+        {
+            "coordinates": [54.009733, 26.642532],
+            "type": "point",
+            "name": "routes.isloch.points.golubi.name",
+            "description": "routes.isloch.points.golubi.description"
+        },
+        {
+            "coordinates": [54.013528, 26.607166],
+            "type": "point",
+            "name": "routes.isloch.points.yatskovo.name",
+            "description": "routes.isloch.points.yatskovo.description"
+        },
+        {
+            "coordinates": [54.024217, 26.484207],
+            "type": "point",
+            "name": "routes.isloch.points.belokorec.name",
+            "description": "routes.isloch.points.belokorec.description"
+        },
+        {
+            "coordinates": [54.013380, 26.414221],
+            "type": "point",
+            "name": "routes.isloch.points.dorogun.name",
+            "description": "routes.isloch.points.dorogun.description"
+        },
+        {
+            "coordinates": [54.000518, 26.373943],
+            "type": "end",
+            "name": "routes.isloch.points.most.name",
+            "description": "routes.isloch.points.most.description"
+        }
+    ]
+}

@@ -4,21 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\EmailQueue;
-use App\Entity\User;
-use App\Enum\EmailType;
-use App\Enum\Role;
-use App\Factory\EmailFactory;
 use App\Form\RegistrationForm;
-use App\Repository\UserRepository;
-use App\Service\Messaging\Producer\Producer;
-use App\Service\Sending\EmailSender;
-use Doctrine\ORM\EntityManagerInterface;
-use Psr\Log\LoggerInterface;
+use App\Service\Registration\EmailVerificationService;
+use App\Service\Registration\UserRegistrationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -26,98 +17,60 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 final class RegistrationController extends AbstractController
 {
     public function __construct(
-        private readonly EmailSender $sender,
-        private readonly EmailFactory $emailFactory,
-        private readonly LoggerInterface $logger,
-        private readonly UserRepository $userRepository,
-        private readonly string $registrationTopic,
-        private readonly EntityManagerInterface $entityManager,
-    ) {}
+        private readonly UserRegistrationService $registrationService,
+        private readonly EmailVerificationService $verificationService,
+    ) {
+    }
 
     #[Route('/register', name: 'app_register')]
     public function register(
         Request $request,
-        UserPasswordHasherInterface $hasher,
-        EntityManagerInterface $manager,
         TranslatorInterface $translator,
-        Producer $producer,
     ): Response {
         if ($this->getUser()) {
             return $this->redirectToRoute('app_main');
         }
         
-        $user = new User();
+        $user = $this->registrationService->createUser();
         $form = $this->createForm(RegistrationForm::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $existingUser = $this->userRepository->findOneBy(['email' => $user->getEmail()]);
-            if ($existingUser) {
-                $this->addFlash('error', $translator->trans('registration.email.already_exists'));
-                
+            // Validate user uniqueness
+            $validationError = $this->registrationService->validateUserUniqueness($user);
+            if ($validationError) {
+                $this->addFlash('error', $translator->trans($validationError));
                 return $this->redirectToRoute('app_register');
             }
 
-            $existingUserByPhone = $this->userRepository->findOneBy(['phone' => $user->getPhone()]);
-            if ($existingUserByPhone) {
-                $this->addFlash('error', $translator->trans('registration.phone.already_used'));
-                return $this->redirectToRoute('app_register');
-            }
-
-            $confirmationCode = bin2hex(random_bytes(10));
-            $user->setConfirmationCode($confirmationCode);
-            $user->setIsConfirmed(false);
-            $user->setRoles([Role::USER->value]);
-
-            $user->setPassword(
-                $hasher->hashPassword(
-                    $user,
-                    $form->get('plainPassword')->getData()
-                )
+            // Register user
+            $this->registrationService->registerUser(
+                $user, 
+                $form->get('plainPassword')->getData()
             );
 
-            $manager->persist($user);
-            $manager->flush();
+            // Send verification email
+            $confirmUrl = $this->generateUrl(
+                'app_verify_email',
+                ['code' => $user->getConfirmationCode()],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            );
 
-            // Sending verification letter
-            try {
-                $producer->produce(
-                    $this->registrationTopic,
-                    $this->emailFactory->createDTO(
-                        EmailType::VERIFICATION,
-                        [
-                            'user' => $user,
-                            'confirmUrl' => $this->generateUrl(
-                                'app_verify_email',
-                                ['code' => $user->getConfirmationCode()],
-                                UrlGeneratorInterface::ABSOLUTE_URL
-                            ),
-                            'locale' => $request->getLocale(),
-                        ]
-                    ),
-                    'user_' . $user->getId(),
-                );
+            $emailSent = $this->registrationService->sendVerificationEmail(
+                $user, 
+                $confirmUrl, 
+                $request->getLocale()
+            );
+
+            if ($emailSent) {
                 $this->addFlash('success', $translator->trans('registration.success'));
-            } catch (\Exception $e) {
-                $this->logger->error('Kafka publishing failed for registration email: ' . $e->getMessage(), ['exception' => $e]);
-                
-                // Save to email queue for retry
-                $emailQueue = new EmailQueue();
-                $emailQueue->setEmailType(EmailType::VERIFICATION->value)
-                           ->setContext([
-                                'user' => $user->getId(),
-                                'confirmUrl' => $this->generateUrl(
-                                    'app_verify_email',
-                                    ['code' => $user->getConfirmationCode()],
-                                    UrlGeneratorInterface::ABSOLUTE_URL
-                                )
-                            ])
-                           ->setLocale($request->getLocale());
-                
-                $this->entityManager->persist($emailQueue);
-                $this->entityManager->flush();
-                
-                // Notify user that email will be sent later
+            } else {
+                // Queue email for retry
+                $this->registrationService->queueVerificationEmail(
+                    $user, 
+                    $confirmUrl, 
+                    $request->getLocale()
+                );
                 $this->addFlash('info', $translator->trans('registration.info.email_queued'));
             }
 
@@ -133,29 +86,20 @@ final class RegistrationController extends AbstractController
     public function verifyUserEmail(
         string $code, 
         TranslatorInterface $translator,
-        EntityManagerInterface $manager,
     ): Response {
-        $user = $this->userRepository->findOneBy([
-            'confirmationCode' => $code,
-        ]);
+        $user = $this->verificationService->findUserByConfirmationCode($code);
         
         if (!$user) {
             $this->addFlash('error', $translator->trans('verification.invalid_link'));
-            
             return $this->redirectToRoute('app_main');
         }
 
-        // If the user is already confirmed
         if ($user->isConfirmed()) {
             $this->addFlash('info', $translator->trans('verification.already_confirmed'));
-            
             return $this->redirectToRoute('app_login');
         }
 
-        $user->setIsConfirmed(true);
-        $user->setConfirmationCode(null);
-        $manager->flush();
-
+        $this->verificationService->confirmUser($user);
         $this->addFlash('success', $translator->trans('verification.success'));
 
         return $this->redirectToRoute('app_login');

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Service\Messaging\Processor\Topic;
 
-use App\Enum\EmailType;
+use App\Enum\EmailTemplate;
 use App\Factory\EmailFactory;
 use App\Repository\OrderRepository;
 use App\Service\Messaging\Processor\MessageProcessorInterface;
@@ -48,7 +48,7 @@ class OrderMessageProcessor implements MessageProcessorInterface
                 $this->localeSwitcher->setLocale($locale);
             }
             
-            $emailDto = $this->emailFactory->createDTO(EmailType::ORDER_CONFIRMATION, ['order' => $order]);
+            $emailDto = $this->emailFactory->createDTO(EmailTemplate::ORDER_CONFIRMATION, ['order' => $order]);
             $this->sender->send($emailDto);
             
             $output->writeln(sprintf('Email for order %d sent successfully in locale "%s".', $order->getId(), $this->localeSwitcher->getLocale()));
