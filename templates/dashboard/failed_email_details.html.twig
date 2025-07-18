@@ -1,73 +1,83 @@
-{# filepath: d:\prog\php\project\choven.by\templates\admin\failed_email_details.html.twig #}
 {% extends 'base.html.twig' %}
 
-{% block title %}Детали неудачного письма{% endblock %}
+{% block title %}{{ 'admin.failed_emails.details.title'|trans({'%id%': email.id}) }}{% endblock %}
 
 {% block head %}
     {% block stylesheets %}
         {{ parent() }}
-        <style>
-            <link rel="stylesheet" href="{{ asset('styles/dashboard.css') }}">
-        </style>
+        <link rel="stylesheet" href="{{ asset('styles/dashboard/failed_email_details.css') }}">
     {% endblock %}
 {% endblock %}
 
 {% block body %}
     <section class="email-details">
         <div class="container">
-            <h1 class="email-details-title">Детали неудачного письма #{{ email.id }}</h1>
+            <a href="{{ path('app_admin_failed_emails') }}" class="back-to-list">
+                <i class="fas fa-arrow-left"></i>{{ 'admin.failed_emails.back_to_list'|trans }}
+            </a>
+            
+            <h1 class="email-details-title">{{ 'admin.failed_emails.details.title'|trans({'%id%': email.id}) }}</h1>
             
             <div class="email-card">
-                <h3>Основная информация</h3>
-                
-                <div class="info-row">
-                    <div class="info-label">ID:</div>
-                    <div class="info-value">{{ email.id }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Тип письма:</div>
-                    <div class="info-value">{{ email.emailType }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Количество попыток:</div>
-                    <div class="info-value">{{ email.attempts }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Дата создания:</div>
-                    <div class="info-value">{{ email.createdAt|date('d.m.Y H:i:s') }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Последняя попытка:</div>
-                    <div class="info-value">{{ email.lastAttemptAt|date('d.m.Y H:i:s') }}</div>
-                </div>
-                
-                <div class="info-row">
-                    <div class="info-label">Локаль:</div>
-                    <div class="info-value">{{ email.locale|default('default') }}</div>
+                <h3>{{ 'admin.failed_emails.details.basic_info'|trans }}</h3>
+                <div class="card-content">
+                    <div class="info-row">
+                        <div class="info-label">{{ 'admin.failed_emails.table.id'|trans }}:</div>
+                        <div class="info-value">{{ email.id }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">{{ 'admin.failed_emails.table.type'|trans }}:</div>
+                        <div class="info-value">
+                            <span class="status-badge status-failed">
+                                {{ ('admin.failed_emails.types.' ~ email.emailType)|trans }}
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">{{ 'admin.failed_emails.table.attempts'|trans }}:</div>
+                        <div class="info-value">
+                            <span class="attempts-badge">{{ email.attempts }} {{ 'admin.failed_emails.attempts_count'|trans }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">{{ 'admin.failed_emails.table.created_at'|trans }}:</div>
+                        <div class="info-value">{{ email.createdAt|date('d.m.Y H:i:s') }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">{{ 'admin.failed_emails.table.last_attempt'|trans }}:</div>
+                        <div class="info-value">{{ email.lastAttemptAt|date('d.m.Y H:i:s') }}</div>
+                    </div>
+                    
+                    <div class="info-row">
+                        <div class="info-label">{{ 'admin.failed_emails.table.locale'|trans }}:</div>
+                        <div class="info-value">{{ email.locale|default('admin.failed_emails.default_locale'|trans) }}</div>
+                    </div>
                 </div>
             </div>
             
             {% if email.error %}
                 <div class="email-card">
-                    <h3>Сообщение об ошибке</h3>
-                    <div class="error-message">
-                        <pre>{{ email.error }}</pre>
+                    <h3>{{ 'admin.failed_emails.details.error_message'|trans }}</h3>
+                    <div class="card-content">
+                        <div class="error-message">
+                            <pre>{{ email.error }}</pre>
+                        </div>
                     </div>
                 </div>
             {% endif %}
             
             <div class="email-card">
-                <h3>Контекст письма</h3>
-                <div class="context-data">
-                    <pre>{{ email.context|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                <h3>{{ 'admin.failed_emails.details.context'|trans }}</h3>
+                <div class="card-content">
+                    <div class="context-data">
+                        <pre>{{ email.context|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+                    </div>
                 </div>
             </div>
-            
-            <a href="{{ path('app_admin_failed_emails') }}" class="back-link">&laquo; Вернуться к списку</a>
         </div>
     </section>
 {% endblock %}

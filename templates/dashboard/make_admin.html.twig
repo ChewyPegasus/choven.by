@@ -1,0 +1,136 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.make_admin.title'|trans }}{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/dashboard/make_admin.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <section class="admin-panel">
+        <div class="container">
+            <a href="{{ path('app_admin_dashboard') }}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i>{{ 'admin.back_to_dashboard'|trans }}
+            </a>
+            
+            <h1 class="admin-title">{{ 'admin.make_admin.title'|trans }}</h1>
+            
+            <!-- Current admins -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-user-shield"></i>
+                        {{ 'admin.make_admin.current_admins'|trans }}
+                    </h3>
+                    <span class="admin-count">{{ admins|length }}</span>
+                </div>
+                <div class="section-content">
+                    {% if admins|length > 0 %}
+                        <div class="admin-list">
+                            {% for admin in admins %}
+                                <div class="admin-item">
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            {{ admin.email|first|upper }}
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="user-email">{{ admin.email }}</div>
+                                            <div class="user-meta">
+                                                <i class="fas fa-shield-alt"></i>
+                                                {{ 'admin.make_admin.administrator'|trans }}
+                                                {% if admin.orders|length > 0 %}
+                                                    • {{ admin.orders|length }} {{ 'admin.users.orders'|trans }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="action-btn btn-demote" 
+                                            onclick="removeAdmin({{ admin.id }})"
+                                            {% if admins|length <= 1 %}disabled{% endif %}>
+                                        <i class="fas fa-user-minus"></i>
+                                        {{ 'admin.make_admin.remove_admin'|trans }}
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            {{ 'admin.make_admin.no_admins'|trans }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Normal users -->
+            <div class="admin-section">
+                <div class="section-header">
+                    <h3 class="section-title">
+                        <i class="fas fa-users"></i>
+                        {{ 'admin.make_admin.regular_users'|trans }}
+                    </h3>
+                    <span class="admin-count">{{ regularUsers|length }}</span>
+                </div>
+                <div class="section-content">
+                    {% if regularUsers|length > 0 %}
+                        <div class="user-list">
+                            {% for user in regularUsers %}
+                                <div class="user-item" id="user-{{ user.id }}">
+                                    <div class="user-info">
+                                        <div class="user-avatar">
+                                            {{ user.email|first|upper }}
+                                        </div>
+                                        <div class="user-details">
+                                            <div class="user-email">{{ user.email }}</div>
+                                            <div class="user-meta">
+                                                <i class="fas fa-user"></i>
+                                                {{ user.isConfirmed ? 'admin.users.confirmed'|trans : 'admin.users.not_confirmed'|trans }}
+                                                {% if user.orders|length > 0 %}
+                                                    • {{ user.orders|length }} {{ 'admin.users.orders'|trans }}
+                                                {% endif %}
+                                                {% if user.phoneString %}
+                                                    • <i class="fas fa-phone"></i> {{ user.phoneString }}
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="action-btn btn-promote" onclick="promoteUser({{ user.id }})">
+                                        <i class="fas fa-user-plus"></i>
+                                        {{ 'admin.make_admin.make_admin'|trans }}
+                                    </button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            {{ 'admin.make_admin.no_regular_users'|trans }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="console-info">
+                <div class="console-title">{{ 'admin.make_admin.console_alternative'|trans }}</div>
+                <p>{{ 'admin.make_admin.description'|trans }}</p>
+                
+                <strong>{{ 'admin.make_admin.instructions.step'|trans }}</strong>
+                <div class="console-command">docker-compose exec -it php php bin/console app:user:make-admin user@example.com</div>
+            </div>
+            
+            {# <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>{{ 'admin.make_admin.warning.title'|trans }}</strong><br>
+                {{ 'admin.make_admin.warning.text'|trans }}
+            </div> #}
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/dashboard/make_admin.js') }}"></script>
+{% endblock %}

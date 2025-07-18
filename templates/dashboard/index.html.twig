@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.dashboard.title'|trans }}{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/dashboard/index.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <section class="admin-dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">{{ 'admin.dashboard.title'|trans }}</h1>
+                <p class="dashboard-subtitle">{{ 'admin.dashboard.subtitle'|trans }}</p>
+            </div>
+            
+            <!-- {{ 'admin.dashboard.statistics'|trans }} -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.total_users }}</div>
+                    <div class="stat-label">{{ 'admin.stats.total_users'|trans }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.confirmed_users }}</div>
+                    <div class="stat-label">{{ 'admin.stats.confirmed_users'|trans }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.total_orders }}</div>
+                    <div class="stat-label">{{ 'admin.stats.total_orders'|trans }}</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ stats.failed_emails }}</div>
+                    <div class="stat-label">{{ 'admin.stats.failed_emails'|trans }}</div>
+                </div>
+            </div>
+            
+            <!-- {{ 'admin.dashboard.management_menu'|trans }} -->
+            <div class="admin-menu">
+                <a href="{{ path('app_admin_orders') }}" class="menu-item">
+                    <i class="fas fa-shopping-cart menu-icon"></i>
+                    <div class="menu-title">{{ 'admin.menu.orders.title'|trans }}</div>
+                    <div class="menu-description">{{ 'admin.menu.orders.description'|trans }}</div>
+                </a>
+                
+                <a href="{{ path('app_admin_users') }}" class="menu-item">
+                    <i class="fas fa-users menu-icon"></i>
+                    <div class="menu-title">{{ 'admin.menu.users.title'|trans }}</div>
+                    <div class="menu-description">{{ 'admin.menu.users.description'|trans }}</div>
+                </a>
+                
+                <a href="{{ path('app_admin_failed_emails') }}" class="menu-item">
+                    <i class="fas fa-exclamation-triangle menu-icon"></i>
+                    <div class="menu-title">{{ 'admin.menu.failed_emails.title'|trans }}</div>
+                    <div class="menu-description">{{ 'admin.menu.failed_emails.description'|trans }}</div>
+                </a>
+                
+                <a href="{{ path('app_admin_logs') }}" class="menu-item">
+                    <i class="fas fa-file-alt menu-icon"></i>
+                    <div class="menu-title">{{ 'admin.menu.logs.title'|trans }}</div>
+                    <div class="menu-description">{{ 'admin.menu.logs.description'|trans }}</div>
+                </a>
+                
+                <a href="{{ path('app_admin_make_admin') }}" class="menu-item">
+                    <i class="fas fa-user-shield menu-icon"></i>
+                    <div class="menu-title">{{ 'admin.menu.make_admin.title'|trans }}</div>
+                    <div class="menu-description">{{ 'admin.menu.make_admin.description'|trans }}</div>
+                </a>
+                
+                <a href="{{ path('app_admin_routes') }}" class="menu-item">
+                    <i class="fas fa-route menu-icon"></i>
+                    <div class="menu-title">{{ 'admin.menu.routes.title'|trans }}</div>
+                    <div class="menu-description">{{ 'admin.menu.routes.description'|trans }}</div>
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

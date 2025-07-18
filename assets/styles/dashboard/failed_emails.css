@@ -1,0 +1,183 @@
+.admin-panel {
+    padding: 40px 0;
+    background: #f8f9fa;
+    min-height: 80vh;
+}
+
+.back-to-dashboard {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-to-dashboard:hover {
+    background: #5a6268;
+    text-decoration: none;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.back-to-dashboard i {
+    margin-right: 8px;
+}
+
+.admin-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 40px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.admin-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #dc3545;
+}
+
+.email-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.email-table th, .email-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.email-table th {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.email-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.badge-type {
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+}
+
+.detail-link {
+    color: #dc3545;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 5px 10px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.detail-link:hover {
+    background: #dc3545;
+    color: white;
+    text-decoration: none;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.pagination a, .pagination span {
+    padding: 12px 18px;
+    border: 2px solid #dee2e6;
+    color: #495057;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination a:hover {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+    transform: translateY(-2px);
+}
+
+.pagination .active {
+    background: #dc3545;
+    color: white;
+    border-color: #dc3545;
+}
+
+.pagination .disabled {
+    color: #6c757d;
+    background: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.alert {
+    padding: 30px;
+    margin: 40px auto;
+    max-width: 500px;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.alert-info {
+    background: linear-gradient(135deg, #d1ecf1, #bee5eb);
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+@media (max-width: 768px) {
+    .email-table {
+        font-size: 0.85rem;
+    }
+    
+    .email-table th, .email-table td {
+        padding: 10px 8px;
+    }
+    
+    .admin-title {
+        font-size: 2rem;
+    }
+    
+    .pagination {
+        flex-wrap: wrap;
+    }
+}

@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.logs.title'|trans }}{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/dashboard/logs.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <section class="admin-panel">
+        <div class="container">
+            <a href="{{ path('app_admin_dashboard') }}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i>{{ 'admin.back_to_dashboard'|trans }}
+            </a>
+            
+            <h1 class="admin-title">{{ 'admin.logs.title'|trans }}</h1>
+            
+            {% if logExists %}
+                <div class="log-viewer">
+                    <div class="log-header">
+                        <h3 class="log-title">
+                            <i class="fas fa-file-alt"></i>
+                            {{ 'admin.logs.system_logs'|trans }}
+                        </h3>
+                        <form method="get" class="log-controls">
+                            <label for="lines">{{ 'admin.logs.lines_count'|trans }}:</label>
+                            <input type="number" 
+                                   id="lines" 
+                                   name="lines" 
+                                   value="{{ lines }}" 
+                                   min="50" 
+                                   max="1000" 
+                                   step="50"
+                                   placeholder="100">
+                            <button type="submit" class="refresh-btn">
+                                <i class="fas fa-sync-alt"></i>
+                                {{ 'admin.logs.refresh'|trans }}
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="log-content-wrapper">
+                        <pre class="log-content" id="logContent">{{ logContent }}</pre>
+                    </div>
+                    
+                    <div class="log-info">
+                        <div class="log-stats">
+                            <div class="log-stat">
+                                <i class="fas fa-lines-leaning"></i>
+                                <span>{{ 'admin.logs.showing_last_lines'|trans({'%count%': lines}) }}</span>
+                            </div>
+                            <div class="log-stat">
+                                <i class="fas fa-clock"></i>
+                                <span>{{ 'admin.logs.last_updated'|trans }}: {{ "now"|date('H:i:s') }}</span>
+                            </div>
+                        </div>
+                        <button class="copy-btn" onclick="copyLogs()">
+                            <i class="fas fa-copy"></i>
+                            {{ 'admin.logs.copy_to_clipboard'|trans }}
+                        </button>
+                    </div>
+                </div>
+            {% else %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>{{ 'admin.logs.file_not_found'|trans }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/dashboard/logs.js') }}"></script>
+{% endblock %}

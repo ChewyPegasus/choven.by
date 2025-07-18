@@ -1,0 +1,175 @@
+.email-details {
+    padding: 40px 0;
+    background: #f8f9fa;
+    min-height: 80vh;
+}
+
+.back-to-list {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+    background: #6c757d;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-to-list:hover {
+    background: #5a6268;
+    text-decoration: none;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.back-to-list i {
+    margin-right: 8px;
+}
+
+.email-details-title {
+    text-align: center;
+    font-size: 2.5rem;
+    color: #333;
+    margin-bottom: 40px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.email-details-title:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #dc3545;
+}
+
+.email-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    margin-bottom: 30px;
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+}
+
+.email-card h3 {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    margin: 0;
+    padding: 20px 25px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.card-content {
+    padding: 25px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.info-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.info-label {
+    font-weight: 600;
+    color: #495057;
+    min-width: 180px;
+    margin-right: 20px;
+}
+
+.info-value {
+    flex: 1;
+    color: #333;
+}
+
+.error-message {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 20px;
+    color: #721c24;
+}
+
+.error-message pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: 'Courier New', monospace;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.context-data {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.context-data pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #495057;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-failed {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+}
+
+.attempts-badge {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .info-row {
+        flex-direction: column;
+    }
+    
+    .info-label {
+        min-width: auto;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    
+    .email-details-title {
+        font-size: 2rem;
+    }
+    
+    .card-content {
+        padding: 20px;
+    }
+}

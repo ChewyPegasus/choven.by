@@ -1,0 +1,191 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.routes.title'|trans }}{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/dashboard/routes.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <section class="admin-panel">
+        <div class="container">
+            <a href="{{ path('app_admin_dashboard') }}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i>{{ 'admin.back_to_dashboard'|trans }}
+            </a>
+            
+            <h1 class="admin-title">{{ 'admin.routes.title'|trans }}</h1>
+            
+            {% if routes is defined and routes|length > 0 %}
+                <div class="route-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">{{ routes|length }}</div>
+                        <div class="stat-label">{{ 'admin.routes.total_routes'|trans }}</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number total-size">
+                            {% set totalSize = 0 %}
+                            {% for route in routes %}
+                                {% set totalSize = totalSize + route.size %}
+                            {% endfor %}
+                            {{ (totalSize / 1024)|round(1) }} KB
+                        </div>
+                        <div class="stat-label">{{ 'admin.routes.total_size'|trans }}</div>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <div class="route-header">
+                <h3 class="route-title">
+                    <i class="fas fa-route"></i>
+                    {{ 'admin.routes.manage_routes'|trans }}
+                </h3>
+                <button class="btn-add-route" onclick="openCreateModal()">
+                    <i class="fas fa-plus"></i>
+                    {{ 'admin.routes.add_new'|trans }}
+                </button>
+            </div>
+            
+            {% if routes is defined and routes|length > 0 %}
+                <div class="routes-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'admin.routes.table.id'|trans }}</th>
+                                <th>{{ 'admin.routes.table.filename'|trans }}</th>
+                                <th>{{ 'admin.routes.table.size'|trans }}</th>
+                                <th>{{ 'admin.routes.table.modified'|trans }}</th>
+                                <th>{{ 'admin.routes.table.actions'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for route in routes %}
+                                <tr data-route-id="{{ route.id }}">
+                                    <td data-label="{{ 'admin.routes.table.id'|trans }}" class="route-id">#{{ route.id }}</td>
+                                    <td data-label="{{ 'admin.routes.table.filename'|trans }}" class="route-filename">
+                                        <i class="fas fa-file-code file-icon"></i>
+                                        <span>{{ route.id }}.json</span>
+                                    </td>
+                                    <td data-label="{{ 'admin.routes.table.size'|trans }}" class="route-size">{{ (route.size / 1024)|round(1) }} KB</td>
+                                    <td data-label="{{ 'admin.routes.table.modified'|trans }}" class="route-date">{{ route.modified|date('d.m.Y H:i') }}</td>
+                                    <td data-label="{{ 'admin.routes.table.actions'|trans }}">
+                                        <div class="action-links">
+                                            <button class="action-link action-view" onclick="viewRoute('{{ route.id }}')">
+                                                <i class="fas fa-eye"></i>
+                                                {{ 'admin.routes.view'|trans }}
+                                            </button>
+                                            <button class="action-link action-edit" onclick="editRoute('{{ route.id }}')">
+                                                <i class="fas fa-edit"></i>
+                                                {{ 'admin.routes.edit'|trans }}
+                                            </button>
+                                            <button class="action-link action-delete" onclick="deleteRoute('{{ route.id }}')">
+                                                <i class="fas fa-trash"></i>
+                                                {{ 'admin.routes.delete'|trans }}
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{ 'admin.routes.no_routes'|trans }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Modal window for observing -->
+    <div id="viewModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ 'admin.routes.view_route'|trans }}</h3>
+                <button class="modal-close" onclick="closeModal('viewModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="routeContent" class="route-json"></div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('viewModal')">
+                    {{ 'admin.routes.close'|trans }}
+                </button>
+                <button class="btn-modal btn-primary" onclick="copyRouteContent()">
+                    <i class="fas fa-copy"></i>
+                    {{ 'admin.routes.copy'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal window for editing -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ 'admin.routes.edit_route'|trans }}</h3>
+                <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <div class="form-group">
+                        <label class="form-label" for="routeId">{{ 'admin.routes.form.route_id'|trans }}</label>
+                        <input type="text" id="routeId" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="routeData">{{ 'admin.routes.form.route_data'|trans }}</label>
+                        <textarea id="routeData" class="form-control textarea" placeholder="{{ 'admin.routes.form.enter_json'|trans }}"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('editModal')">
+                    {{ 'admin.routes.cancel'|trans }}
+                </button>
+                <button class="btn-modal btn-primary" onclick="saveRoute()">
+                    <i class="fas fa-save"></i>
+                    {{ 'admin.routes.save'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal window for creation -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ 'admin.routes.create_route'|trans }}</h3>
+                <button class="modal-close" onclick="closeModal('createModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm">
+                    <div class="form-group">
+                        <label class="form-label" for="newRouteId">{{ 'admin.routes.form.route_id'|trans }}</label>
+                        <input type="text" id="newRouteId" class="form-control" placeholder="{{ 'admin.routes.form.enter_route_id'|trans }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="newRouteData">{{ 'admin.routes.form.route_data'|trans }}</label>
+                        <textarea id="newRouteData" class="form-control textarea" placeholder="{{ 'admin.routes.form.enter_json'|trans }}" required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('createModal')">
+                    {{ 'admin.routes.cancel'|trans }}
+                </button>
+                <button class="btn-modal btn-primary" onclick="createRoute()">
+                    <i class="fas fa-plus"></i>
+                    {{ 'admin.routes.create'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/dashboard/routes.js') }}"></script>
+{% endblock %}

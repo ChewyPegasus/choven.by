@@ -1,59 +1,71 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Управление неудачными письмами{% endblock %}
+{% block title %}{{ 'admin.failed_emails.title'|trans }}{% endblock %}
 
 {% block head %}
     {% block stylesheets %}
         {{ parent() }}
-        <style>
-            <link rel="stylesheet" href="{{ asset('styles/dashboard.css') }}">
-        </style>
+        <link rel="stylesheet" href="{{ asset('styles/dashboard/failed_emails.css') }}">
     {% endblock %}
 {% endblock %}
 
 {% block body %}
     <section class="admin-panel">
         <div class="container">
-            <h1 class="admin-title">Управление неудачными письмами</h1>
+            <a href="{{ path('app_admin_dashboard') }}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i>{{ 'admin.back_to_dashboard'|trans }}
+            </a>
             
-            {% if failedEmails is empty %}
-                <p>Неудачных писем не найдено.</p>
-            {% else %}
-                <table class="email-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Тип письма</th>
-                            <th>Попытки</th>
-                            <th>Дата создания</th>
-                            <th>Последняя попытка</th>
-                            <th>Локаль</th>
-                            <th>Действия</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for email in failedEmails %}
+            <h1 class="admin-title">{{ 'admin.failed_emails.title'|trans }}</h1>
+            
+            {% if failedEmails is not empty %}
+                <div class="table-responsive">
+                    <table class="email-table">
+                        <thead>
                             <tr>
-                                <td>{{ email.id }}</td>
-                                <td>{{ email.emailType }}</td>
-                                <td><span class="badge badge-danger">{{ email.attempts }}</span></td>
-                                <td>{{ email.createdAt|date('d.m.Y H:i:s') }}</td>
-                                <td>{{ email.lastAttemptAt|date('d.m.Y H:i:s') }}</td>
-                                <td>{{ email.locale|default('default') }}</td>
-                                <td>
-                                    <a href="{{ path('app_admin_failed_email_details', {'id': email.id}) }}" class="detail-link">Детали</a>
-                                </td>
+                                <th>{{ 'admin.failed_emails.table.id'|trans }}</th>
+                                <th>{{ 'admin.failed_emails.table.type'|trans }}</th>
+                                <th>{{ 'admin.failed_emails.table.attempts'|trans }}</th>
+                                <th>{{ 'admin.failed_emails.table.created_at'|trans }}</th>
+                                <th>{{ 'admin.failed_emails.table.last_attempt'|trans }}</th>
+                                <th>{{ 'admin.failed_emails.table.locale'|trans }}</th>
+                                <th>{{ 'admin.failed_emails.table.actions'|trans }}</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for email in failedEmails %}
+                                <tr>
+                                    <td>{{ email.id }}</td>
+                                    <td>
+                                        <span class="badge badge-type">
+                                            {{ ('admin.failed_emails.types.' ~ email.emailType)|trans }}
+                                        </span>
+                                    </td>
+                                    <td><span class="badge badge-danger">{{ email.attempts }}</span></td>
+                                    <td>{{ email.createdAt|date('d.m.Y H:i:s') }}</td>
+                                    <td>{{ email.lastAttemptAt|date('d.m.Y H:i:s') }}</td>
+                                    <td>{{ email.locale|default('admin.failed_emails.default_locale'|trans) }}</td>
+                                    <td>
+                                        <a href="{{ path('app_admin_failed_email_details', {'id': email.id}) }}" class="detail-link">
+                                            {{ 'admin.failed_emails.view_details'|trans }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 
                 {% if totalPages > 1 %}
                     <div class="pagination">
                         {% if currentPage > 1 %}
-                            <a href="{{ path('app_admin_failed_emails', {'page': currentPage - 1}) }}">&laquo; Предыдущая</a>
+                            <a href="{{ path('app_admin_failed_emails', {'page': currentPage - 1}) }}">
+                                <i class="fas fa-chevron-left"></i> {{ 'admin.pagination.previous'|trans }}
+                            </a>
                         {% else %}
-                            <span class="disabled">&laquo; Предыдущая</span>
+                            <span class="disabled">
+                                <i class="fas fa-chevron-left"></i> {{ 'admin.pagination.previous'|trans }}
+                            </span>
                         {% endif %}
                         
                         {% for i in 1..totalPages %}
@@ -65,12 +77,21 @@
                         {% endfor %}
                         
                         {% if currentPage < totalPages %}
-                            <a href="{{ path('app_admin_failed_emails', {'page': currentPage + 1}) }}">Следующая &raquo;</a>
+                            <a href="{{ path('app_admin_failed_emails', {'page': currentPage + 1}) }}">
+                                {{ 'admin.pagination.next'|trans }} <i class="fas fa-chevron-right"></i>
+                            </a>
                         {% else %}
-                            <span class="disabled">Следующая &raquo;</span>
+                            <span class="disabled">
+                                {{ 'admin.pagination.next'|trans }} <i class="fas fa-chevron-right"></i>
+                            </span>
                         {% endif %}
                     </div>
                 {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle" style="margin-right: 10px;"></i>
+                    {{ 'admin.failed_emails.no_emails'|trans }}
+                </div>
             {% endif %}
         </div>
     </section>

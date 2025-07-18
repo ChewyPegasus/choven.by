@@ -1,0 +1,239 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'admin.users.title'|trans }}{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/dashboard/users.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <section class="admin-panel">
+        <div class="container">
+            <a href="{{ path('app_admin_dashboard') }}" class="back-to-dashboard">
+                <i class="fas fa-arrow-left"></i>{{ 'admin.back_to_dashboard'|trans }}
+            </a>
+            
+            <h1 class="admin-title">{{ 'admin.users.title'|trans }}</h1>
+            
+            <div class="users-header">
+                <h3 class="users-title">
+                    <i class="fas fa-users"></i>
+                    {{ 'admin.users.manage_users'|trans }}
+                </h3>
+                <button class="btn-add-user" onclick="openCreateModal()">
+                    <i class="fas fa-plus"></i>
+                    {{ 'admin.users.add_new'|trans }}
+                </button>
+            </div>
+            
+            {% if users|length > 0 %}
+                <div class="users-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'admin.users.table.id'|trans }}</th>
+                                <th>{{ 'admin.users.table.email'|trans }}</th>
+                                <th>{{ 'admin.users.table.phone'|trans }}</th>
+                                <th>{{ 'admin.users.table.status'|trans }}</th>
+                                <th>{{ 'admin.users.table.roles'|trans }}</th>
+                                <th>{{ 'admin.users.table.orders'|trans }}</th>
+                                <th>{{ 'admin.users.table.confirmation'|trans }}</th>
+                                <th>{{ 'admin.users.table.actions'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                                <tr data-user-id="{{ user.id }}">
+                                    <td data-label="{{ 'admin.users.table.id'|trans }}" class="user-id">#{{ user.id }}</td>
+                                    <td data-label="{{ 'admin.users.table.email'|trans }}" class="user-email">{{ user.email }}</td>
+                                    <td data-label="{{ 'admin.users.table.phone'|trans }}" class="user-phone">
+                                        {% if user.phoneString %}
+                                            {{ user.phoneString }}
+                                        {% else %}
+                                            <span class="no-phone">{{ 'admin.users.no_phone'|trans }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="{{ 'admin.users.table.status'|trans }}">
+                                        <span class="status-badge status-{{ user.isConfirmed ? 'confirmed' : 'pending' }}">
+                                            {{ user.isConfirmed ? 'admin.users.confirmed'|trans : 'admin.users.not_confirmed'|trans }}
+                                        </span>
+                                    </td>
+                                    <td data-label="{{ 'admin.users.table.roles'|trans }}">
+                                        {% for role in user.roles %}
+                                            <span class="role-badge role-{{ role|lower|replace({'role_': ''}) }}">
+                                                {{ role|replace({'ROLE_': ''})|title }}
+                                            </span>
+                                        {% endfor %}
+                                    </td>
+                                    <td data-label="{{ 'admin.users.table.orders'|trans }}" class="orders-count">{{ user.orders|length }}</td>
+                                    <td data-label="{{ 'admin.users.table.confirmation'|trans }}">
+                                        {% if user.confirmationCode %}
+                                            <span class="confirmation-code">{{ user.confirmationCode }}</span>
+                                        {% else %}
+                                            <span class="text-success">✓</span>
+                                        {% endif %}
+                                    </td>
+                                    <td data-label="{{ 'admin.users.table.actions'|trans }}">
+                                        <div class="action-links">
+                                            <button class="action-link action-edit" onclick="editUser({{ user.id }})">
+                                                <i class="fas fa-edit"></i>
+                                                {{ 'admin.users.edit'|trans }}
+                                            </button>
+                                            <button class="action-link action-delete" onclick="deleteUser({{ user.id }})">
+                                                <i class="fas fa-trash"></i>
+                                                {{ 'admin.users.delete'|trans }}
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                {% if totalPages > 1 %}
+                    <div class="pagination">
+                        {% if currentPage > 1 %}
+                            <a href="{{ path('app_admin_users', {page: currentPage - 1}) }}">
+                                <i class="fas fa-chevron-left"></i> {{ 'admin.pagination.previous'|trans }}
+                            </a>
+                        {% endif %}
+                        
+                        {% for page in 1..totalPages %}
+                            {% if page == currentPage %}
+                                <span class="active">{{ page }}</span>
+                            {% else %}
+                                <a href="{{ path('app_admin_users', {page: page}) }}">{{ page }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if currentPage < totalPages %}
+                            <a href="{{ path('app_admin_users', {page: currentPage + 1}) }}">
+                                {{ 'admin.pagination.next'|trans }} <i class="fas fa-chevron-right"></i>
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i>
+                    <span>{{ 'admin.users.no_users'|trans }}</span>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Modal window for creating user -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ 'admin.users.create_user'|trans }}</h3>
+                <button class="modal-close" onclick="closeModal('createModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="createForm">
+                    <div class="form-group">
+                        <label class="form-label" for="newUserEmail">{{ 'admin.users.form.email'|trans }}</label>
+                        <input type="email" id="newUserEmail" class="form-control" placeholder="{{ 'admin.users.form.email_placeholder'|trans }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="newUserPhone">{{ 'admin.users.form.phone'|trans }}</label>
+                        <input type="tel" id="newUserPhone" class="form-control" placeholder="{{ 'admin.users.form.phone_placeholder'|trans }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="newUserPassword">{{ 'admin.users.form.password'|trans }}</label>
+                        <input type="password" id="newUserPassword" class="form-control" placeholder="{{ 'admin.users.form.password_placeholder'|trans }}" required>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="newUserConfirmed" checked>
+                        <label for="newUserConfirmed">{{ 'admin.users.form.confirmed'|trans }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="newUserAdmin">
+                        <label for="newUserAdmin">{{ 'admin.users.form.admin'|trans }}</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('createModal')">
+                    {{ 'admin.users.cancel'|trans }}
+                </button>
+                <button class="btn-modal btn-success" onclick="createUser()">
+                    <i class="fas fa-plus"></i>
+                    {{ 'admin.users.create'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal window for editing user -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ 'admin.users.edit_user'|trans }}</h3>
+                <button class="modal-close" onclick="closeModal('editModal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editUserId">
+                    <div class="form-group">
+                        <label class="form-label" for="editUserEmail">{{ 'admin.users.form.email'|trans }}</label>
+                        <input type="email" id="editUserEmail" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editUserPhone">{{ 'admin.users.form.phone'|trans }}</label>
+                        <input type="tel" id="editUserPhone" class="form-control" placeholder="{{ 'admin.users.form.phone_placeholder'|trans }}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="editUserPassword">{{ 'admin.users.form.new_password'|trans }}</label>
+                        <input type="password" id="editUserPassword" class="form-control" placeholder="{{ 'admin.users.form.leave_empty'|trans }}">
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="editUserConfirmed">
+                        <label for="editUserConfirmed">{{ 'admin.users.form.confirmed'|trans }}</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="editUserAdmin">
+                        <label for="editUserAdmin">{{ 'admin.users.form.admin'|trans }}</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('editModal')">
+                    {{ 'admin.users.cancel'|trans }}
+                </button>
+                <button class="btn-modal btn-primary" onclick="saveUser()">
+                    <i class="fas fa-save"></i>
+                    {{ 'admin.users.save'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Translations for JavaScript
+        window.translations = {
+            error_required_fields: "{{ 'admin.users.error_required_fields'|trans }}",
+            creating: "{{ 'admin.users.creating'|trans }}",
+            create: "{{ 'admin.users.create'|trans }}",
+            error_loading: "{{ 'admin.users.error_loading'|trans }}",
+            saving: "{{ 'admin.users.saving'|trans }}",
+            save: "{{ 'admin.users.save'|trans }}",
+            error_email_required: "{{ 'admin.users.error_email_required'|trans }}",
+            confirm_delete: "{{ 'admin.users.confirm_delete'|trans }}",
+            error_creating: "{{ 'admin.users.error_creating'|trans }}",
+            error_updating: "{{ 'admin.users.error_updating'|trans }}",
+            error_deleting: "{{ 'admin.users.error_deleting'|trans }}",
+            success_created: "{{ 'admin.users.success_created'|trans }}",
+            success_updated: "{{ 'admin.users.success_updated'|trans }}",
+            success_deleted: "{{ 'admin.users.success_deleted'|trans }}"
+        };
+    </script>
+    <script src="{{ asset('js/dashboard/users.js') }}"></script>
+{% endblock %}

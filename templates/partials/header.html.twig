@@ -10,6 +10,9 @@
             <div class="header-right">
                 <nav class="main-nav">
                     <ul>
+                        {% if app.user and is_granted('ROLE_ADMIN') %}
+                            <li><a href="{{ path('app_admin_dashboard') }}">{{ 'navigation.admin'|trans }}</a></li>
+                        {% endif %}
                         <li><a href="{{ path('app_main') }}">{{ 'menu.home'|trans }}</a></li>
                         <li><a href="{{ path('app_info') }}">{{ 'menu.about_rafting'|trans }}</a></li>
                         <li><a href="{{ path('app_about') }}">{{ 'menu.about_us'|trans }}</a></li>

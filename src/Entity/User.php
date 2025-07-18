@@ -127,6 +127,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function removeRole(string|Role $role): self
+    {
+        $roleValue = $role instanceof Role ? $role : $role;
+        $key = array_search($roleValue, $this->roles, true);
+        if ($key !== false) {
+            unset($this->roles[$key]);
+            $this->roles = array_values($this->roles); // reindexing
+        }
+        
+        return $this;
+    }
+
     public function getConfirmationCode(): ?string
     {
         return $this->confirmationCode;
@@ -192,7 +204,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->orders = new ArrayCollection();
     }
 
-    public function getPhone(): ?string
+    public function getPhone(): ?PhoneNumber
     {
         return $this->phone;
     }
