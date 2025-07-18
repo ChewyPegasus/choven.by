@@ -1,0 +1,28 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+    - vendor/phpstan/phpstan-doctrine/extension.neon
+
+parameters:
+    level: 8
+    paths:
+        - src
+        - tests
+    excludePaths:
+        - src/Kernel.php
+        - var/*
+        - vendor/*
+    tmpDir: var/cache/phpstan
+    
+    ignoreErrors:
+        # Ignore some Symfony specific mistakes
+        - '#Cannot call method [a-zA-Z0-9_]+\(\) on mixed#'
+        - '#Call to an undefined method Symfony\\Component\\Config\\Definition\\Builder\\NodeDefinition::[a-zA-Z0-9_]+\(\)#'
+        # Doctrine related
+        - '#Method App\\Repository\\.*Repository::find.* return type has no value type specified in iterable type#'
+        # Symfony related
+        - '#Method App\\Controller\\.*Controller::.* has parameter \$request with no value type specified#'
+        
+    doctrine:
+        repositoryClass: Doctrine\ORM\EntityRepository
+        
+    reportUnmatchedIgnoredErrors: false
