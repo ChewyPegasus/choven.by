@@ -1,4 +1,4 @@
-.PHONY: help install docker db server clear stop build dev migrations kafka-start kafka-stop kafka-status docker-php
+.PHONY: help install docker db server clear stop build dev migrations kafka-start kafka-stop kafka-status docker-php compile-assets cron-start cron-stop cron-logs cron-status query admin git-log phpstan phpstan-strict phpstan-baseline phpstan-clear code-quality
 
 .DEFAULT_GOAL := help
 
@@ -6,23 +6,32 @@ help:
 	@echo "Choven.by - Water rafting management system"
 	@echo ""
 	@echo "Available commands:"
-	@echo "  make install      - Install project dependencies"
-	@echo "  make docker       - Start Docker containers"
-	@echo "  make db           - Create and migrate the database"
-	@echo "  make server       - Start Symfony development server"
-	@echo "  make clear        - Clear cache"
-	@echo "  make migrations   - Create migrations after entity changes"
-	@echo "  make run          - Start the entire project (docker + db + server)"
-	@echo "  make dev          - Install and start the project for development"
-	@echo "  make stop         - Stop all processes"
-	@echo "  make kafka-start  - Start Kafka order consumer (in background)"
-	@echo "  make kafka-stop   - Stop Kafka order consumer"
-	@echo "  make kafka-status - Check if Kafka consumer is running"
-	@echo "  make docker-php   - Enter the php container"
-	@echo "  make cron-start   - Start the cron container"
-	@echo "  make cron-stop    - Stop the cron container"
-	@echo "  make cron-logs    - Logs from cron container"
-	@echo "  make cron-status  - Status of cron container"
+	@echo "  make install           - Install project dependencies"
+	@echo "  make docker            - Start Docker containers"
+	@echo "  make db                - Create and migrate the database"
+	@echo "  make server            - Start Symfony development server"
+	@echo "  make clear             - Clear cache"
+	@echo "  make migrations        - Create migrations after entity changes"
+	@echo "  make run               - Start the entire project (docker + db + server)"
+	@echo "  make dev               - Install and start the project for development"
+	@echo "  make stop              - Stop all processes"
+	@echo "  make kafka-start       - Start Kafka order consumer (in background)"
+	@echo "  make kafka-stop        - Stop Kafka order consumer"
+	@echo "  make kafka-status      - Check if Kafka consumer is running"
+	@echo "  make docker-php        - Enter the php container"
+	@echo "  make compile-assets    - Compile frontend assets"
+	@echo "  make cron-start        - Start the cron container"
+	@echo "  make cron-stop         - Stop the cron container"
+	@echo "  make cron-logs         - Logs from cron container"
+	@echo "  make cron-status       - Status of cron container"
+	@echo "  make query             - Run raw SQL query (use q=...)"
+	@echo "  make admin             - Make user admin (use admin=...)"
+	@echo "  make git-log           - Show git log graph"
+	@echo "  make phpstan           - Run PHPStan analysis"
+	@echo "  make phpstan-light     - Run PHPStan with lower level for faster analysis"
+	@echo "  make phpstan-baseline  - Generate PHPStan baseline"
+	@echo "  make phpstan-clear     - Clear PHPStan cache"
+	@echo "  make code-quality      - Run all code quality checks"
 	
 install:
 	@echo "Installing dependencies inside the PHP container..."
@@ -93,3 +102,25 @@ admin:
 
 git-log:
 	git log --graph --oneline --decorate
+
+phpstan-prepare: ## Prepare environment for PHPStan
+	@echo "Preparing environment for PHPStan analysis..."
+	@docker-compose exec -u www-data php php bin/console cache:clear --env=dev
+	@docker-compose exec -u www-data php php bin/console cache:warmup --env=dev
+	@echo "Environment prepared!"
+
+phpstan: phpstan-prepare
+	docker-compose exec -u www-data php vendor/bin/phpstan analyse --memory-limit=512M
+
+phpstan-baseline: phpstan-prepare
+	docker-compose exec -u www-data php vendor/bin/phpstan analyse --generate-baseline --memory-limit=512M
+
+phpstan-clear:
+	docker-compose exec -u www-data php vendor/bin/phpstan clear-result-cache
+
+phpstan-light: phpstan-prepare
+	@echo "Running light PHPStan analysis (level 6)..."
+	docker-compose exec -u www-data php vendor/bin/phpstan analyse --level=6 --memory-limit=256M
+
+code-quality: phpstan
+	@echo "Code quality checks completed!"

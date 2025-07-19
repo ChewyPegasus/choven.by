@@ -6,7 +6,6 @@ use App\Enum\Role;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use libphonenumber\PhoneNumber;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -39,6 +38,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     
     private ?string $plainPassword = null;
 
+    /**
+     * @var Role[]
+     */
     #[ORM\Column(type: 'json')]
     private array $roles = [];
 
@@ -64,7 +66,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -76,7 +77,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPassword(string $password): static
     {
         $this->password = $password;
-
         return $this;
     }
 
@@ -88,52 +88,117 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPlainPassword(string $plainPassword): static
     {
         $this->plainPassword = $plainPassword;
-
         return $this;
     }
 
     public function getRoles(): array
     {
-        $roles = array_map(
-            fn($role) => 'ROLE_' . strtoupper($role instanceof \BackedEnum ? $role->value : (string)$role),
-            $this->roles
-        );
+        $roles = array_map(function($role) {
+            // If role is already an enum object, return its string representation
+            if ($role instanceof Role) {
+                return 'ROLE_' . strtoupper($role->value);
+            }
+            // If role is a string, try to create enum from it
+            if (is_string($role)) {
+                // Check if string starts with ROLE_
+                if (str_starts_with($role, 'ROLE_')) {
+                    $enumValue = strtolower(str_replace('ROLE_', '', $role));
+                } else {
+                    $enumValue = strtolower($role);
+                }
+                
+                // Try to create enum from string
+                try {
+                    $enumRole = Role::from($enumValue);
+                    return 'ROLE_' . strtoupper($enumRole->value);
+                } catch (\ValueError $e) {
+                    // If enum creation failed, return string as is
+                    return str_starts_with($role, 'ROLE_') ? $role : 'ROLE_' . strtoupper($role);
+                }
+            }
+            
+            return 'ROLE_USER'; // fallback
+        }, $this->roles);
         
-        // We need to have at least user role
+        // Ensure ROLE_USER is present
         $roles[] = 'ROLE_USER';
         
         return array_unique($roles);
     }
 
+    /**
+     * @return Role[]
+     */
+    public function getRoleEnums(): array
+    {
+        // at least Role::USER
+        if (!in_array(Role::USER, $this->roles, true)) {
+            $this->roles[] = Role::USER;
+        }
+        
+        return array_unique($this->roles);
+    }
+
+    /**
+     * @param Role[]|string[] $roles
+     */
     public function setRoles(array $roles): static
     {
-        $this->roles = $roles;
-
+        $normalizedRoles = [];
+        
+        foreach ($roles as $role) {
+            if ($role instanceof Role) {
+                $normalizedRoles[] = $role;
+            } elseif (is_string($role)) {
+                // Убираем префикс ROLE_ если он есть
+                $enumValue = str_starts_with($role, 'ROLE_') 
+                    ? strtolower(str_replace('ROLE_', '', $role))
+                    : strtolower($role);
+                
+                try {
+                    $normalizedRoles[] = Role::from($enumValue);
+                } catch (\ValueError $e) {
+                    // Если не удалось создать enum, игнорируем эту роль
+                    continue;
+                }
+            }
+        }
+        
+        // Гарантируем наличие Role::USER
+        if (!in_array(Role::USER, $normalizedRoles, true)) {
+            $normalizedRoles[] = Role::USER;
+        }
+        
+        $this->roles = array_unique($normalizedRoles);
         return $this;
     }
 
     public function isAdmin(): bool
     {
-        return in_array('ROLE_ADMIN', $this->roles);
+        return $this->hasRole(Role::ADMIN);
     }
 
-    public function addRole(string|Role $role): self
+    public function hasRole(Role $role): bool
     {
-        $roleValue = $role instanceof Role ? $role : $role;
-        if (!in_array($roleValue, $this->roles)) {
-            $this->roles[] = $roleValue;
+        return in_array($role, $this->roles, true);
+    }
+
+    public function addRole(Role $role): self
+    {
+        if (!$this->hasRole($role)) {
+            $this->roles[] = $role;
+            $this->roles = array_unique($this->roles);
         }
         
         return $this;
     }
 
-    public function removeRole(string|Role $role): self
+    public function removeRole(Role $role): self
     {
-        $roleValue = $role instanceof Role ? $role : $role;
-        $key = array_search($roleValue, $this->roles, true);
+        $key = array_search($role, $this->roles, true);
         if ($key !== false) {
             unset($this->roles[$key]);
-            $this->roles = array_values($this->roles); // reindexing
+            $this->roles = array_values($this->roles);
         }
         
         return $this;
@@ -147,7 +212,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setConfirmationCode(?string $confirmationCode): static
     {
         $this->confirmationCode = $confirmationCode;
-
         return $this;
     }
 
@@ -159,7 +223,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsConfirmed(bool $isConfirmed): static
     {
         $this->isConfirmed = $isConfirmed;
-
         return $this;
     }
 
@@ -168,7 +231,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->plainPassword = null;
     }
 
-    public function getUserIdentifier(): string {
+    public function getUserIdentifier(): string 
+    {
         return $this->email;
     }
 
@@ -200,7 +264,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function __construct()
     {
-        $this->roles[] = Role::USER;
+        $this->roles = [Role::USER];
         $this->orders = new ArrayCollection();
     }
 
@@ -222,6 +286,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        
         return $phoneUtil->format($this->phone, \libphonenumber\PhoneNumberFormat::INTERNATIONAL);
     }
 }

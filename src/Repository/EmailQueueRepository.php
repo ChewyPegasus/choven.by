@@ -22,7 +22,7 @@ class EmailQueueRepository extends ServiceEntityRepository
     public function findEmailsToRetry(int $maxAttempts): array
     {
         return $this->createQueryBuilder('e')
-            ->where('e.attempts < :maxAttempts') // Проблема здесь - должно быть <= вместо <
+            ->where('e.attempts < :maxAttempts')
             ->setParameter('maxAttempts', $maxAttempts)
             ->getQuery()
             ->getResult();

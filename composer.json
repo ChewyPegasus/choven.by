@@ -91,7 +91,11 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
-        ]
+        ],
+        "phpstan": "vendor/bin/phpstan analyse",
+        "phpstan-strict": "vendor/bin/phpstan analyse -c phpstan-strict.neon",
+        "phpstan-baseline": "vendor/bin/phpstan analyse --generate-baseline",
+        "phpstan-clear": "vendor/bin/phpstan clear-result-cache"
     },
     "conflict": {
         "symfony/symfony": "*"
@@ -104,6 +108,9 @@
         }
     },
     "require-dev": {
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "7.2.*",
         "symfony/css-selector": "7.2.*",

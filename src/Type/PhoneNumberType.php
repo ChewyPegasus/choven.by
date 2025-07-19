@@ -41,6 +41,7 @@ class PhoneNumberType extends Type
 
         if ($value instanceof PhoneNumber) {
             $phoneUtil = PhoneNumberUtil::getInstance();
+            
             return $phoneUtil->format($value, \libphonenumber\PhoneNumberFormat::E164);
         }
 

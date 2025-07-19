@@ -13,8 +13,14 @@ use Symfony\Component\Security\Core\Exception\UserNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
 
+/**
+ * @implements UserProviderInterface<User>
+ */
 class UserProvider implements UserProviderInterface
 {
+    /**
+     * @var array<int, array{detector: callable(string): bool, finder: callable(string): ?User, name: string}>
+     */
     private array $identifierStrategies;
 
     public function __construct(private readonly UserRepository $userRepository)
@@ -62,7 +68,8 @@ class UserProvider implements UserProviderInterface
 
     private function findByEmail(string $identifier): ?User
     {
-        return $this->userRepository->findOneBy(['email' => $identifier]);
+        $user = $this->userRepository->findOneBy(['email' => $identifier]);
+        return $user instanceof User ? $user : null;
     }
 
     /**
@@ -77,14 +84,14 @@ class UserProvider implements UserProviderInterface
             $formattedPhone = $phoneUtil->format($phoneNumber, \libphonenumber\PhoneNumberFormat::E164);
 
             foreach ($this->userRepository->findAll() as $user) {
-                if ($user->getPhone()) {
+                if ($user instanceof User && $user->getPhone()) {
                     $userPhoneFormatted = $phoneUtil->format($user->getPhone(), \libphonenumber\PhoneNumberFormat::E164);
                     if ($userPhoneFormatted === $formattedPhone) {
                         return $user;
                     }
                 }
             }
-        } catch (NumberParseException $e) {
+        } catch (NumberParseException) {
             // Failed to parse phone number
             return null;
         }

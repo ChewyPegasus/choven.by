@@ -87,6 +87,7 @@ class EmailFactory
             ->setContext($context)
             ->setLocale($locale)
         ;
+        
         return $email;
     }
 
@@ -105,6 +106,7 @@ class EmailFactory
             ->setAttempts($attempts)
             ->setCreatedAt($createdAt)
         ;
+        
         return $email;
     }
 }

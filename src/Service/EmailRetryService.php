@@ -115,6 +115,7 @@ class EmailRetryService
 
         if (empty($emailsToRetry)) {
             $this->logger->info('No emails to retry');
+            
             return;
         }
 
@@ -160,6 +161,7 @@ class EmailRetryService
             // Skip processing if context handler returned null (e.g., user already verified)
             if ($context === null) {
                 $this->removeFromQueue($queuedEmail, 'Email skipped: context processing indicated no action needed');
+                
                 return;
             }
             

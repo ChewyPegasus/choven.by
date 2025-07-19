@@ -36,6 +36,7 @@ class EmailRetryCommand extends Command
         try {
             $this->emailRetryService->processQueue();
             $output->writeln('Email retry process completed successfully');
+
             return Command::SUCCESS;
         } catch (\Exception $e) {
             $this->logger->error('Error in email retry command', [
@@ -43,6 +44,7 @@ class EmailRetryCommand extends Command
                 'exception' => $e,
             ]);
             $output->writeln('<error>Error: ' . $e->getMessage() . '</error>');
+            
             return Command::FAILURE;
         }
     }

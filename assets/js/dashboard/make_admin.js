@@ -2,11 +2,11 @@ function promoteUser(userId) {
     const userItem = document.getElementById('user-' + userId);
     const button = userItem.querySelector('.btn-promote');
     
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ "admin.make_admin.promoting"|trans }}';
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + window.adminTranslations.promoting;
     button.disabled = true;
     userItem.classList.add('loading');
     
-    fetch('{{ path("app_admin_make_admin") }}', {
+    fetch(window.adminUrls.makeAdmin, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -23,32 +23,32 @@ function promoteUser(userId) {
             }, 1500);
         } else {
             showToast(data.message, 'error');
-            button.innerHTML = '<i class="fas fa-user-plus"></i> {{ "admin.make_admin.make_admin"|trans }}';
+            button.innerHTML = '<i class="fas fa-user-plus"></i> ' + window.adminTranslations.makeAdmin;
             button.disabled = false;
             userItem.classList.remove('loading');
         }
     })
     .catch(error => {
-        showToast('{{ "admin.make_admin.error_occurred"|trans }}', 'error');
-        button.innerHTML = '<i class="fas fa-user-plus"></i> {{ "admin.make_admin.make_admin"|trans }}';
+        showToast(window.adminTranslations.errorOccurred, 'error');
+        button.innerHTML = '<i class="fas fa-user-plus"></i> ' + window.adminTranslations.makeAdmin;
         button.disabled = false;
         userItem.classList.remove('loading');
     });
 }
 
 function removeAdmin(userId) {
-    if (!confirm('{{ "admin.make_admin.confirm_remove"|trans }}')) {
+    if (!confirm(window.adminTranslations.confirmRemove)) {
         return;
     }
     
     const adminItem = document.querySelector(`[onclick="removeAdmin(${userId})"]`).closest('.admin-item');
     const button = adminItem.querySelector('.btn-demote');
     
-    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ "admin.make_admin.removing"|trans }}';
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + window.adminTranslations.removing;
     button.disabled = true;
     adminItem.classList.add('loading');
     
-    fetch('{{ path("app_admin_remove_admin", {"id": "__ID__"}) }}'.replace('__ID__', userId), {
+    fetch(window.adminUrls.removeAdmin.replace('__ID__', userId), {
         method: 'POST',
         headers: {
             'X-Requested-With': 'XMLHttpRequest'
@@ -63,14 +63,14 @@ function removeAdmin(userId) {
             }, 1500);
         } else {
             showToast(data.message, 'error');
-            button.innerHTML = '<i class="fas fa-user-minus"></i> {{ "admin.make_admin.remove_admin"|trans }}';
+            button.innerHTML = '<i class="fas fa-user-minus"></i> ' + window.adminTranslations.removeAdmin;
             button.disabled = false;
             adminItem.classList.remove('loading');
         }
     })
     .catch(error => {
-        showToast('{{ "admin.make_admin.error_occurred"|trans }}', 'error');
-        button.innerHTML = '<i class="fas fa-user-minus"></i> {{ "admin.make_admin.remove_admin"|trans }}';
+        showToast(window.adminTranslations.errorOccurred, 'error');
+        button.innerHTML = '<i class="fas fa-user-minus"></i> ' + window.adminTranslations.removeAdmin;
         button.disabled = false;
         adminItem.classList.remove('loading');
     });
@@ -86,6 +86,10 @@ function showToast(message, type) {
     
     setTimeout(() => {
         toast.classList.remove('show');
-        setTimeout(() => document.body.removeChild(toast), 300);
+        setTimeout(() => {
+            if (document.body.contains(toast)) {
+                document.body.removeChild(toast);
+            }
+        }, 300);
     }, 3000);
 }

@@ -106,6 +106,7 @@ class EmailQueue
     {
         $this->attempts++;
         $this->lastAttemptAt = new \DateTimeImmutable();
+        
         return $this;
     }
 

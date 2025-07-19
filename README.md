@@ -45,7 +45,7 @@ This command performs the following steps:
 ### 3. Start the development server
 
 ```bash
-make start
+make run
 ```
 
 The application will be available at: [http://localhost:8000](http://localhost:8000)

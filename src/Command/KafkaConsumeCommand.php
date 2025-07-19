@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\DTO\AbstractEmailDTO;
 use App\Factory\EmailFactory;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
@@ -26,6 +25,9 @@ use Symfony\Component\Translation\LocaleSwitcher;
 )]
 class KafkaConsumeCommand extends Command
 {
+    /**
+     * @param array<string, string> $topics
+     */
     public function __construct(
         private readonly KafkaConsumer $consumer,
         private readonly array $topics,

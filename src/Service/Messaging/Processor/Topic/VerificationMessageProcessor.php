@@ -31,11 +31,13 @@ class VerificationMessageProcessor implements MessageProcessorInterface
         
         if (!$userId) {
             $this->logger->warning('Verification message is missing user ID', ['data' => $messageData]);
+            
             return false;
         }
         
         if (!$confirmUrl) {
             $this->logger->warning('Verification message is missing confirmUrl', ['data' => $messageData]);
+            
             return false;
         }
         
@@ -43,6 +45,7 @@ class VerificationMessageProcessor implements MessageProcessorInterface
         
         if (!$user) {
             $this->logger->error('User not found', ['userId' => $userId]);
+            
             return false;
         }
         
@@ -67,6 +70,7 @@ class VerificationMessageProcessor implements MessageProcessorInterface
                 'error' => $e->getMessage(),
                 'exception' => $e,
             ]);
+            
             return false;
         }finally {
             // Reset locale

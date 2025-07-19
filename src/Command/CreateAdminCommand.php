@@ -4,40 +4,30 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\User;
 use App\Enum\Role;
+use App\Factory\StyleFactory as FactoryStyleFactory;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Factory\StyleFactory;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
-#[AsCommand(
-    name: 'app:user:make-admin',
-    description: 'Promotes a user to admin role',
-)]
+#[AsCommand(name: 'app:user:make-admin', description: 'Promote user to admin')]
 class CreateAdminCommand extends Command
 {
     public function __construct(
         private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $entityManager,
-        private readonly StyleFactory $styleFactory,
+        private readonly FactoryStyleFactory $styleFactory
     ) {
         parent::__construct();
     }
 
     protected function configure(): void
     {
-        $this->addArgument(
-            'email', 
-            InputArgument::REQUIRED, 
-            'Email of the user to promote'
-        )
-        ;
+        $this->addArgument('email', InputArgument::REQUIRED, 'User email');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -61,6 +51,7 @@ class CreateAdminCommand extends Command
         $this->entityManager->flush();
 
         $io->success(sprintf('User "%s" has been promoted to admin', $email));
+        
         return Command::SUCCESS;
     }
 }

@@ -45,6 +45,7 @@ class MapService
         }
 
         $this->routesCache = $routes;
+        
         return $routes;
     }
 
@@ -76,6 +77,7 @@ class MapService
     public function getRoute(string $routeId): ?array
     {
         $routes = $this->loadRoutesFromFiles();
+        
         return $routes[$routeId] ?? null;
     }
 

@@ -132,5 +132,22 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        // URL's for JavaScript
+        window.adminUrls = {
+            makeAdmin: "{{ path('app_admin_make_admin') }}",
+            removeAdmin: "{{ path('app_admin_remove_admin', {'id': '__ID__'}) }}"
+        };
+        
+        // Translations for JavaScript
+        window.adminTranslations = {
+            promoting: "{{ 'admin.make_admin.promoting'|trans }}",
+            makeAdmin: "{{ 'admin.make_admin.make_admin'|trans }}",
+            removing: "{{ 'admin.make_admin.removing'|trans }}",
+            removeAdmin: "{{ 'admin.make_admin.remove_admin'|trans }}",
+            confirmRemove: "{{ 'admin.make_admin.confirm_remove'|trans }}",
+            errorOccurred: "{{ 'admin.make_admin.error_occurred'|trans }}"
+        };
+    </script>
     <script src="{{ asset('js/dashboard/make_admin.js') }}"></script>
 {% endblock %}

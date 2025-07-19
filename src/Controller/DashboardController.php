@@ -6,6 +6,7 @@ namespace App\Controller;
 
 use App\Entity\FailedEmail;
 use App\Entity\User;
+use App\Enum\Role;
 use App\Repository\FailedEmailRepository;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
@@ -34,7 +35,7 @@ class DashboardController extends AbstractController
 
     private function getRoutesDirectory(): string
     {
-        return $this->getParameter('kernel.project_dir') . '/assets/data/routes/';
+        return (string) $this->getParameter('kernel.project_dir') . '/assets/data/routes/';
     }
 
     #[Route('', name: 'app_admin_dashboard')]
@@ -137,7 +138,7 @@ class DashboardController extends AbstractController
     #[Route('/logs', name: 'app_admin_logs')]
     public function logs(Request $request): Response
     {
-        $logFile = $this->getParameter('kernel.project_dir') . '/var/log/dev.log';
+        $logFile = (string) $this->getParameter('kernel.project_dir') . '/var/log/dev.log';
         $lines = max(50, min(1000, $request->query->getInt('lines', 100)));
         
         $logContent = '';
@@ -155,9 +156,9 @@ class DashboardController extends AbstractController
     #[Route('/make-admin', name: 'app_admin_make_admin')]
     public function makeAdmin(Request $request): Response
     {
-        $admins = $this->userRepository->findByRole('ROLE_ADMIN');
+        $admins = $this->userRepository->findByRole(Role::ADMIN);
         
-        $regularUsers = $this->userRepository->findUsersWithoutRole('ROLE_ADMIN');
+        $regularUsers = $this->userRepository->findUsersWithoutRole(Role::ADMIN);
         
         if ($request->isXmlHttpRequest() && $request->isMethod('POST')) {
             $userId = $request->request->getInt('userId');
@@ -167,13 +168,11 @@ class DashboardController extends AbstractController
                 return $this->json(['success' => false, 'message' => 'User not found'], 404);
             }
             
-            if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
+            if ($user->isAdmin()) {
                 return $this->json(['success' => false, 'message' => 'User is already an admin'], 400);
             }
             
-            $roles = $user->getRoles();
-            $roles[] = 'ROLE_ADMIN';
-            $user->setRoles(array_unique($roles));
+            $user->addRole(Role::ADMIN);
             $this->entityManager->flush();
             
             return $this->json([
@@ -204,12 +203,12 @@ class DashboardController extends AbstractController
         }
         
         // not the last admin
-        $adminCount = $this->userRepository->countByRole('ROLE_ADMIN');
+        $adminCount = $this->userRepository->countByRole(Role::ADMIN);
         if ($adminCount <= 1) {
             return $this->json(['success' => false, 'message' => 'Cannot remove the last admin'], 400);
         }
         
-        $user->removeRole(\App\Enum\Role::ADMIN);
+        $user->removeRole(Role::ADMIN);
         $this->entityManager->flush();
         
         return $this->json([
@@ -229,7 +228,7 @@ class DashboardController extends AbstractController
         $routes = [];
         
         if (is_dir($routesDirectory)) {
-            $files = glob($routesDirectory . '*.json');
+            $files = glob($routesDirectory . '*.json')? : [];
             
             foreach ($files as $file) {
                 $routeId = basename($file, '.json');
@@ -256,6 +255,9 @@ class DashboardController extends AbstractController
         }
 
         $content = file_get_contents($filePath);
+        if (!$content) {
+            return $this->json(['error' => 'Route content not found'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
         $routeData = json_decode($content, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -342,15 +344,9 @@ class DashboardController extends AbstractController
         return $this->json(['success' => true, 'message' => 'Route deleted successfully']);
     }
 
-    #[Route('/users/api/{userId}', name: 'app_admin_users_api_get', methods: ['GET'])]
-    public function getUserById(int $userId): JsonResponse
+    #[Route('/users/api/{id}', name: 'app_admin_users_api_get', methods: ['GET'])]
+    public function getUserById(User $user): JsonResponse
     {
-        $user = $this->userRepository->find($userId);
-        
-        if (!$user) {
-            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
-        }
-
         return $this->json([
             'id' => $user->getId(),
             'email' => $user->getEmail(),
@@ -401,9 +397,10 @@ class DashboardController extends AbstractController
             $isConfirmed = $data['isConfirmed'] ?? false;
             $user->setIsConfirmed($isConfirmed);
             
-            $roles = ['ROLE_USER'];
+            // Используем enum вместо строк
+            $roles = [Role::USER];
             if ($data['isAdmin'] ?? false) {
-                $roles[] = 'ROLE_ADMIN';
+                $roles[] = Role::ADMIN;
             }
             $user->setRoles($roles);
 
@@ -428,15 +425,9 @@ class DashboardController extends AbstractController
         }
     }
 
-    #[Route('/users/api/{userId}', name: 'app_admin_users_api_update', methods: ['PUT'])]
-    public function updateUser(int $userId, Request $request): JsonResponse
+    #[Route('/users/api/{id}', name: 'app_admin_users_api_update', methods: ['PUT'])]
+    public function updateUser(User $user, Request $request): JsonResponse
     {
-        $user = $this->userRepository->find($userId);
-        
-        if (!$user) {
-            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
-        }
-
         $data = json_decode($request->getContent(), true);
         
         if (!$data || !isset($data['email'])) {
@@ -488,9 +479,10 @@ class DashboardController extends AbstractController
                 $user->setConfirmationCode(bin2hex(random_bytes(10)));
             }
             
-            $roles = ['ROLE_USER'];
+            // Используем enum вместо строк
+            $roles = [Role::USER];
             if ($data['isAdmin'] ?? false) {
-                $roles[] = 'ROLE_ADMIN';
+                $roles[] = Role::ADMIN;
             }
             $user->setRoles($roles);
 
@@ -512,18 +504,12 @@ class DashboardController extends AbstractController
         }
     }
 
-    #[Route('/users/api/{userId}', name: 'app_admin_users_api_delete', methods: ['DELETE'])]
-    public function deleteUser(int $userId): JsonResponse
+    #[Route('/users/api/{id}', name: 'app_admin_users_api_delete', methods: ['DELETE'])]
+    public function deleteUser(User $user): JsonResponse
     {
-        $user = $this->userRepository->find($userId);
-        
-        if (!$user) {
-            return $this->json(['error' => 'User not found'], Response::HTTP_NOT_FOUND);
-        }
-
         try {
-            if (in_array('ROLE_ADMIN', $user->getRoles(), true)) {
-                $adminCount = $this->userRepository->countByRole('ROLE_ADMIN');
+            if ($user->isAdmin()) {
+                $adminCount = $this->userRepository->countByRole(Role::ADMIN);
                 if ($adminCount <= 1) {
                     return $this->json(['error' => 'Cannot delete the last admin'], Response::HTTP_BAD_REQUEST);
                 }
@@ -543,7 +529,7 @@ class DashboardController extends AbstractController
                 'success' => true, 
                 'message' => 'User deleted successfully',
                 'deletedUser' => [
-                    'id' => $userId,
+                    'id' => $user->getId(),
                     'email' => $email
                 ]
             ]);
@@ -600,23 +586,19 @@ class DashboardController extends AbstractController
         }
 
         try {
-            $roles = $user->getRoles();
-            $isAdmin = in_array('ROLE_ADMIN', $roles, true);
+            $isAdmin = $user->isAdmin();
             
             if ($isAdmin) {
-                // Remove admin rights
-                // Check that this is not the last admin
-                $adminCount = $this->userRepository->countByRole('ROLE_ADMIN');
+                $adminCount = $this->userRepository->countByRole(Role::ADMIN);
                 if ($adminCount <= 1) {
                     return $this->json(['error' => 'Cannot remove admin rights from the last admin'], Response::HTTP_BAD_REQUEST);
                 }
                 
-                $roles = array_filter($roles, fn($role) => $role !== 'ROLE_ADMIN');
+                $user->removeRole(Role::ADMIN);
             } else {
-                $roles[] = 'ROLE_ADMIN';
+                $user->addRole(Role::ADMIN);
             }
             
-            $user->setRoles(array_unique($roles));
             $this->entityManager->flush();
 
             return $this->json([
@@ -626,7 +608,7 @@ class DashboardController extends AbstractController
                     'id' => $user->getId(),
                     'email' => $user->getEmail(),
                     'roles' => $user->getRoles(),
-                    'isAdmin' => in_array('ROLE_ADMIN', $user->getRoles(), true)
+                    'isAdmin' => $user->isAdmin()
                 ]
             ]);
             
@@ -675,28 +657,24 @@ class DashboardController extends AbstractController
                     
                 case 'make_admin':
                     foreach ($users as $user) {
-                        $roles = $user->getRoles();
-                        if (!in_array('ROLE_ADMIN', $roles, true)) {
-                            $roles[] = 'ROLE_ADMIN';
-                            $user->setRoles($roles);
+                        if (!$user->isAdmin()) {
+                            $user->addRole(Role::ADMIN);
                             $processedCount++;
                         }
                     }
                     break;
                     
                 case 'remove_admin':
-                    $adminCount = $this->userRepository->countByRole('ROLE_ADMIN');
-                    $adminUsersToProcess = array_filter($users, fn($user) => in_array('ROLE_ADMIN', $user->getRoles(), true));
+                    $adminCount = $this->userRepository->countByRole(Role::ADMIN);
+                    $adminUsersToProcess = array_filter($users, fn($user) => $user->isAdmin());
                     
                     if ($adminCount - count($adminUsersToProcess) < 1) {
                         return $this->json(['error' => 'Cannot remove all admins'], Response::HTTP_BAD_REQUEST);
                     }
                     
                     foreach ($users as $user) {
-                        $roles = $user->getRoles();
-                        if (in_array('ROLE_ADMIN', $roles, true)) {
-                            $roles = array_filter($roles, fn($role) => $role !== 'ROLE_ADMIN');
-                            $user->setRoles($roles);
+                        if ($user->isAdmin()) {
+                            $user->removeRole(Role::ADMIN);
                             $processedCount++;
                         }
                     }
@@ -704,9 +682,9 @@ class DashboardController extends AbstractController
                     
                 case 'delete':
                     $currentUser = $this->getUser();
-                    $currentUserId = ($currentUser instanceof \App\Entity\User) ? $currentUser->getId() : null;
-                    $adminCount = $this->userRepository->countByRole('ROLE_ADMIN');
-                    $adminUsersToDelete = array_filter($users, fn($user) => in_array('ROLE_ADMIN', $user->getRoles(), true));
+                    $currentUserId = ($currentUser instanceof User) ? $currentUser->getId() : null;
+                    $adminCount = $this->userRepository->countByRole(Role::ADMIN);
+                    $adminUsersToDelete = array_filter($users, fn($user) => $user->isAdmin());
                     
                     if ($adminCount - count($adminUsersToDelete) < 1) {
                         return $this->json(['error' => 'Cannot delete all admins'], Response::HTTP_BAD_REQUEST);

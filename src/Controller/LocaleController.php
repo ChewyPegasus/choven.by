@@ -50,6 +50,9 @@ class LocaleController extends AbstractController
         return $this->redirectToRoute('app_main', ['_locale' => $locale]);
     }
     
+    /**
+     * @param array<string, string> $topics
+     */
     private function buildUrl(array $parts): string
     {
         $scheme = isset($parts['scheme']) ? $parts['scheme'] . '://' : '';

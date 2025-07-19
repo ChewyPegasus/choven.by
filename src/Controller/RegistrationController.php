@@ -40,6 +40,7 @@ final class RegistrationController extends AbstractController
             $validationError = $this->registrationService->validateUserUniqueness($user);
             if ($validationError) {
                 $this->addFlash('error', $translator->trans($validationError));
+
                 return $this->redirectToRoute('app_register');
             }
 
@@ -91,11 +92,13 @@ final class RegistrationController extends AbstractController
         
         if (!$user) {
             $this->addFlash('error', $translator->trans('verification.invalid_link'));
+            
             return $this->redirectToRoute('app_main');
         }
 
         if ($user->isConfirmed()) {
             $this->addFlash('info', $translator->trans('verification.already_confirmed'));
+            
             return $this->redirectToRoute('app_login');
         }
 

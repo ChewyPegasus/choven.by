@@ -54,7 +54,7 @@ class UserRegistrationService
         $confirmationCode = bin2hex(random_bytes(10));
         $user->setConfirmationCode($confirmationCode);
         $user->setIsConfirmed(false);
-        $user->setRoles([Role::USER->value]);
+        $user->setRoles([Role::USER]);
 
         $user->setPassword(
             $this->hasher->hashPassword($user, $plainPassword)
@@ -79,9 +79,11 @@ class UserRegistrationService
                 ),
                 'user_' . $user->getId(),
             );
+            
             return true;
         } catch (\Exception $e) {
             $this->logger->error('Kafka publishing failed for registration email: ' . $e->getMessage(), ['exception' => $e]);
+            
             return false;
         }
     }

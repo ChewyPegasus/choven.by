@@ -32,6 +32,7 @@ class OrderMessageProcessor implements MessageProcessorInterface
         
         if (!$orderId) {
             $this->logger->warning('Order message is missing ID', ['data' => $messageData]);
+            
             return false;
         }
         
@@ -39,6 +40,7 @@ class OrderMessageProcessor implements MessageProcessorInterface
         
         if (!$order) {
             $this->logger->error('Order not found', ['orderId' => $orderId]);
+            
             return false;
         }
         
@@ -59,6 +61,7 @@ class OrderMessageProcessor implements MessageProcessorInterface
                 'error' => $e->getMessage(),
                 'exception' => $e,
             ]);
+            
             return false;
         }
     }
