@@ -194,23 +194,31 @@ class DashboardController extends AbstractController
     #[Route('/make-admin/remove/{id}', name: 'app_admin_remove_admin', methods: ['POST'])]
     public function removeAdmin(User $user, Request $request): Response
     {
+        error_log("removeAdmin called for user: " . $user->getEmail());
+        
         if (!$request->isXmlHttpRequest()) {
+            error_log("Not AJAX request");
             throw $this->createAccessDeniedException();
         }
         
         if (!$user->isAdmin()) {
+            error_log("User is not admin");
             return $this->json(['success' => false, 'message' => 'User is not an admin'], 400);
         }
         
-        // not the last admin
         $adminCount = $this->userRepository->countByRole(Role::ADMIN);
+        error_log("Admin count: " . $adminCount);
+        
         if ($adminCount <= 1) {
+            error_log("Cannot remove last admin");
             return $this->json(['success' => false, 'message' => 'Cannot remove the last admin'], 400);
         }
         
+        error_log("Removing admin role");
         $user->removeRole(Role::ADMIN);
         $this->entityManager->flush();
         
+        error_log("Admin role removed successfully");
         return $this->json([
             'success' => true, 
             'message' => 'Admin rights removed successfully',

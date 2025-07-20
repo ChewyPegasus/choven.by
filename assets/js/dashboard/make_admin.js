@@ -37,25 +37,47 @@ function promoteUser(userId) {
 }
 
 function removeAdmin(userId) {
+    console.log('removeAdmin called for user:', userId);
+    console.log('adminUrls:', window.adminUrls);
+    
     if (!confirm(window.adminTranslations.confirmRemove)) {
         return;
     }
+
+    const button = document.querySelector(`button[data-user-id="${userId}"]`) || 
+                   document.querySelector(`button[onclick="removeAdmin(${userId})"]`);
     
-    const adminItem = document.querySelector(`[onclick="removeAdmin(${userId})"]`).closest('.admin-item');
-    const button = adminItem.querySelector('.btn-demote');
+    if (!button) {
+        console.error('Button not found for user ID:', userId);
+        return;
+    }
+    
+    const adminItem = button.closest('.admin-item');
+    if (!adminItem) {
+        console.error('Admin item not found for button');
+        return;
+    }
     
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + window.adminTranslations.removing;
     button.disabled = true;
     adminItem.classList.add('loading');
     
-    fetch(window.adminUrls.removeAdmin.replace('__ID__', userId), {
+    const url = window.adminUrls.removeAdmin.replace('__ID__', userId);
+    console.log('Sending request to:', url);
+    
+    fetch(url, {
         method: 'POST',
         headers: {
-            'X-Requested-With': 'XMLHttpRequest'
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        console.log('Response status:', response.status);
+        return response.json();
+    })
     .then(data => {
+        console.log('Response data:', data);
         if (data.success) {
             showToast(data.message, 'success');
             setTimeout(() => {
@@ -69,6 +91,7 @@ function removeAdmin(userId) {
         }
     })
     .catch(error => {
+        console.error('Error removing admin:', error);
         showToast(window.adminTranslations.errorOccurred, 'error');
         button.innerHTML = '<i class="fas fa-user-minus"></i> ' + window.adminTranslations.removeAdmin;
         button.disabled = false;

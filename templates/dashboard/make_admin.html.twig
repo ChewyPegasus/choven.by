@@ -47,7 +47,8 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button class="action-btn btn-demote" 
+                                    <button class="action-btn btn-demote"
+                                            data-user-id="{{ admin.id }}"
                                             onclick="removeAdmin({{ admin.id }})"
                                             {% if admins|length <= 1 %}disabled{% endif %}>
                                         <i class="fas fa-user-minus"></i>
@@ -97,10 +98,17 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <button class="action-btn btn-promote" onclick="promoteUser({{ user.id }})">
-                                        <i class="fas fa-user-plus"></i>
-                                        {{ 'admin.make_admin.make_admin'|trans }}
-                                    </button>
+                                    {% if user.isAdmin %}
+                                        <button class="action-btn btn-promote" disabled>
+                                            <i class="fas fa-shield-alt"></i>
+                                            {{ 'admin.make_admin.already_admin'|trans }}
+                                        </button>
+                                    {% else %}
+                                        <button class="action-btn btn-promote" onclick="promoteUser({{ user.id }})">
+                                            <i class="fas fa-user-plus"></i>
+                                            {{ 'admin.make_admin.make_admin'|trans }}
+                                        </button>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                         </div>

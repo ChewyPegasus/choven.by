@@ -400,3 +400,15 @@
         padding: 16px;
     }
 }
+
+.btn-promote:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-promote:disabled:hover {
+    background-color: #6c757d;
+    transform: none;
+}

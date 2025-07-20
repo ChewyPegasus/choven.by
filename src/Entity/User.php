@@ -150,7 +150,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($role instanceof Role) {
                 $normalizedRoles[] = $role;
             } elseif (is_string($role)) {
-                // Убираем префикс ROLE_ если он есть
+                // Remove the ROLE_ prefix if present
                 $enumValue = str_starts_with($role, 'ROLE_') 
                     ? strtolower(str_replace('ROLE_', '', $role))
                     : strtolower($role);
@@ -158,13 +158,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 try {
                     $normalizedRoles[] = Role::from($enumValue);
                 } catch (\ValueError $e) {
-                    // Если не удалось создать enum, игнорируем эту роль
+                    // If enum creation failed, ignore this role
                     continue;
                 }
             }
         }
         
-        // Гарантируем наличие Role::USER
+        // Ensure Role::USER is present
         if (!in_array(Role::USER, $normalizedRoles, true)) {
             $normalizedRoles[] = Role::USER;
         }
@@ -175,7 +175,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isAdmin(): bool
     {
-        return $this->hasRole(Role::ADMIN);
+        // check for enum objects
+        if (in_array(Role::ADMIN, $this->roles, true)) {
+            return true;
+        }
+        
+        // Check strings (for backward compatibility)
+        foreach ($this->roles as $role) {
+            if (is_string($role) && (strtolower($role) === 'admin' || $role === 'ROLE_ADMIN')) {
+                return true;
+            }
+    }
+    
+    return false;
     }
 
     public function hasRole(Role $role): bool
@@ -187,7 +199,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->hasRole($role)) {
             $this->roles[] = $role;
-            $this->roles = array_unique($this->roles);
+            // $this->roles = array_unique($this->roles);
         }
         
         return $this;
@@ -195,10 +207,25 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function removeRole(Role $role): self
     {
+        // enum
         $key = array_search($role, $this->roles, true);
         if ($key !== false) {
             unset($this->roles[$key]);
             $this->roles = array_values($this->roles);
+            return $this;
+        }
+        
+        // Check strings (for backward compatibility)
+        $roleString = $role->value; // 'admin'
+        $roleSfString = 'ROLE_' . strtoupper($role->value); // 'ROLE_ADMIN'
+        
+        foreach ($this->roles as $index => $existingRole) {
+            if (is_string($existingRole) && 
+                ($existingRole === $roleString || $existingRole === $roleSfString)) {
+                unset($this->roles[$index]);
+                $this->roles = array_values($this->roles);
+                break;
+            }
         }
         
         return $this;

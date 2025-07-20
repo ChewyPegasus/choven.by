@@ -41,7 +41,11 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $allUsers = $this->findBy([], ['email' => 'ASC']);
         
         return array_filter($allUsers, function(User $user) use ($role) {
-            return $user->hasRole($role);
+            if ($role === Role::ADMIN) {
+                return $user->isAdmin();
+            }
+            
+            return $user->hasRole($role) || in_array('ROLE_' . strtoupper($role->value), $user->getRoles(), true);
         });
     }
 

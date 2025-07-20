@@ -320,9 +320,12 @@ login:
 
 registration:
   email:
-      already_used: 'This email is already in use'
-      failed: "There is a failure in our system. We will fix it as soon as possible"
-      already_exists: 'Email already regitered'
+    already_used: 'This email is already in use'
+    failed: "There is a failure in our system. We will fix it as soon as possible"
+    already_exists: 'Email already regitered'
+  phone:
+    already_used: 'This phone number is already in use'
+    already_exists: 'Phone is already regitered'
   title: 'Registration'
   success: 'Registration was successful! Check your email to confirm your account.'
   form:
@@ -343,8 +346,6 @@ registration:
       agree_terms: 'You must accept the terms of use'
       phone_required: 'Please enter your phone number'
       phone_invalid: 'Enter a valid phone number in the format +375XXXXXXXXX'
-  phone:
-    already_used: 'This phone number is already in use'
 
 verification:
   success: 'Your email has been successfully verified! You can now log in.'
@@ -605,6 +606,7 @@ admin:
     regular_users: "Regular users"
     administrator: "Administrator"
     make_admin: "Make admin"
+    already_admin: "Already admin"
     remove_admin: "Remove rights"
     no_admins: "No administrators"
     no_regular_users: "All users are already administrators"
