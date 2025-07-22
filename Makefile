@@ -19,7 +19,7 @@ help:
 	@echo "  make kafka-stop        - Stop Kafka order consumer"
 	@echo "  make kafka-status      - Check if Kafka consumer is running"
 	@echo "  make docker-php        - Enter the php container"
-	@echo "  make compile-assets    - Compile frontend assets"
+	@echo "  make refresh           - Clear cache and recompile assets"
 	@echo "  make cron-start        - Start the cron container"
 	@echo "  make cron-stop         - Stop the cron container"
 	@echo "  make cron-logs         - Logs from cron container"
@@ -81,8 +81,12 @@ kafka-status:
 docker-php:
 	docker-compose exec -u www-data php bash
 
-compile-assets:
-	docker-compose exec -u www-data php php bin/console asset-map:compile
+refresh:
+	@echo "Clearing cache..."
+	@docker-compose exec -u www-data php php bin/console cache:clear
+	@echo "Recompiling assets..."
+	@docker-compose exec -u www-data php php bin/console asset-map:compile
+	@echo "✅ Refresh complete. Your changes should be visible now."
 
 cron-start:
 	@echo "Starting cron container..."
