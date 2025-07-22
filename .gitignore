@@ -1,4 +1,4 @@
-# Конфиденциальные данные и окружение
+# Confidential data and environment
 /.env
 /.env.local
 /.env.dev
@@ -7,11 +7,11 @@
 !/.env.example
 !/.env.test
 
-# Секреты
+# Secrets
 /config/secrets/prod/prod.decrypt.private.php
 /config/secrets/dev/dev.decrypt.private.php
 
-# Временные и кеш файлы
+# Temporary and cache files
 /var/
 /vendor/
 /public/bundles/
@@ -26,10 +26,10 @@
 /compose.override.yaml
 /compose.override.yml
 
-# Автоматически созданные файлы
+# Automatically generated files
 /phpunit.xml
 
-# IDE и редакторы
+# IDEs and editors
 .idea/
 .vscode/
 *.sublime-project
@@ -37,6 +37,9 @@
 *.swp
 *.swo
 
-# Системные файлы
+# System files
 .DS_Store
 Thumbs.db
+
+# Images
+/assets/images/
