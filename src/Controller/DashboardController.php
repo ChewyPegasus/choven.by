@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\Trait\CacheableTrait;
 use App\Entity\FailedEmail;
 use App\Repository\FailedEmailRepository;
 use App\Repository\OrderRepository;
@@ -19,6 +20,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_ADMIN')]
 class DashboardController extends AbstractController
 {
+    use CacheableTrait;
+
     public function __construct(
         private readonly FailedEmailRepository $failedEmailRepository,
         private readonly UserRepository $userRepository,
@@ -36,7 +39,7 @@ class DashboardController extends AbstractController
             'confirmed_users' => $this->userRepository->count(['isConfirmed' => true]),
         ];
 
-        return $this->render('dashboard/index.html.twig', [
+        return $this->createCacheableResponse('dashboard/index.html.twig', [
             'stats' => $stats,
         ]);
     }
@@ -53,7 +56,7 @@ class DashboardController extends AbstractController
         
         $failedEmails = $this->failedEmailRepository->findBy([], ['createdAt' => 'DESC'], $limit, $offset);
         
-        return $this->render('dashboard/failed_emails.html.twig', [
+        return $this->createCacheableResponse('dashboard/failed_emails.html.twig', [
             'failedEmails' => $failedEmails,
             'currentPage' => $page,
             'totalPages' => $totalPages,
@@ -63,7 +66,7 @@ class DashboardController extends AbstractController
     #[Route('/failed-emails/{id}', name: 'app_admin_failed_email_details')]
     public function failedEmailDetails(FailedEmail $failedEmail): Response
     {
-        return $this->render('dashboard/failed_email_details.html.twig', [
+        return $this->createCacheableResponse('dashboard/failed_email_details.html.twig', [
             'email' => $failedEmail,
         ]);
     }
@@ -80,7 +83,7 @@ class DashboardController extends AbstractController
         
         $orders = $this->orderRepository->findBy([], ['startDate' => 'DESC'], $limit, $offset);
         
-        return $this->render('dashboard/orders.html.twig', [
+        return $this->createCacheableResponse('dashboard/orders.html.twig', [
             'orders' => $orders,
             'currentPage' => $page,
             'totalPages' => $totalPages,
@@ -99,7 +102,7 @@ class DashboardController extends AbstractController
         
         $users = $this->userRepository->findBy([], ['id' => 'DESC'], $limit, $offset);
         
-        return $this->render('dashboard/users.html.twig', [
+        return $this->createCacheableResponse('dashboard/users.html.twig', [
             'users' => $users,
             'currentPage' => $page,
             'totalPages' => $totalPages,
@@ -117,7 +120,7 @@ class DashboardController extends AbstractController
             $logContent = $this->getTailLines($logFile, $lines);
         }
         
-        return $this->render('dashboard/logs.html.twig', [
+        return $this->createCacheableResponse('dashboard/logs.html.twig', [
             'logContent' => $logContent,
             'lines' => $lines,
             'logExists' => file_exists($logFile),
@@ -130,7 +133,7 @@ class DashboardController extends AbstractController
         $admins = $this->userRepository->findByRole(Role::ADMIN);
         $regularUsers = $this->userRepository->findUsersWithoutRole(Role::ADMIN);
         
-        return $this->render('dashboard/make_admin.html.twig', [
+        return $this->createCacheableResponse('dashboard/make_admin.html.twig', [
             'admins' => $admins,
             'regularUsers' => $regularUsers,
         ]);
@@ -153,7 +156,7 @@ class DashboardController extends AbstractController
             }
         }
         
-        return $this->render('dashboard/routes.html.twig', ['routes' => $routes]);
+        return $this->createCacheableResponse('dashboard/routes.html.twig', ['routes' => $routes]);
     }
 
     private function getTailLines(string $filename, int $lines): string
