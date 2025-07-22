@@ -27,6 +27,9 @@
             {{ encore_entry_script_tags('app') }}
 
             {% block importmap %}{{ importmap('app') }}{% endblock %}
+
+            <script src="{{ asset('js/base.js') }}"></script>
+            <script src="{{ asset('js/header.js') }}" defer></script>
         {% endblock %}
     </head>
     <body>
@@ -61,7 +64,5 @@
         {% block footer %}
             {% include 'partials/footer.html.twig' %}
         {% endblock %}
-
-        <script src="{{ asset('js/base.js') }}"></script>
     </body>
 </html>
