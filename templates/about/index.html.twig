@@ -14,7 +14,7 @@
     {% include 'partials/about/history.html.twig' %}
     
     <!-- Photogallery -->
-    {% include 'partials/about/photogallery.html.twig' %}
+    {% include 'partials/about/photogallery.html.twig' with {'images': gallery_images} %}
     
     <!-- Contacts -->
     {% include 'partials/about/contacts.html.twig' %}

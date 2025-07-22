@@ -1,35 +1,19 @@
 <section class="about-section" style="background-color: #f9f9f9;">
     <div class="container">
-        <h2 class="section-title">{{ 'about.photogallery'|trans }}</h2>
+        <h2 class="section-title">{{ 'about.photogallery.title'|trans }}</h2>
         
         <div class="gallery-container">
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/banya.jpg') }}" alt="Sauna">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/city.jpg') }}" alt="View of city from river">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/dragonfly.jpg') }}" alt="Dragonfly on a finger">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/on_the_go.jpg') }}" alt="Picturesque views">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/road.jpg') }}" alt="Road in forests">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/sky.jpg') }}" alt="Night sky">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/zatoka.jpg') }}" alt="Small backwater">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/finish.jpg') }}" alt="Station">
-            </div>
-            <div class="gallery-item">
-                <img src="{{ asset('images/gallery/stop.jpg') }}" alt="Beauty of a nature">
-            </div>
+            {% if images is defined and images is not empty %}
+                {% for image_path in images %}
+                    <div class="gallery-item">
+                        {# Generatign alt-text for SEO-availability #}
+                        {% set alt_text = image_path|split('/')|last|split('.')|first|replace({'_': ' ', '-': ' '})|title %}
+                        <img src="{{ asset(image_path) }}" alt="{{ alt_text }}">
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p style="text-align: center;">{{ 'about.photogallery.no_images'|trans }}</p>
+            {% endif %}
         </div>
     </div>
 </section>

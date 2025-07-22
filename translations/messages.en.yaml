@@ -33,7 +33,9 @@ about:
     no_change: 'Our main goal hasn''t changed a bit:'
     first_goal: 'to share out love to water tourism'
     second_goal: 'and create for you an unforgettable memories from communication with nature'
-  photogallery: 'Photogallery'
+  photogallery:
+    title: 'Photogallery'
+    no_images: 'There are no photos in photogallery yet'
   contacts:
     contact_us: 'Contact us'
     phone_number: 'Phone number'
