@@ -517,7 +517,6 @@
     border: 1px solid #bee5eb;
 }
 
-/* АДАПТИВ */
 @media (max-width: 1200px) {
     .admin-table {
         font-size: 0.9rem;

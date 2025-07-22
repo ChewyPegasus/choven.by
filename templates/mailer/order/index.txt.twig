@@ -8,7 +8,7 @@
 {{ 'mailer.order.river'|trans }} {{ dto.river.label|trans }}
 {{ 'mailer.order.type'|trans }} {{ dto.package.label|trans }}
 {{ 'mailer.order.date'|trans }} {{ dto.startDate|date('d.m.Y') }}
-{{ 'mailer.order.duration'|trans }} {{ dto.durationDays }} дней
+{{ 'mailer.order.duration'|trans }} {{ dto.durationDays }}
 {{ 'mailer.order.number'|trans }}: {{ dto.amountOfPeople }}
 {% if dto.description %}
 {{ 'mailer.order.additional'|trans }} {{ dto.description }}

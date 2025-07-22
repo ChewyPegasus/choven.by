@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Инициализация табов
     const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
     
     tabs.forEach(tab => {

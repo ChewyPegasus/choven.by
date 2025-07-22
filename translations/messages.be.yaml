@@ -528,7 +528,8 @@ admin:
     previous: "Папярэдняя"
     next: "Наступная"
   orders:
-    title: "Кіраванне заказамі"
+    title: "Заказы"
+    manage_orders: 'Кіраванне заказамі'
     no_orders: "Заказаў пакуль няма"
     days: "дн."
     people: "чал."
@@ -537,15 +538,19 @@ admin:
     no_description: "Апісанне не пазначана"
     registered_user: "Зарэгістраваны"
     guest: "Госць"
+    add_new: 'Новы заказ'
+    delete: 'Выдаліць'
+    view: 'Прагляд'
     table:
       id: "ID"
       email: "Email"
       river: "Рака"
-      package: "Пакет"
+      package: "Пакет паслуг"
       people_count: "Удзельнікаў"
       duration: "Працягласць"
       start_date: "Дата сплаву"
       user: "Тып карыстальніка"
+      actions: 'Дзеянні'
   users:
     title: "Кіраванне карыстальнікамі"
     no_users: "Карыстальнікаў пакуль няма"

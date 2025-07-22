@@ -39,8 +39,13 @@ help:
 	@echo "  test-functional        - Run functional-tests"
 	
 install:
-	@echo "Installing dependencies inside the PHP container..."
-	@docker-compose exec -u www-data php composer install
+	@docker-compose exec php chown -R www-data:www-data var vendor
+	@docker-compose exec php git config --global --add safe.directory /var/www
+	@docker-compose exec -u www-data -e COMPOSER_PROCESS_TIMEOUT=600 php php -d xdebug.mode=off /usr/bin/composer install --no-scripts --optimize-autoloader
+    
+	@echo "Warming up cache..."
+	@docker-compose exec -u www-data php php bin/console cache:clear
+	@echo "Compiling assets..."
 	@docker-compose exec -u www-data php php bin/console asset-map:compile
 
 docker:

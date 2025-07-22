@@ -1,3 +1,4 @@
+{# filepath: d:\prog\php\project\choven.by\templates\dashboard\orders.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'admin.orders.title'|trans }}{% endblock %}
@@ -17,147 +18,130 @@
             </a>
             
             <h1 class="admin-title">{{ 'admin.orders.title'|trans }}</h1>
+
+            <div class="orders-header">
+                <h3 class="orders-title">
+                    <i class="fas fa-shopping-cart"></i>
+                    {{ 'admin.orders.manage_orders'|trans }}
+                </h3>
+                <button class="btn-add-user" onclick="openCreateModal()">
+                    <i class="fas fa-plus"></i>
+                    {{ 'admin.orders.add_new'|trans }}
+                </button>
+            </div>
             
             {% if orders|length > 0 %}
-                <div class="orders-grid">
-                    {% for order in orders %}
-                        <div class="order-card">
-                            <div class="order-header">
-                                <div class="order-id">
-                                    {{ 'admin.orders.order'|trans }} #{{ order.id }}
-                                </div>
-                                <div class="order-date">
-                                    {{ order.startDate|date('d.m.Y') }}
-                                </div>
-                            </div>
-                            
-                            <div class="order-body">
-                                <div class="order-detail">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-envelope"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <div class="detail-label">{{ 'admin.orders.table.email'|trans }}</div>
-                                        <div class="detail-value">{{ order.email }}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="order-detail">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-water"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <div class="detail-label">{{ 'admin.orders.table.river'|trans }}</div>
-                                        <div class="detail-value">
-                                            <span class="badge badge-river">
-                                                {{ ('river.' ~ order.river.value)|trans }}
-                                            </span>
+                <div class="orders-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>{{ 'admin.orders.table.id'|trans }}</th>
+                                <th>{{ 'admin.orders.table.email'|trans }}</th>
+                                <th>{{ 'admin.orders.table.date'|trans }}</th>
+                                <th>{{ 'admin.orders.table.river'|trans }}</th>
+                                <th>{{ 'admin.orders.table.package'|trans }}</th>
+                                <th>{{ 'admin.orders.table.people_count'|trans }}</th>
+                                <th>{{ 'admin.orders.table.duration'|trans }}</th>
+                                <th>{{ 'admin.orders.table.actions'|trans }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in orders %}
+                                <tr data-order-id="{{ order.id }}">
+                                    <td data-label="{{ 'admin.orders.table.id'|trans }}" class="user-id">#{{ order.id }}</td>
+                                    <td data-label="{{ 'admin.orders.table.email'|trans }}" class="user-email">{{ order.email }}</td>
+                                    <td data-label="{{ 'admin.orders.table.date'|trans }}">{{ order.startDate|date('d.m.Y') }}</td>
+                                    <td data-label="{{ 'admin.orders.table.river'|trans }}">
+                                        <span class="badge badge-river">{{ ('river.' ~ order.river.value)|trans }}</span>
+                                    </td>
+                                    <td data-label="{{ 'admin.orders.table.package'|trans }}">
+                                        <span class="badge badge-package">{{ order.package.getLabel()|trans }}</span>
+                                    </td>
+                                    <td data-label="{{ 'admin.orders.table.people_count'|trans }}">{{ order.amountOfPeople }}</td>
+                                    <td data-label="{{ 'admin.orders.table.duration'|trans }}">{{ order.durationDays }}</td>
+                                    <td data-label="{{ 'admin.orders.table.actions'|trans }}">
+                                        <div class="action-links">
+                                            <button class="action-link action-edit" onclick="editOrder({{ order.id }})">
+                                                <i class="fas fa-eye"></i>
+                                                {{ 'admin.orders.view'|trans }}
+                                            </button>
+                                            <button class="action-link action-delete" onclick="deleteOrder({{ order.id }})">
+                                                <i class="fas fa-trash"></i>
+                                                {{ 'admin.orders.delete'|trans }}
+                                            </button>
                                         </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="order-detail">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-box"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <div class="detail-label">{{ 'admin.orders.table.package'|trans }}</div>
-                                        <div class="detail-value">
-                                            <span class="badge badge-package">
-                                                {{ order.package.getLabel()|trans }}
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="order-detail">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-users"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <div class="detail-label">{{ 'admin.orders.table.people_count'|trans }}</div>
-                                        <div class="detail-value">{{ order.amountOfPeople }} {{ 'admin.orders.people'|trans }}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="order-detail">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-clock"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <div class="detail-label">{{ 'admin.orders.table.duration'|trans }}</div>
-                                        <div class="detail-value">{{ order.durationDays }} {{ 'admin.orders.days'|trans }}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="order-detail">
-                                    <div class="detail-icon">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <div class="detail-content">
-                                        <div class="detail-label">{{ 'admin.orders.table.user'|trans }}</div>
-                                        <div class="detail-value">
-                                            {% if order.user %}
-                                                <span class="badge badge-user-registered">
-                                                    {{ 'admin.orders.registered_user'|trans }}
-                                                </span>
-                                            {% else %}
-                                                <span class="badge badge-user-guest">
-                                                    {{ 'admin.orders.guest'|trans }}
-                                                </span>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                {% if order.description %}
-                                    <div class="description-section">
-                                        <div class="detail-label">{{ 'admin.orders.description'|trans }}:</div>
-                                        <div class="description-content">
-                                            {{ order.description|nl2br }}
-                                        </div>
-                                    </div>
-                                {% else %}
-                                    <div class="description-section">
-                                        <div class="no-description">
-                                            {{ 'admin.orders.no_description'|trans }}
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
                 
                 {% if totalPages > 1 %}
                     <div class="pagination">
                         {% if currentPage > 1 %}
-                            <a href="{{ path('app_admin_orders', {page: currentPage - 1}) }}">
-                                <i class="fas fa-chevron-left"></i> {{ 'admin.pagination.previous'|trans }}
-                            </a>
+                            <a href="{{ path('app_admin_orders', {page: currentPage - 1}) }}"><i class="fas fa-chevron-left"></i> {{ 'admin.pagination.previous'|trans }}</a>
                         {% endif %}
-                        
                         {% for page in 1..totalPages %}
-                            {% if page == currentPage %}
-                                <span class="active">{{ page }}</span>
-                            {% else %}
-                                <a href="{{ path('app_admin_orders', {page: page}) }}">{{ page }}</a>
-                            {% endif %}
+                            <a href="{{ path('app_admin_orders', {page: page}) }}" class="{{ page == currentPage ? 'active' : '' }}">{{ page }}</a>
                         {% endfor %}
-                        
                         {% if currentPage < totalPages %}
-                            <a href="{{ path('app_admin_orders', {page: currentPage + 1}) }}">
-                                {{ 'admin.pagination.next'|trans }} <i class="fas fa-chevron-right"></i>
-                            </a>
+                            <a href="{{ path('app_admin_orders', {page: currentPage + 1}) }}">{{ 'admin.pagination.next'|trans }} <i class="fas fa-chevron-right"></i></a>
                         {% endif %}
                     </div>
                 {% endif %}
             {% else %}
                 <div class="alert alert-info">
-                    <i class="fas fa-info-circle" style="margin-right: 10px;"></i>
+                    <i class="fas fa-info-circle"></i>
                     {{ 'admin.orders.no_orders'|trans }}
                 </div>
             {% endif %}
         </div>
     </section>
+
+    <!-- Modal window for viewing/editing order -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">{{ 'admin.orders.modal.edit_title'|trans }}</h3>
+                <span class="close-btn" onclick="closeModal('editModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editOrderForm">
+                    <p><strong>{{ 'admin.orders.table.email'|trans }}:</strong> <span id="editOrderEmail"></span></p>
+                    <p><strong>{{ 'admin.orders.table.date'|trans }}:</strong> <span id="editOrderDate"></span></p>
+                    <p><strong>{{ 'admin.orders.table.river'|trans }}:</strong> <span id="editOrderRiver"></span></p>
+                    <p><strong>{{ 'admin.orders.table.package'|trans }}:</strong> <span id="editOrderPackage"></span></p>
+                    <p><strong>{{ 'admin.orders.table.people_count'|trans }}:</strong> <span id="editOrderPeople"></span></p>
+                    <p><strong>{{ 'admin.orders.table.duration'|trans }}:</strong> <span id="editOrderDuration"></span></p>
+                    <div class="form-group">
+                        <label for="editOrderDescription">{{ 'admin.orders.description'|trans }}</label>
+                        <textarea id="editOrderDescription" readonly class="form-control"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal btn-secondary" onclick="closeModal('editModal')">
+                    {{ 'admin.users.cancel'|trans }}
+                </button>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        window.orderUrls = {
+            get: "{{ path('app_admin_api_orders_get', {id: '__ID__'}) }}",
+            delete: "{{ path('app_admin_api_orders_delete', {id: '__ID__'}) }}"
+        };
+        window.translations = {
+            confirm_delete: "{{ 'admin.orders.confirm_delete'|trans }}",
+            error_loading: "{{ 'admin.orders.error_loading'|trans }}",
+            error_deleting: "{{ 'admin.orders.error_deleting'|trans }}",
+            success_deleted: "{{ 'admin.orders.success_deleted'|trans }}"
+        };
+    </script>
+    <script src="{{ asset('js/dashboard/orders.js') }}"></script>
 {% endblock %}

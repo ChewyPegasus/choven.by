@@ -161,12 +161,10 @@ label {
     font-weight: 500;
 }
 
-/* Ненужные элементы DateInterval полей */
 .duration-field .form-group {
     margin-bottom: 0;
 }
 
-/* Ненужные части DateInterval */
 [name$="[years]"], [name$="[months]"], [name$="[hours]"], [name$="[minutes]"], [name$="[seconds]"],
 [name$="[invert]"], label[for$="[years]"], label[for$="[months]"], label[for$="[hours]"],
 label[for$="[minutes]"], label[for$="[seconds]"], label[for$="[invert]"] {

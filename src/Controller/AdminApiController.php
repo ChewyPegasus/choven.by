@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\Role;
+use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -15,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/api/admin')]
 #[IsGranted('ROLE_ADMIN')]
@@ -24,6 +27,8 @@ class AdminApiController extends AbstractController
         private readonly UserRepository $userRepository,
         private readonly EntityManagerInterface $entityManager,
         private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly OrderRepository $orderRepository,
+        private readonly TranslatorInterface $translator,
     ) {
     }
 
@@ -269,5 +274,29 @@ class AdminApiController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(['success' => true, 'message' => 'User updated successfully']);
+    }
+
+    #[Route('/orders/{id}', name: 'app_admin_api_orders_get', methods: ['GET'])]
+    public function getOrderById(Order $order): JsonResponse
+    {
+        return $this->json([
+            'id' => $order->getId(),
+            'email' => $order->getEmail(),
+            'startDate' => $order->getStartDate()->format('c'),
+            'river' => $this->translator->trans('river.' . $order->getRiver()->value),
+            'package' => $this->translator->trans($order->getPackage()->getLabel()),
+            'amountOfPeople' => $order->getAmountOfPeople(),
+            'durationDays' => $order->getDurationDays(),
+            'description' => $order->getDescription(),
+        ]);
+    }
+
+    #[Route('/orders/{id}', name: 'app_admin_api_orders_delete', methods: ['DELETE'])]
+    public function deleteOrder(Order $order): JsonResponse
+    {
+        $this->entityManager->remove($order);
+        $this->entityManager->flush();
+
+        return $this->json(['success' => true, 'message' => 'Order deleted successfully']);
     }
 }

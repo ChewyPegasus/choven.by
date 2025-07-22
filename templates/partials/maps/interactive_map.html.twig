@@ -4,7 +4,7 @@
         <p class="section-description">{{ labels.description }}</p>
         
         <div class="map-container">
-            <!-- Панель выбора маршрутов -->
+            <!-- Route selection panel -->
             <div class="routes-panel">
                 <h3>{{ labels.routes_title }}</h3>
                 <div class="routes-list">
@@ -34,11 +34,11 @@
                 </div>
             </div>
             
-            <!-- Карта -->
+            <!-- Map -->
             <div class="map-wrapper">
                 <div id="interactive-map"></div>
                 
-                <!-- Кнопки управления -->
+                <!-- Control buttons -->
                 <div class="map-controls">
                     <button id="show-all-routes" class="btn-map-control">
                         {{ labels.show_all }}
@@ -53,7 +53,7 @@
 </section>
 
 <script>
-    // Передаем данные в JavaScript
+    // Pass data to JavaScript
     window.routesData = {{ routesJson|raw }};
     window.mapLabels = {{ labelsJson|raw }};
 </script>

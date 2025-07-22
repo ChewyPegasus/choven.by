@@ -520,7 +520,8 @@ admin:
     previous: "Предыдущая"
     next: "Следующая"
   orders:
-    title: "Управление заказами"
+    title: "Заказы"
+    manage_orders: 'Управление заказами'
     no_orders: "Заказов пока нет"
     days: "дн."
     people: "чел."
@@ -529,15 +530,20 @@ admin:
     no_description: "Описание не указано"
     registered_user: "Зарегистрированный"
     guest: "Гость"
+    add_new: 'Новый заказ'
+    delete: 'Удалить'
+    view: 'Просмотр'
     table:
       id: "ID"
       email: "Email"
       river: "Река"
-      package: "Пакет"
+      package: "Пакет услуг"
       people_count: "Участников"
       duration: "Длительность"
-      start_date: "Дата сплава"
+      date: "Дата сплава"
       user: "Тип пользователя"
+      actions: 'Действия'
+
   users:
     title: "Управление пользователями"
     no_users: "Пользователей пока нет"

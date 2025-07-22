@@ -520,7 +520,8 @@ admin:
     previous: "Previous"
     next: "Next"
   orders:
-    title: "Order management"
+    title: "Orders"
+    manage_orders: 'Manage orders'
     no_orders: "No orders yet"
     days: "days"
     people: "people"
@@ -529,15 +530,19 @@ admin:
     no_description: "No description provided"
     registered_user: "Registered"
     guest: "Guest"
+    add_new: 'New order'
+    delete: 'Delete'
+    view: 'View'
     table:
       id: "ID"
       email: "Email"
       river: "River"
-      package: "Package"
+      package: "Services package"
       people_count: "Participants"
       duration: "Duration"
       start_date: "Rafting date"
       user: "User type"
+      actions: 'Actions'
   users:
     title: "User management"
     no_users: "No users yet"

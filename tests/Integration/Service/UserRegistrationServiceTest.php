@@ -89,7 +89,7 @@ class UserRegistrationServiceTest extends BaseWebTestCase
         $this->assertNotNull($savedUser->getConfirmationCode());
         $this->assertNotEmpty($savedUser->getConfirmationCode());
         $this->assertIsString($savedUser->getConfirmationCode());
-        $this->assertGreaterThan(10, strlen($savedUser->getConfirmationCode())); // Код должен быть достаточно длинным
+        $this->assertGreaterThan(10, strlen($savedUser->getConfirmationCode()));
     }
 
     public function testRegisterUserSetsDefaultRole(): void
