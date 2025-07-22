@@ -2,16 +2,39 @@
     <div class="container">
         <h2 class="section-title">{{ 'about.history.title'|trans }}</h2>
         
-        <div class="history-container">
-            <p>{{ 'about.history.start'|trans }}<span class="history-highlight">{{ 'about.history.love'|trans }}</span></p>
+        <div class="history-timeline">
+            <!-- Step 1: The beggining -->
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>{{ 'about.history.start'|trans }}</h3>
+                    <p>{{ 'about.history.love'|trans }}</p>
+                </div>
+            </div>
             
-            <p>{{ 'about.history.first_kayaks'|trans }}</p>
+            <!-- Step 2: First kayaks -->
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-ship"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>{{ 'about.history.first_kayaks'|trans }}</h3>
+                    <p>{{ 'about.history.growing'|trans }} <span class="history-highlight">{{ 'about.history.born'|trans }}</span>.</p>
+                </div>
+            </div>
             
-            <p>{{ 'about.history.growing'|trans }}<span class="history-highlight">{{ 'about.history.born'|trans }}</span>.</p>
-            
-            <p>{{ 'about.history.today'|trans }}</p>
-            
-            <p {{ 'about.history.no_change'|trans }}<span class="history-highlight">{{ 'about.history.first_goal'|trans }}</span> {{ 'about.history.second_goal'|trans }}</p>
+            <!-- Step 3: Present time -->
+            <div class="timeline-item">
+                <div class="timeline-icon">
+                    <i class="fas fa-bullseye"></i>
+                </div>
+                <div class="timeline-content">
+                    <h3>{{ 'about.history.today'|trans }}</h3>
+                    <p>{{ 'about.history.no_change'|trans }} <span class="history-highlight">{{ 'about.history.first_goal'|trans }}</span> {{ 'about.history.second_goal'|trans }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>
