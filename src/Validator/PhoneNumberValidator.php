@@ -19,7 +19,7 @@ class PhoneNumberValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, PhoneNumber::class);
         }
 
-        // Разрешаем null и пустые значения
+        // Allow null and empty values
         if (null === $value || '' === $value) {
             return;
         }
@@ -27,16 +27,16 @@ class PhoneNumberValidator extends ConstraintValidator
         $phoneUtil = PhoneNumberUtil::getInstance();
 
         try {
-            // Обрабатываем и PhoneNumber объекты, и строки
+            // Handle both PhoneNumber objects and strings
             if ($value instanceof LibPhoneNumber) {
-                // Если это уже объект PhoneNumber, проверяем его напрямую
+                // If it's already a PhoneNumber object, validate it directly
                 $isValid = $phoneUtil->isValidNumber($value);
             } elseif (is_string($value)) {
-                // Если это строка, парсим её сначала
+                // If it's a string, parse it first
                 $phoneNumber = $phoneUtil->parse($value, $constraint->defaultRegion);
                 $isValid = $phoneUtil->isValidNumber($phoneNumber);
             } else {
-                // Неподдерживаемый тип
+                // Unsupported type
                 throw new UnexpectedTypeException($value, 'string or libphonenumber\PhoneNumber');
             }
 

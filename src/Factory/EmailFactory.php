@@ -36,7 +36,7 @@ class EmailFactory
     {
         $order = $data['order'];
         
-        // Если передан ID заказа вместо объекта
+        // If the order ID is passed instead of the object
         if (is_numeric($order)) {
             $order = $this->entityManager->getRepository(Order::class)->find($order);
             if (!$order) {
@@ -51,7 +51,7 @@ class EmailFactory
     {
         $user = $data['user'];
         
-        // Если передан ID пользователя вместо объекта
+        // If the user ID is passed instead of the object
         if (is_numeric($user)) {
             $user = $this->entityManager->getRepository(User::class)->find($user);
             if (!$user) {
