@@ -5,14 +5,14 @@ function promoteUser(userId) {
     button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + window.adminTranslations.promoting;
     button.disabled = true;
     userItem.classList.add('loading');
+
+    const url = window.adminUrls.promoteUser.replace('__ID__', userId);
     
-    fetch(window.adminUrls.makeAdmin, {
+    fetch(url, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
             'X-Requested-With': 'XMLHttpRequest'
-        },
-        body: 'userId=' + userId
+        }
     })
     .then(response => response.json())
     .then(data => {

@@ -307,14 +307,14 @@ email:
     subject: "Подтверждение регистрации на Choven.by"
 
 login:
-  title: Вход в личный кабинет
+  title: 'Вход в личный кабинет'
   form:
-    email: Email
-    password: Пароль
-    remember_me: Запомнить меня
-    sign_in: Войти
-    no_account: Еще нет аккаунта?
-    register: Зарегистрироваться
+    email: 'Email'
+    password: 'Пароль'
+    remember_me: 'Запомнить меня'
+    sign_in: 'Войти'
+    no_account: 'Еще нет аккаунта?'
+    register: 'Зарегистрироваться'
     identifier: 'Email или телефон'
     identifier_placeholder: 'Введите email или номер телефона'
 

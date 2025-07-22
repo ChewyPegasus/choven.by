@@ -1,0 +1,17 @@
+doctrine:
+    dbal:
+        driver: 'pdo_sqlite'
+        url: 'sqlite:///%kernel.cache_dir%/test.db'
+        charset: utf8mb4
+        types:
+            phone_number: App\Type\PhoneNumberType
+    orm:
+        auto_generate_proxy_classes: true
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: attribute
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App

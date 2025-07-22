@@ -32,6 +32,11 @@ help:
 	@echo "  make phpstan-baseline  - Generate PHPStan baseline"
 	@echo "  make phpstan-clear     - Clear PHPStan cache"
 	@echo "  make code-quality      - Run all code quality checks"
+	@echo "  test                   - Run all tests"
+	@echo "  test-unit              - Run unit-tests"
+	@echo "  test-coverage          - Run coverage-tests"
+	@echo "  test-integration       - Run integration-tests"
+	@echo "  test-functional        - Run functional-tests"
 	
 install:
 	@echo "Installing dependencies inside the PHP container..."
@@ -124,3 +129,19 @@ phpstan-light: phpstan-prepare
 
 code-quality: phpstan
 	@echo "Code quality checks completed!"
+
+test:
+	@docker-compose exec php bin/console cache:clear --env=test --no-warmup
+	@docker-compose exec php vendor/bin/phpunit --testdox
+
+test-unit:
+	@docker-compose exec php vendor/bin/phpunit tests/Unit --testdox
+
+test-functional:
+	@docker-compose exec php vendor/bin/phpunit tests/Functional --testdox
+
+test-integration:
+	@docker-compose exec php vendor/bin/phpunit tests/Integration --testdox
+
+test-coverage:
+	@docker-compose exec php vendor/bin/phpunit --coverage-html var/coverage

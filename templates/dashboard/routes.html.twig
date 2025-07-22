@@ -187,5 +187,43 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script>
+        window.routesConfig = {
+            urls: {
+                get: "{{ path('app_admin_api_routes_get', {routeId: '__ID__'}) }}",
+                update: "{{ path('app_admin_api_routes_update', {routeId: '__ID__'}) }}",
+                delete: "{{ path('app_admin_api_routes_delete', {routeId: '__ID__'}) }}",
+                create: "{{ path('app_admin_api_routes_create') }}"
+            },
+            translations: {
+                error_loading: "{{ 'admin.routes.error_loading'|trans }}",
+                error_saving: "{{ 'admin.routes.error_saving'|trans }}",
+                error_deleting: "{{ 'admin.routes.error_deleting'|trans }}",
+                error_creating: "{{ 'admin.routes.error_creating'|trans }}",
+                error_empty_id: "{{ 'admin.routes.error_empty_id'|trans }}",
+                error_empty_data: "{{ 'admin.routes.error_empty_data'|trans }}",
+                error_invalid_json: "{{ 'admin.routes.error_invalid_json'|trans }}",
+                error_copying: "{{ 'admin.routes.error_copying'|trans }}",
+                success_saved: "{{ 'admin.routes.success_saved'|trans }}",
+                success_deleted: "{{ 'admin.routes.success_deleted'|trans }}",
+                success_created: "{{ 'admin.routes.success_created'|trans }}",
+                success_copied: "{{ 'admin.routes.success_copied'|trans }}",
+                confirm_delete: "{{ 'admin.routes.confirm_delete'|trans }}",
+                saving: "{{ 'admin.routes.saving'|trans }}",
+                creating: "{{ 'admin.routes.creating'|trans }}",
+                save: "{{ 'admin.routes.save'|trans }}",
+                create: "{{ 'admin.routes.create'|trans }}",
+                template: {
+                    name: "{{ 'admin.routes.template.name'|trans }}",
+                    description: "{{ 'admin.routes.template.description'|trans }}",
+                    difficulty: "{{ 'admin.routes.template.difficulty'|trans }}",
+                    duration: "{{ 'admin.routes.template.duration'|trans }}",
+                    distance: "{{ 'admin.routes.template.distance'|trans }}",
+                    start_point: "{{ 'admin.routes.template.start_point'|trans }}",
+                    start_description: "{{ 'admin.routes.template.start_description'|trans }}"
+                }
+            }
+        };
+    </script>
     <script src="{{ asset('js/dashboard/routes.js') }}"></script>
 {% endblock %}

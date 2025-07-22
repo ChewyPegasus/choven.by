@@ -136,7 +136,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $this->roles[] = Role::USER;
         }
         
-        return array_unique($this->roles);
+        $uniqueRoles = [];
+        foreach ($this->roles as $role) {
+            if (!in_array($role, $uniqueRoles, true)) {
+                $uniqueRoles[] = $role;
+            }
+        }
+        
+        return $uniqueRoles;
     }
 
     /**
@@ -169,7 +176,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             $normalizedRoles[] = Role::USER;
         }
         
-        $this->roles = array_unique($normalizedRoles);
+        $uniqueRoles = [];
+        foreach ($normalizedRoles as $role) {
+            if (!in_array($role, $uniqueRoles, true)) {
+                $uniqueRoles[] = $role;
+            }
+        }
+        
+        $this->roles = $uniqueRoles;
         return $this;
     }
 
@@ -292,6 +306,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->roles = [Role::USER];
+        $this->isConfirmed = false;
         $this->orders = new ArrayCollection();
     }
 

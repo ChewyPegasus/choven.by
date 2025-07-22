@@ -72,7 +72,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function searchUsers(string $query, int $limit = 10): array
     {
         return $this->createQueryBuilder('u')
-            ->where('u.email LIKE :query')
+            ->where('u.email LIKE :query OR u.phone LIKE :query')
             ->setParameter('query', '%' . $query . '%')
             ->setMaxResults($limit)
             ->orderBy('u.email', 'ASC')

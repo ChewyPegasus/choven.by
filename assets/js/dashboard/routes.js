@@ -14,15 +14,14 @@ function closeModal(modalId) {
 
 async function viewRoute(routeId) {
     try {
-        const response = await fetch(`{{ path('app_admin_routes_api_get', {'routeId': 'ROUTE_ID'}) }}`.replace('ROUTE_ID', routeId), {
-            headers: {
-                'Accept': 'application/json'
-            }
+        const url = window.routesConfig.urls.get.replace('__ID__', routeId);
+        const response = await fetch(url, {
+            headers: { 'Accept': 'application/json' }
         });
         
         if (!response.ok) {
             const result = await response.json();
-            throw new Error(result.error || '{{ "admin.routes.error_loading"|trans }}');
+            throw new Error(result.error || window.routesConfig.translations.error_loading);
         }
         
         const routeData = await response.json();
@@ -35,15 +34,14 @@ async function viewRoute(routeId) {
 
 async function editRoute(routeId) {
     try {
-        const response = await fetch(`{{ path('app_admin_routes_api_get', {'routeId': 'ROUTE_ID'}) }}`.replace('ROUTE_ID', routeId), {
-            headers: {
-                'Accept': 'application/json'
-            }
+        const url = window.routesConfig.urls.get.replace('__ID__', routeId);
+        const response = await fetch(url, {
+            headers: { 'Accept': 'application/json' }
         });
         
         if (!response.ok) {
             const result = await response.json();
-            throw new Error(result.error || '{{ "admin.routes.error_loading"|trans }}');
+            throw new Error(result.error || window.routesConfig.translations.error_loading);
         }
         
         const routeData = await response.json();
@@ -62,23 +60,24 @@ async function saveRoute() {
     const routeData = document.getElementById('routeData').value;
     
     if (!routeData.trim()) {
-        showToast('{{ "admin.routes.error_empty_data"|trans }}', 'error');
+        showToast(window.routesConfig.translations.error_empty_data, 'error');
         return;
     }
     
     try {
         JSON.parse(routeData);
     } catch (e) {
-        showToast('{{ "admin.routes.error_invalid_json"|trans }}', 'error');
+        showToast(window.routesConfig.translations.error_invalid_json, 'error');
         return;
     }
     
     const saveButton = document.querySelector('#editModal .btn-primary');
-    saveButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ "admin.routes.saving"|trans }}';
+    saveButton.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${window.routesConfig.translations.saving}`;
     saveButton.disabled = true;
     
     try {
-        const response = await fetch(`{{ path('app_admin_routes_api_update', {'routeId': 'ROUTE_ID'}) }}`.replace('ROUTE_ID', currentRouteId), {
+        const url = window.routesConfig.urls.update.replace('__ID__', currentRouteId);
+        const response = await fetch(url, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,22 +89,22 @@ async function saveRoute() {
         const result = await response.json();
         
         if (response.ok) {
-            showToast('{{ "admin.routes.success_saved"|trans }}', 'success');
+            showToast(window.routesConfig.translations.success_saved, 'success');
             closeModal('editModal');
             setTimeout(() => location.reload(), 1500);
         } else {
-            throw new Error(result.error || '{{ "admin.routes.error_saving"|trans }}');
+            throw new Error(result.error || window.routesConfig.translations.error_saving);
         }
     } catch (error) {
         showToast(error.message, 'error');
     } finally {
-        saveButton.innerHTML = '<i class="fas fa-save"></i> {{ "admin.routes.save"|trans }}';
+        saveButton.innerHTML = `<i class="fas fa-save"></i> ${window.routesConfig.translations.save}`;
         saveButton.disabled = false;
     }
 }
 
 async function deleteRoute(routeId) {
-    if (!confirm('{{ "admin.routes.confirm_delete"|trans }}')) {
+    if (!confirm(window.routesConfig.translations.confirm_delete)) {
         return;
     }
     
@@ -113,22 +112,21 @@ async function deleteRoute(routeId) {
     row.classList.add('loading');
     
     try {
-        const response = await fetch(`{{ path('app_admin_routes_api_delete', {'routeId': 'ROUTE_ID'}) }}`.replace('ROUTE_ID', routeId), {
+        const url = window.routesConfig.urls.delete.replace('__ID__', routeId);
+        const response = await fetch(url, {
             method: 'DELETE',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: { 'X-Requested-With': 'XMLHttpRequest' }
         });
         
         const result = await response.json();
         
         if (response.ok) {
-            showToast('{{ "admin.routes.success_deleted"|trans }}', 'success');
+            showToast(window.routesConfig.translations.success_deleted, 'success');
             row.style.transition = 'opacity 0.3s ease';
             row.style.opacity = '0';
             setTimeout(() => row.remove(), 300);
         } else {
-            throw new Error(result.error || '{{ "admin.routes.error_deleting"|trans }}');
+            throw new Error(result.error || window.routesConfig.translations.error_deleting);
         }
     } catch (error) {
         showToast(error.message, 'error');
@@ -139,16 +137,16 @@ async function deleteRoute(routeId) {
 function openCreateModal() {
     document.getElementById('newRouteId').value = '';
     document.getElementById('newRouteData').value = JSON.stringify({
-        "name": "{{ 'admin.routes.template.name'|trans }}",
-        "description": "{{ 'admin.routes.template.description'|trans }}",
-        "difficulty": "{{ 'admin.routes.template.difficulty'|trans }}",
-        "duration": "{{ 'admin.routes.template.duration'|trans }}",
-        "distance": "{{ 'admin.routes.template.distance'|trans }}",
+        "name": window.routesConfig.translations.template.name,
+        "description": window.routesConfig.translations.template.description,
+        "difficulty": window.routesConfig.translations.template.difficulty,
+        "duration": window.routesConfig.translations.template.duration,
+        "distance": window.routesConfig.translations.template.distance,
         "color": "#ff6b00",
         "points": [
             {
-                "name": "{{ 'admin.routes.template.start_point'|trans }}",
-                "description": "{{ 'admin.routes.template.start_description'|trans }}",
+                "name": window.routesConfig.translations.template.start_point,
+                "description": window.routesConfig.translations.template.start_description,
                 "coordinates": [53.9, 27.56],
                 "type": "start"
             }
@@ -162,28 +160,29 @@ async function createRoute() {
     const routeData = document.getElementById('newRouteData').value;
     
     if (!routeId) {
-        showToast('{{ "admin.routes.error_empty_id"|trans }}', 'error');
+        showToast(window.routesConfig.translations.error_empty_id, 'error');
         return;
     }
     
     if (!routeData.trim()) {
-        showToast('{{ "admin.routes.error_empty_data"|trans }}', 'error');
+        showToast(window.routesConfig.translations.error_empty_data, 'error');
         return;
     }
     
     try {
         JSON.parse(routeData);
     } catch (e) {
-        showToast('{{ "admin.routes.error_invalid_json"|trans }}', 'error');
+        showToast(window.routesConfig.translations.error_invalid_json, 'error');
         return;
     }
     
     const createButton = document.querySelector('#createModal .btn-primary');
-    createButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ "admin.routes.creating"|trans }}';
+    createButton.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${window.routesConfig.translations.creating}`;
     createButton.disabled = true;
     
     try {
-        const response = await fetch(`{{ path('app_admin_routes_api_create') }}`, {
+        const url = window.routesConfig.urls.create;
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -198,16 +197,16 @@ async function createRoute() {
         const result = await response.json();
         
         if (response.ok) {
-            showToast('{{ "admin.routes.success_created"|trans }}', 'success');
+            showToast(window.routesConfig.translations.success_created, 'success');
             closeModal('createModal');
             setTimeout(() => location.reload(), 1500);
         } else {
-            throw new Error(result.error || '{{ "admin.routes.error_creating"|trans }}');
+            throw new Error(result.error || window.routesConfig.translations.error_creating);
         }
     } catch (error) {
         showToast(error.message, 'error');
     } finally {
-        createButton.innerHTML = '<i class="fas fa-plus"></i> {{ "admin.routes.create"|trans }}';
+        createButton.innerHTML = `<i class="fas fa-plus"></i> ${window.routesConfig.translations.create}`;
         createButton.disabled = false;
     }
 }
@@ -217,7 +216,7 @@ function copyRouteContent() {
     
     if (navigator.clipboard) {
         navigator.clipboard.writeText(content).then(() => {
-            showToast('{{ "admin.routes.success_copied"|trans }}', 'success');
+            showToast(window.routesConfig.translations.success_copied, 'success');
         }).catch(() => {
             fallbackCopy(content);
         });
@@ -234,9 +233,9 @@ function fallbackCopy(text) {
     
     try {
         document.execCommand('copy');
-        showToast('{{ "admin.routes.success_copied"|trans }}', 'success');
+        showToast(window.routesConfig.translations.success_copied, 'success');
     } catch (err) {
-        showToast('{{ "admin.routes.error_copying"|trans }}', 'error');
+        showToast(window.routesConfig.translations.error_copying, 'error');
     }
     
     document.body.removeChild(textArea);

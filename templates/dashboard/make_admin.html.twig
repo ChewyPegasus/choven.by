@@ -144,7 +144,8 @@
         // URL's for JavaScript
         window.adminUrls = {
             makeAdmin: "{{ path('app_admin_make_admin') }}",
-            removeAdmin: "{{ path('app_admin_remove_admin', {'id': '__ID__'}) }}"
+            promoteUser: "{{ path('app_admin_api_users_promote', {'id': '__ID__'}) }}",
+            removeAdmin: "{{ path('app_admin_api_users_demote', {'id': '__ID__'}) }}"
         };
         
         // Translations for JavaScript
