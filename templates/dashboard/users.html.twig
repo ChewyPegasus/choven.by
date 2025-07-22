@@ -217,6 +217,12 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
+        window.userUrls = {
+            create: "{{ path('app_admin_api_users_create') }}",
+            get: "{{ path('app_admin_api_users_get', {id: '__ID__'}) }}",
+            update: "{{ path('app_admin_api_users_update', {id: '__ID__'}) }}",
+            delete: "{{ path('app_admin_api_users_delete', {id: '__ID__'}) }}"
+        };
         // Translations for JavaScript
         window.translations = {
             error_required_fields: "{{ 'admin.users.error_required_fields'|trans }}",

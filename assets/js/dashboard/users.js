@@ -1,18 +1,5 @@
 let currentUserId = null;
 
-function getCurrentLocale() {
-    // Locale from URL
-    const path = window.location.pathname;
-    const localeMatch = path.match(/^\/([a-z]{2})\//);
-    
-    if (localeMatch) {
-        return localeMatch[1];
-    }
-    
-    // If not from URL then from lang-attribute
-    return document.documentElement.lang || 'ru';
-}
-
 function showModal(modalId) {
     const modal = document.getElementById(modalId);
     modal.classList.add('show');
@@ -50,10 +37,8 @@ async function createUser() {
     createButton.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${window.translations.creating}`;
     createButton.disabled = true;
     
-    const locale = getCurrentLocale();
-    
     try {
-        const response = await fetch(`/${locale}/admin/users/api`, {
+        const response = await fetch(window.userUrls.create, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -88,8 +73,7 @@ async function createUser() {
 async function editUser(userId) {
     console.log('Editing user:', userId);
     
-    const locale = getCurrentLocale();
-    const apiUrl = `/${locale}/admin/users/api/${userId}`;
+    const apiUrl = window.userUrls.get.replace('__ID__', userId);
     
     try {
         const response = await fetch(apiUrl, {
@@ -150,8 +134,6 @@ async function saveUser() {
     saveButton.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${window.translations.saving}`;
     saveButton.disabled = true;
     
-    const locale = getCurrentLocale();
-    
     try {
         const requestData = {
             email: email,
@@ -163,8 +145,10 @@ async function saveUser() {
         if (password) {
             requestData.password = password;
         }
+
+        const apiUrl = window.userUrls.update.replace('__ID__', currentUserId);
         
-        const response = await fetch(`/${locale}/admin/users/api/${currentUserId}`, {
+        const response = await fetch(apiUrl, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -198,10 +182,10 @@ async function deleteUser(userId) {
     const row = document.querySelector(`tr[data-user-id="${userId}"]`);
     row.classList.add('loading');
     
-    const locale = getCurrentLocale();
-    
     try {
-        const response = await fetch(`/${locale}/admin/users/api/${userId}`, {
+        const apiUrl = window.userUrls.delete.replace('__ID__', userId);
+
+        const response = await fetch(apiUrl, {
             method: 'DELETE',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'

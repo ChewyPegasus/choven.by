@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -21,7 +22,8 @@ class AdminApiController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $entityManager
+        private readonly EntityManagerInterface $entityManager,
+        private readonly UserPasswordHasherInterface $passwordHasher,
     ) {
     }
 
@@ -192,5 +194,80 @@ class AdminApiController extends AbstractController
         }
 
         return $this->json(['success' => true, 'message' => 'Route deleted successfully']);
+    }
+
+    #[Route('/users', name: 'app_admin_api_users_create', methods: ['POST'])]
+    public function createUser(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (empty($data['email']) || empty($data['password'])) {
+            return $this->json(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($this->userRepository->findOneBy(['email' => $data['email']])) {
+            return $this->json(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
+        }
+
+        $user = new User();
+        $user->setEmail($data['email']);
+        $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
+        $user->setIsConfirmed($data['isConfirmed'] ?? false);
+
+        $roles = [Role::USER];
+        if ($data['isAdmin'] ?? false) {
+            $roles[] = Role::ADMIN;
+        }
+        $user->setRoles($roles);
+
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+
+        return $this->json(['success' => true, 'message' => 'User created successfully'], Response::HTTP_CREATED);
+    }
+
+    #[Route('/users/{id}', name: 'app_admin_api_users_get', methods: ['GET'])]
+    public function getUserById(User $user): JsonResponse
+    {
+        return $this->json([
+            'id' => $user->getId(),
+            'email' => $user->getEmail(),
+            'phone' => $user->getPhoneString(),
+            'isConfirmed' => $user->isConfirmed(),
+            'roles' => $user->getRoles(),
+        ]);
+    }
+
+    #[Route('/users/{id}', name: 'app_admin_api_users_update', methods: ['PUT'])]
+    public function updateUser(User $user, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        if (empty($data['email'])) {
+            return $this->json(['error' => 'Email is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($data['email'] !== $user->getEmail()) {
+            if ($this->userRepository->findOneBy(['email' => $data['email']])) {
+                return $this->json(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
+            }
+            $user->setEmail($data['email']);
+        }
+
+        if (!empty($data['password'])) {
+            $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
+        }
+
+        $user->setIsConfirmed($data['isConfirmed'] ?? false);
+
+        $roles = [Role::USER];
+        if ($data['isAdmin'] ?? false) {
+            $roles[] = Role::ADMIN;
+        }
+        $user->setRoles($roles);
+
+        $this->entityManager->flush();
+
+        return $this->json(['success' => true, 'message' => 'User updated successfully']);
     }
 }
