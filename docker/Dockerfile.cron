@@ -22,12 +22,16 @@ RUN pecl install rdkafka && \
 # Composer installation
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Set up cron job with absolute path to PHP
-RUN echo "* * * * * cd /var/www && /usr/local/bin/php bin/console app:email:retry >> /var/log/cron.log 2>&1" > /etc/cron.d/email-retry
-RUN chmod 0644 /etc/cron.d/email-retry
-RUN crontab /etc/cron.d/email-retry
+# Copy file with timetable
+COPY docker/cron/crontab /etc/cron.d/choven-cron
 
-# Create log file
+# Proper rights to timetable-file
+RUN chmod 0644 /etc/cron.d/choven-cron
+
+# Register file with timetable in cron-system
+RUN crontab /etc/cron.d/choven-cron
+
+# Create log file and set permissions
 RUN touch /var/log/cron.log && chmod 666 /var/log/cron.log
 
 # Working directory
