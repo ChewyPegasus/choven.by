@@ -1,4 +1,3 @@
-/* Стили для карусели */
 .hero-section {
     position: relative;
     width: 100%;
@@ -110,7 +109,6 @@ img.kayaks:hover {
     opacity: 1;
 }
 
-/* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
     .slide-text h2 {
         font-size: 2rem;
