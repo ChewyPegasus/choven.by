@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Entity\Order;
 use App\Entity\User;
+use App\Enum\Package;
+use App\Enum\River;
 use App\Enum\Role;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
@@ -17,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/api/admin')]
@@ -288,6 +291,8 @@ class AdminApiController extends AbstractController
             'amountOfPeople' => $order->getAmountOfPeople(),
             'durationDays' => $order->getDurationDays(),
             'description' => $order->getDescription(),
+            'riverValue' => $order->getRiver()->value,
+            'packageValue' => $order->getPackage()->value,
         ]);
     }
 
@@ -298,5 +303,53 @@ class AdminApiController extends AbstractController
         $this->entityManager->flush();
 
         return $this->json(['success' => true, 'message' => 'Order deleted successfully']);
+    }
+
+    #[Route('/orders', name: 'app_admin_api_orders_create', methods: ['POST'])]
+    public function createOrder(Request $request, ValidatorInterface $validator): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        
+        $order = new Order();
+        $order->setEmail($data['email'] ?? '');
+        $order->setStartDate(new \DateTime($data['startDate'] ?? 'now'));
+        $order->setRiver(River::tryFrom($data['river'] ?? ''));
+        $order->setPackage(Package::tryFrom($data['package'] ?? ''));
+        $order->setAmountOfPeople((int)($data['amountOfPeople'] ?? 1));
+        $order->setDurationDays((int)($data['durationDays'] ?? 1));
+        $order->setDescription($data['description'] ?? null);
+
+        $errors = $validator->validate($order);
+        if (count($errors) > 0) {
+            return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
+
+        return $this->json(['success' => true, 'message' => 'Order created successfully'], Response::HTTP_CREATED);
+    }
+
+    #[Route('/orders/{id}', name: 'app_admin_api_orders_update', methods: ['PUT'])]
+    public function updateOrder(Order $order, Request $request, ValidatorInterface $validator): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $order->setEmail($data['email'] ?? $order->getEmail());
+        $order->setStartDate(new \DateTime($data['startDate'] ?? $order->getStartDate()->format('Y-m-d')));
+        $order->setRiver(River::tryFrom($data['river'] ?? $order->getRiver()->value));
+        $order->setPackage(Package::tryFrom($data['package'] ?? $order->getPackage()->value));
+        $order->setAmountOfPeople((int)($data['amountOfPeople'] ?? $order->getAmountOfPeople()));
+        $order->setDurationDays((int)($data['durationDays'] ?? $order->getDurationDays()));
+        $order->setDescription($data['description'] ?? $order->getDescription());
+
+        $errors = $validator->validate($order);
+        if (count($errors) > 0) {
+            return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->entityManager->flush();
+
+        return $this->json(['success' => true, 'message' => 'Order updated successfully']);
     }
 }

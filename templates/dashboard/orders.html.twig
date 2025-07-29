@@ -1,4 +1,3 @@
-{# filepath: d:\prog\php\project\choven.by\templates\dashboard\orders.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'admin.orders.title'|trans }}{% endblock %}
@@ -24,7 +23,7 @@
                     <i class="fas fa-shopping-cart"></i>
                     {{ 'admin.orders.manage_orders'|trans }}
                 </h3>
-                <button class="btn-add-user" onclick="openCreateModal()">
+                <button class="btn-add-order" onclick="openCreateModal()">
                     <i class="fas fa-plus"></i>
                     {{ 'admin.orders.add_new'|trans }}
                 </button>
@@ -99,32 +98,113 @@
         </div>
     </section>
 
-    <!-- Modal window for viewing/editing order -->
+    <!-- Модальное окно для СОЗДАНИЯ заказа -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <form id="createOrderForm" onsubmit="saveOrder(event)">
+                <div class="modal-header">
+                    <h3 class="modal-title">{{ 'admin.orders.modal.create.title'|trans }}</h3>
+                    <button type="button" class="modal-close" onclick="closeModal('createModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Поля формы для нового заказа -->
+                    <div class="form-group">
+                        <label for="createEmail" class="form-label">{{ 'admin.orders.table.email'|trans }}</label>
+                        <input type="email" id="createEmail" name="email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createStartDate" class="form-label">{{ 'admin.orders.table.date'|trans }}</label>
+                        <input type="date" id="createStartDate" name="startDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createRiver" class="form-label">{{ 'admin.orders.table.river'|trans }}</label>
+                        <select id="createRiver" name="river" class="form-control" required>
+                            {% for river in rivers %}
+                                <option value="{{ river.value }}">{{ ('river.' ~ river.value)|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="createPackage" class="form-label">{{ 'admin.orders.table.package'|trans }}</label>
+                        <select id="createPackage" name="package" class="form-control" required>
+                            {% for package in packages %}
+                                <option value="{{ package.value }}">{{ package.getLabel()|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="createAmountOfPeople" class="form-label">{{ 'admin.orders.table.people_count'|trans }}</label>
+                        <input type="number" id="createAmountOfPeople" name="amountOfPeople" class="form-control" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createDurationDays" class="form-label">{{ 'admin.orders.table.duration'|trans }}</label>
+                        <input type="number" id="createDurationDays" name="durationDays" class="form-control" min="1" value="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createDescription" class="form-label">{{ 'admin.orders.description'|trans }}</label>
+                        <textarea id="createDescription" name="description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal btn-secondary" onclick="closeModal('createModal')">{{ 'admin.users.cancel'|trans }}</button>
+                    <button type="submit" class="btn-modal btn-success">{{ 'admin.users.create'|trans }}</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Модальное окно для РЕДАКТИРОВАНИЯ заказа -->
     <div id="editModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title">{{ 'admin.orders.modal.edit_title'|trans }}</h3>
-                <span class="close-btn" onclick="closeModal('editModal')">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="editOrderForm">
-                    <p><strong>{{ 'admin.orders.table.email'|trans }}:</strong> <span id="editOrderEmail"></span></p>
-                    <p><strong>{{ 'admin.orders.table.date'|trans }}:</strong> <span id="editOrderDate"></span></p>
-                    <p><strong>{{ 'admin.orders.table.river'|trans }}:</strong> <span id="editOrderRiver"></span></p>
-                    <p><strong>{{ 'admin.orders.table.package'|trans }}:</strong> <span id="editOrderPackage"></span></p>
-                    <p><strong>{{ 'admin.orders.table.people_count'|trans }}:</strong> <span id="editOrderPeople"></span></p>
-                    <p><strong>{{ 'admin.orders.table.duration'|trans }}:</strong> <span id="editOrderDuration"></span></p>
+            <form id="editOrderForm" onsubmit="saveOrder(event)">
+                <div class="modal-header">
+                    <h3 class="modal-title">{{ 'admin.orders.modal.edit.title'|trans }}</h3>
+                    <button type="button" class="modal-close" onclick="closeModal('editModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <!-- Поля формы для редактирования заказа -->
                     <div class="form-group">
-                        <label for="editOrderDescription">{{ 'admin.orders.description'|trans }}</label>
-                        <textarea id="editOrderDescription" readonly class="form-control"></textarea>
+                        <label for="editEmail" class="form-label">{{ 'admin.orders.table.email'|trans }}</label>
+                        <input type="email" id="editEmail" name="email" class="form-control" required>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-modal btn-secondary" onclick="closeModal('editModal')">
-                    {{ 'admin.users.cancel'|trans }}
-                </button>
-            </div>
+                    <div class="form-group">
+                        <label for="editStartDate" class="form-label">{{ 'admin.orders.table.date'|trans }}</label>
+                        <input type="date" id="editStartDate" name="startDate" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRiver" class="form-label">{{ 'admin.orders.table.river'|trans }}</label>
+                        <select id="editRiver" name="river" class="form-control" required>
+                            {% for river in rivers %}
+                                <option value="{{ river.value }}">{{ ('river.' ~ river.value)|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPackage" class="form-label">{{ 'admin.orders.table.package'|trans }}</label>
+                        <select id="editPackage" name="package" class="form-control" required>
+                            {% for package in packages %}
+                                <option value="{{ package.value }}">{{ package.getLabel()|trans }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editAmountOfPeople" class="form-label">{{ 'admin.orders.table.people_count'|trans }}</label>
+                        <input type="number" id="editAmountOfPeople" name="amountOfPeople" class="form-control" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDurationDays" class="form-label">{{ 'admin.orders.table.duration'|trans }}</label>
+                        <input type="number" id="editDurationDays" name="durationDays" class="form-control" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDescription" class="form-label">{{ 'admin.orders.description'|trans }}</label>
+                        <textarea id="editDescription" name="description" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-modal btn-secondary" onclick="closeModal('editModal')">{{ 'admin.users.cancel'|trans }}</button>
+                    <button type="submit" class="btn-modal btn-primary">{{ 'admin.users.save'|trans }}</button>
+                </div>
+            </form>
         </div>
     </div>
 {% endblock %}
@@ -134,13 +214,17 @@
     <script>
         window.orderUrls = {
             get: "{{ path('app_admin_api_orders_get', {id: '__ID__'}) }}",
+            create: "{{ path('app_admin_api_orders_create') }}",
+            update: "{{ path('app_admin_api_orders_update', {id: '__ID__'}) }}",
             delete: "{{ path('app_admin_api_orders_delete', {id: '__ID__'}) }}"
         };
         window.translations = {
-            confirm_delete: "{{ 'admin.orders.confirm_delete'|trans }}",
-            error_loading: "{{ 'admin.orders.error_loading'|trans }}",
-            error_deleting: "{{ 'admin.orders.error_deleting'|trans }}",
-            success_deleted: "{{ 'admin.orders.success_deleted'|trans }}"
+            confirm_delete: "{{ 'admin.orders.actions.confirm_delete'|trans }}",
+            error_loading: "{{ 'admin.orders.actions.error_loading'|trans }}",
+            error_deleting: "{{ 'admin.orders.actions.error_deleting'|trans }}",
+            error_saving: "{{ 'admin.orders.actions.error_saving'|trans }}",
+            success_deleted: "{{ 'admin.orders.actions.success_deleted'|trans }}",
+            success_saved: "{{ 'admin.orders.actions.success_saved'|trans }}"
         };
     </script>
     <script src="{{ asset('js/dashboard/orders.js') }}"></script>

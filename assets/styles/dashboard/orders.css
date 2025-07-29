@@ -70,7 +70,7 @@
     gap: 10px;
 }
 
-.btn-add-user {
+.btn-add-order {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -85,7 +85,7 @@
     cursor: pointer;
 }
 
-.btn-add-user:hover {
+.btn-add-order:hover {
     background: linear-gradient(135deg, #1e7e34, #155724);
     color: white;
     text-decoration: none;

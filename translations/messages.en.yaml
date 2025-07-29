@@ -530,6 +530,11 @@ admin:
     no_description: "No description provided"
     registered_user: "Registered"
     guest: "Guest"
+    modal:
+      create:
+        title: 'New order'
+      edit:
+        title: 'View/Edit order'
     add_new: 'New order'
     delete: 'Delete'
     view: 'View'
@@ -540,9 +545,16 @@ admin:
       package: "Services package"
       people_count: "Participants"
       duration: "Duration"
-      start_date: "Rafting date"
+      date: "Rafting date"
       user: "User type"
       actions: 'Actions'
+    actions:
+      confirm_delete: "Are you sure you want to delete this order?"
+      error_loading: "Error loading order"
+      error_deleting: "Error deleting order"
+      error_saving: "Error saving order"
+      success_deleted: "Order successfully deleted"
+      success_saved: "Order successfully saved"
   users:
     title: "User management"
     no_users: "No users yet"

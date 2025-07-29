@@ -530,6 +530,11 @@ admin:
     no_description: "Описание не указано"
     registered_user: "Зарегистрированный"
     guest: "Гость"
+    modal:
+      create:
+        title: 'Новый заказ'
+      edit:
+        title: 'Просмотр/редактирование заказа'
     add_new: 'Новый заказ'
     delete: 'Удалить'
     view: 'Просмотр'
@@ -543,6 +548,13 @@ admin:
       date: "Дата сплава"
       user: "Тип пользователя"
       actions: 'Действия'
+    actions:
+      confirm_delete: "Вы уверены, что хотите удалить этот заказ?"
+      error_loading: "Ошибка загрузки заказа"
+      error_deleting: "Ошибка удаления заказа"
+      error_saving: "Ошибка сохранения заказа"
+      success_deleted: "Заказ успешно удалён"
+      success_saved: "Заказ успешно сохранён"
 
   users:
     title: "Управление пользователями"

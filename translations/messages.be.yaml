@@ -538,6 +538,11 @@ admin:
     no_description: "Апісанне не пазначана"
     registered_user: "Зарэгістраваны"
     guest: "Госць"
+    modal:
+      create:
+        title: 'Новы заказ'
+      edit:
+        title: 'Прагляд/рэдагаванне заказу'
     add_new: 'Новы заказ'
     delete: 'Выдаліць'
     view: 'Прагляд'
@@ -548,9 +553,16 @@ admin:
       package: "Пакет паслуг"
       people_count: "Удзельнікаў"
       duration: "Працягласць"
-      start_date: "Дата сплаву"
+      date: "Дата сплаву"
       user: "Тып карыстальніка"
       actions: 'Дзеянні'
+    actions:
+      confirm_delete: "Вы ўпэўненыя, што хочаце выдаліць гэты заказ?"
+      error_loading: "Памылка загрузкі заказу"
+      error_deleting: "Памылка выдалення заказу"
+      error_saving: "Памылка захавання заказу"
+      success_deleted: "Заказ паспяхова выдалены"
+      success_saved: "Заказ паспяхова захаваны"
   users:
     title: "Кіраванне карыстальнікамі"
     no_users: "Карыстальнікаў пакуль няма"

@@ -6,6 +6,8 @@ namespace App\Controller;
 
 use App\Controller\Trait\CacheableTrait;
 use App\Entity\FailedEmail;
+use App\Enum\Package;
+use App\Enum\River;
 use App\Repository\FailedEmailRepository;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
@@ -87,6 +89,8 @@ class DashboardController extends AbstractController
             'orders' => $orders,
             'currentPage' => $page,
             'totalPages' => $totalPages,
+            'rivers' => River::cases(),
+            'packages' => Package::cases(),
         ]);
     }
 
