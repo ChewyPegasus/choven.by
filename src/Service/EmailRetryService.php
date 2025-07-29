@@ -20,11 +20,6 @@ use Symfony\Component\Translation\LocaleSwitcher;
 class EmailRetryService
 {
     private const MAX_ATTEMPTS = 2;
-    
-    /**
-     * Map of email types to Kafka topics
-     */
-    private array $topicMap = [];
 
     /**
      * Context handlers for different email types
@@ -39,21 +34,11 @@ class EmailRetryService
         private readonly EmailFactory $emailFactory,
         private readonly LocaleSwitcher $localeSwitcher,
         private readonly LoggerInterface $logger,
-        private readonly string $orderTopic,
-        private readonly string $registrationTopic,
         private readonly UserRepository $userRepository,
+        private array $topicMap,
     )
     {
-        $this->initTopicMap();
         $this->initContextHandlers();
-    }
-
-    private function initTopicMap(): void
-    {
-        $this->topicMap = [
-            EmailTemplate::ORDER_CONFIRMATION->value => $this->orderTopic,
-            EmailTemplate::VERIFICATION->value => $this->registrationTopic,
-        ];
     }
 
     private function initContextHandlers(): void

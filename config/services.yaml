@@ -68,8 +68,7 @@ services:
 
     App\Service\EmailRetryService:
         arguments:
-            $orderTopic: '%kafka.order_topic%'
-            $registrationTopic: '%kafka.registration_topic%'
+            $topicMap: '%kafka.topics%'
 
     App\Service\MapService:
         arguments:
