@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\EmailQueue;
+use App\Repository\Interfaces\EmailQueueRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class EmailQueueRepository extends ServiceEntityRepository
+class EmailQueueRepository extends ServiceEntityRepository implements EmailQueueRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\FailedEmail;
+use App\Repository\Interfaces\FailedEmailRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-class FailedEmailRepository extends ServiceEntityRepository
+class FailedEmailRepository extends ServiceEntityRepository implements FailedEmailRepositoryInterface
 {
     public function __construct(ManagerRegistry $registry)
     {

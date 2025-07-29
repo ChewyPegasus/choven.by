@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use App\Entity\User;
+use App\Repository\Interfaces\OrderRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Clock\ClockInterface;
@@ -13,7 +14,7 @@ use Psr\Clock\ClockInterface;
 /**
  * @extends ServiceEntityRepository<Order>
  */
-class OrderRepository extends ServiceEntityRepository
+class OrderRepository extends ServiceEntityRepository implements OrderRepositoryInterface
 {
     public function __construct(
         private readonly ManagerRegistry $registry,

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DTO;
+namespace App\DTO;
 
 use App\DTO\DTO;
 
