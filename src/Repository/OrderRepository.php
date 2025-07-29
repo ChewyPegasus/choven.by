@@ -8,20 +8,24 @@ use App\Entity\Order;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Psr\Clock\ClockInterface;
 
 /**
  * @extends ServiceEntityRepository<Order>
  */
 class OrderRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        private readonly ManagerRegistry $registry,
+        private readonly ClockInterface $clock,
+    )
     {
         parent::__construct($registry, Order::class);
     }
 
     public function findUpcomingOrdersByUser(User $user): array
     {
-        $today = new \DateTime('today');
+        $today = $this->clock->now()->setTime(0, 0, 0);
         
         return $this->createQueryBuilder('o')
             ->where('o.user = :user')
