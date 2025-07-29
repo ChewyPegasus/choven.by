@@ -78,3 +78,7 @@ services:
     App\Service\Registration\UserRegistrationService:
         arguments:
             $registrationTopic: '%kafka.registration_topic%'
+
+    App\Service\RouteService:
+        arguments:
+            $projectDir: '%kernel.project_dir%'
