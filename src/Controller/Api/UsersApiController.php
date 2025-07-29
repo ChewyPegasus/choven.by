@@ -7,6 +7,7 @@ namespace App\Controller\Api;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Repository\UserRepository;
+use DTO\UserDTO;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -134,13 +135,8 @@ class UsersApiController extends AbstractController
     #[Route('/{id}', name: 'app_admin_api_users_get', methods: ['GET'])]
     public function getUserById(User $user): JsonResponse
     {
-        return $this->json([
-            'id' => $user->getId(),
-            'email' => $user->getEmail(),
-            'phone' => $user->getPhoneString(),
-            'isConfirmed' => $user->isConfirmed(),
-            'roles' => $user->getRoles(),
-        ]);
+        $dto = UserDTO::fromEntity($user);
+        return $this->json($dto);
     }
 
     #[Route('/{id}', name: 'app_admin_api_users_update', methods: ['PUT'])]
