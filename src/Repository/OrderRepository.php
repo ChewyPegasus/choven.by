@@ -46,4 +46,21 @@ class OrderRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function save($order): void
+    {
+        $this->getEntityManager()->persist($order);
+        $this->getEntityManager()->flush();
+    }
+
+    public function remove($order): void
+    {
+        $this->getEntityManager()->remove($order);
+        $this->getEntityManager()->flush();
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 }

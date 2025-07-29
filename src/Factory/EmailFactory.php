@@ -12,15 +12,17 @@ use App\Entity\FailedEmail;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\EmailTemplate;
+use App\Repository\OrderRepository;
+use App\Repository\UserRepository;
 use DateTimeImmutable;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
 
 class EmailFactory
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager
+        private readonly OrderRepository $orderRepository,
+        private readonly UserRepository $userRepository,
     ) {
     }
 
@@ -38,7 +40,7 @@ class EmailFactory
         
         // If the order ID is passed instead of the object
         if (is_numeric($order)) {
-            $order = $this->entityManager->getRepository(Order::class)->find($order);
+            $order = $this->orderRepository->find($order);
             if (!$order) {
                 throw new \InvalidArgumentException('Order not found with ID: ' . $data['order']);
             }
@@ -53,7 +55,7 @@ class EmailFactory
         
         // If the user ID is passed instead of the object
         if (is_numeric($user)) {
-            $user = $this->entityManager->getRepository(User::class)->find($user);
+            $user = $this->userRepository->find($user);
             if (!$user) {
                 throw new \InvalidArgumentException('User not found with ID: ' . $data['user']);
             }

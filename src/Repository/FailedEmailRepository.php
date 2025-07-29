@@ -14,4 +14,21 @@ class FailedEmailRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, FailedEmail::class);
     }
+
+    public function save($failedEmail): void
+    {
+        $this->getEntityManager()->persist($failedEmail);
+        $this->getEntityManager()->flush();
+    }
+
+    public function remove($failedEmail): void
+    {
+        $this->getEntityManager()->remove($failedEmail);
+        $this->getEntityManager()->flush();
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 }

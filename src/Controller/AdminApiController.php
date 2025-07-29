@@ -11,7 +11,6 @@ use App\Enum\River;
 use App\Enum\Role;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,9 +27,8 @@ class AdminApiController extends AbstractController
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly OrderRepository $orderRepository,
+        private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly TranslatorInterface $translator,
     ) {
     }
@@ -64,7 +62,7 @@ class AdminApiController extends AbstractController
         }
 
         $user->addRole(Role::ADMIN);
-        $this->entityManager->flush();
+        $this->userRepository->save($user);
 
         return $this->json(['success' => true, 'message' => 'User promoted successfully']);
     }
@@ -86,7 +84,7 @@ class AdminApiController extends AbstractController
         }
 
         $user->removeRole(Role::ADMIN);
-        $this->entityManager->flush();
+        $this->userRepository->save($user);
 
         return $this->json(['success' => true, 'message' => 'Admin rights removed successfully']);
     }
@@ -103,8 +101,7 @@ class AdminApiController extends AbstractController
             return $this->json(['error' => 'Cannot delete the last admin'], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
+        $this->userRepository->remove($user);
 
         return $this->json(['success' => true, 'message' => 'User deleted successfully']);
     }
@@ -228,8 +225,7 @@ class AdminApiController extends AbstractController
         }
         $user->setRoles($roles);
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $this->userRepository->save($user);
 
         return $this->json(['success' => true, 'message' => 'User created successfully'], Response::HTTP_CREATED);
     }
@@ -274,7 +270,7 @@ class AdminApiController extends AbstractController
         }
         $user->setRoles($roles);
 
-        $this->entityManager->flush();
+        $this->userRepository->flush();
 
         return $this->json(['success' => true, 'message' => 'User updated successfully']);
     }
@@ -299,8 +295,7 @@ class AdminApiController extends AbstractController
     #[Route('/orders/{id}', name: 'app_admin_api_orders_delete', methods: ['DELETE'])]
     public function deleteOrder(Order $order): JsonResponse
     {
-        $this->entityManager->remove($order);
-        $this->entityManager->flush();
+        $this->orderRepository->remove($order);
 
         return $this->json(['success' => true, 'message' => 'Order deleted successfully']);
     }
@@ -324,8 +319,7 @@ class AdminApiController extends AbstractController
             return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->entityManager->persist($order);
-        $this->entityManager->flush();
+        $this->orderRepository->save($order);
 
         return $this->json(['success' => true, 'message' => 'Order created successfully'], Response::HTTP_CREATED);
     }
@@ -348,7 +342,7 @@ class AdminApiController extends AbstractController
             return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->entityManager->flush();
+        $this->orderRepository->flush();
 
         return $this->json(['success' => true, 'message' => 'Order updated successfully']);
     }

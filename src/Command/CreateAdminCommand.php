@@ -7,7 +7,6 @@ namespace App\Command;
 use App\Enum\Role;
 use App\Factory\StyleFactory as FactoryStyleFactory;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +18,6 @@ class CreateAdminCommand extends Command
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $entityManager,
         private readonly FactoryStyleFactory $styleFactory
     ) {
         parent::__construct();
@@ -48,7 +46,7 @@ class CreateAdminCommand extends Command
         }
 
         $user->addRole(Role::ADMIN);
-        $this->entityManager->flush();
+        $this->userRepository->save($user);
 
         $io->success(sprintf('User "%s" has been promoted to admin', $email));
         

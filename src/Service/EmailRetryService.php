@@ -11,9 +11,9 @@ use App\Enum\EmailTemplate;
 use App\Factory\EmailFactory;
 use App\Repository\EmailQueueRepository;
 use App\Repository\FailedEmailRepository;
+use App\Repository\UserRepository;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\Sending\EmailSender;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\LocaleSwitcher;
 
@@ -34,7 +34,6 @@ class EmailRetryService
     public function __construct(
         private readonly EmailQueueRepository $emailQueueRepo,
         private readonly FailedEmailRepository $failedEmailRepo,
-        private readonly EntityManagerInterface $entityManager,
         private readonly Producer $kafkaProducer,
         private readonly EmailSender $emailSender,
         private readonly EmailFactory $emailFactory,
@@ -42,6 +41,7 @@ class EmailRetryService
         private readonly LoggerInterface $logger,
         private readonly string $orderTopic,
         private readonly string $registrationTopic,
+        private readonly UserRepository $userRepository,
     )
     {
         $this->initTopicMap();
@@ -151,8 +151,7 @@ class EmailRetryService
         $this->setLocale($queuedEmail->getLocale());
         
         $queuedEmail->incrementAttempts();
-        $this->entityManager->persist($queuedEmail);
-        $this->entityManager->flush();
+        $this->emailQueueRepo->save($queuedEmail);
         
         try {
             $emailType = $queuedEmail->getEmailType();
@@ -215,7 +214,7 @@ class EmailRetryService
     private function processVerificationContext(array $context): ?array
     {
         $userId = $context['user'];
-        $user = $this->entityManager->getRepository(User::class)->find($userId);
+        $user = $this->userRepository->find($userId);
         
         if (!$user) {
             throw new \InvalidArgumentException('User not found with ID: ' . $userId);
@@ -298,8 +297,7 @@ class EmailRetryService
      */
     private function removeFromQueue(EmailQueue $queuedEmail, string $logMessage): void
     {
-        $this->entityManager->remove($queuedEmail);
-        $this->entityManager->flush();
+        $this->emailQueueRepo->remove($queuedEmail);
         $this->logger->info($logMessage);
     }
 
@@ -331,8 +329,8 @@ class EmailRetryService
             }
             
             // Persist the failed email and remove from queue
-            $this->entityManager->persist($failedEmail);
-            $this->entityManager->remove($queuedEmail);
+            $this->failedEmailRepo->save($failedEmail);
+            $this->emailQueueRepo->remove($queuedEmail);
             
             $this->logger->error(sprintf(
                 'Email moved to failed_emails after %d attempts (type: %s, id: %d): %s',
@@ -354,7 +352,8 @@ class EmailRetryService
         }
         
         // Flush changes to database
-        $this->entityManager->flush();
+        $this->failedEmailRepo->flush();
+        $this->emailQueueRepo->flush();
     }
     
     /**

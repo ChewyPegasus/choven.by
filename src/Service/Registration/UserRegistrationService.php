@@ -9,9 +9,9 @@ use App\Enum\EmailTemplate;
 use App\Enum\Role;
 use App\Factory\EmailFactory;
 use App\Factory\UserFactory;
+use App\Repository\EmailQueueRepository;
 use App\Repository\UserRepository;
 use App\Service\Messaging\Producer\Producer;
-use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
@@ -19,7 +19,7 @@ class UserRegistrationService
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $entityManager,
+        private readonly EmailQueueRepository $emailQueueRepository,
         private readonly UserPasswordHasherInterface $hasher,
         private readonly Producer $producer,
         private readonly EmailFactory $emailFactory,
@@ -60,8 +60,7 @@ class UserRegistrationService
             $this->hasher->hashPassword($user, $plainPassword)
         );
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $this->userRepository->save($user);
     }
 
     public function sendVerificationEmail(User $user, string $confirmUrl, string $locale): bool
@@ -99,7 +98,6 @@ class UserRegistrationService
             $locale,
         );
         
-        $this->entityManager->persist($emailQueue);
-        $this->entityManager->flush();
+        $this->emailQueueRepository->save($emailQueue);
     }
 }

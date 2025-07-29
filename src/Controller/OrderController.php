@@ -7,7 +7,6 @@ namespace App\Controller;
 use App\Entity\EmailQueue;
 use App\Form\OrderForm;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -16,6 +15,8 @@ use App\Enum\EmailTemplate;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
 use App\Factory\EmailFactory;
+use App\Repository\EmailQueueRepository;
+use App\Repository\OrderRepository;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\OrderService;
 use EmailQueueFactory;
@@ -27,14 +28,15 @@ final class OrderController extends AbstractController
     public function __construct(
         private readonly string $orderTopic,
         private readonly EmailFactory $emailFactory,
-        )
+        private readonly OrderRepository $orderRepository,
+        private readonly EmailQueueRepository $emailQueueRepository,
+    )
     {
     }
 
     #[Route('/new', name: 'app_order_new', methods: ['GET', 'POST'])]
     public function new(
-        Request $request, 
-        EntityManagerInterface $entityManager,
+        Request $request,
         LoggerInterface $logger,
         TranslatorInterface $translator,
         OrderService $orderService,
@@ -63,8 +65,7 @@ final class OrderController extends AbstractController
                 $order->setUser($this->getUser());
             }
             
-            $entityManager->persist($order);
-            $entityManager->flush();
+            $this->orderRepository->save($order);
 
             try {
                 $producer->produce(
@@ -91,8 +92,7 @@ final class OrderController extends AbstractController
                     $request->getLocale(),
                 );
                 
-                $entityManager->persist($emailQueue);
-                $entityManager->flush();
+                $this->emailQueueRepository->save($emailQueue);
                 
                 // Notifying user that email will be sent later
                 $this->addFlash('info', $translator->trans('order.info.email_queued'));

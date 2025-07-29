@@ -6,13 +6,11 @@ namespace App\Service\Registration;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 class EmailVerificationService
 {
     public function __construct(
         private readonly UserRepository $userRepository,
-        private readonly EntityManagerInterface $entityManager,
     ) {
     }
 
@@ -25,6 +23,6 @@ class EmailVerificationService
     {
         $user->setIsConfirmed(true);
         $user->setConfirmationCode(null);
-        $this->entityManager->flush();
+        $this->userRepository->flush();
     }
 }

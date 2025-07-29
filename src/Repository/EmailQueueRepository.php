@@ -36,4 +36,21 @@ class EmailQueueRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function save($emailQueue): void
+    {
+        $this->getEntityManager()->persist($emailQueue);
+        $this->getEntityManager()->flush();
+    }
+
+    public function remove($emailQueue): void
+    {
+        $this->getEntityManager()->remove($emailQueue);
+        $this->getEntityManager()->flush();
+    }
+
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
 }
