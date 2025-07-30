@@ -9,8 +9,8 @@ use App\Enum\EmailTemplate;
 use App\Enum\Role;
 use App\Factory\EmailFactory;
 use App\Factory\UserFactory;
-use App\Repository\EmailQueueRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\EmailQueueRepositoryInterface;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use App\Service\Messaging\Producer\Producer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -18,8 +18,8 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 class UserRegistrationService
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
-        private readonly EmailQueueRepository $emailQueueRepository,
+        private readonly UserRepositoryInterface $userRepository,
+        private readonly EmailQueueRepositoryInterface $emailQueueRepository,
         private readonly UserPasswordHasherInterface $hasher,
         private readonly Producer $producer,
         private readonly EmailFactory $emailFactory,

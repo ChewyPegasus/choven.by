@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\EmailQueue;
-use App\Entity\FailedEmail;
-use App\Entity\User;
 use App\Enum\EmailTemplate;
 use App\Factory\EmailFactory;
-use App\Repository\EmailQueueRepository;
-use App\Repository\FailedEmailRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\EmailQueueRepositoryInterface;
+use App\Repository\Interfaces\FailedEmailRepositoryInterface;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
@@ -27,14 +25,14 @@ class EmailRetryService
     private array $contextHandlers = [];
 
     public function __construct(
-        private readonly EmailQueueRepository $emailQueueRepo,
-        private readonly FailedEmailRepository $failedEmailRepo,
+        private readonly EmailQueueRepositoryInterface $emailQueueRepo,
+        private readonly FailedEmailRepositoryInterface $failedEmailRepo,
         private readonly Producer $kafkaProducer,
         private readonly EmailSender $emailSender,
         private readonly EmailFactory $emailFactory,
         private readonly LocaleSwitcher $localeSwitcher,
         private readonly LoggerInterface $logger,
-        private readonly UserRepository $userRepository,
+        private readonly UserRepositoryInterface $userRepository,
         private array $topicMap,
     )
     {

@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Factory\EmailFactory;
-use App\Repository\OrderRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\OrderRepositoryInterface;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use App\Service\Messaging\Consumer\KafkaConsumer;
 use App\Service\Messaging\Processor\MessageProcessorRegistry;
 use App\Service\Messaging\Processor\Topic\OrderMessageProcessor;
@@ -32,8 +32,8 @@ class KafkaConsumeCommand extends Command
         private readonly KafkaConsumer $consumer,
         private readonly array $topics,
         private readonly LoggerInterface $logger,
-        private readonly OrderRepository $orderRepository,
-        private readonly UserRepository $userRepository,
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly UserRepositoryInterface $userRepository,
         private readonly EmailSender $sender,
         private readonly EmailFactory $emailFactory,
         private readonly LocaleSwitcher $localeSwitcher,

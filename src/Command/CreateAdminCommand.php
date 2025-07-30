@@ -6,7 +6,7 @@ namespace App\Command;
 
 use App\Enum\Role;
 use App\Factory\StyleFactory as FactoryStyleFactory;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -17,7 +17,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class CreateAdminCommand extends Command
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
+        private readonly UserRepositoryInterface $userRepository,
         private readonly FactoryStyleFactory $styleFactory
     ) {
         parent::__construct();

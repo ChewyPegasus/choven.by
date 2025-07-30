@@ -81,3 +81,8 @@ services:
     App\Service\RouteService:
         arguments:
             $projectDir: '%kernel.project_dir%'
+
+    App\Repository\Interfaces\UserRepositoryInterface: '@App\Repository\UserRepository'
+    App\Repository\Interfaces\EmailQueueRepositoryInterface: '@App\Repository\EmailQueueRepository'
+    App\Repository\Interfaces\FailedEmailRepositoryInterface: '@App\Repository\FailedEmailRepository'
+    App\Repository\Interfaces\OrderRepositoryInterface: '@App\Repository\OrderRepository'

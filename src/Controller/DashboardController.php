@@ -8,10 +8,10 @@ use App\Controller\Trait\CacheableTrait;
 use App\Entity\FailedEmail;
 use App\Enum\Package;
 use App\Enum\River;
-use App\Repository\FailedEmailRepository;
-use App\Repository\OrderRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use App\Enum\Role;
+use App\Repository\Interfaces\FailedEmailRepositoryInterface;
+use App\Repository\Interfaces\OrderRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,9 +25,9 @@ class DashboardController extends AbstractController
     use CacheableTrait;
 
     public function __construct(
-        private readonly FailedEmailRepository $failedEmailRepository,
-        private readonly UserRepository $userRepository,
-        private readonly OrderRepository $orderRepository
+        private readonly FailedEmailRepositoryInterface $failedEmailRepository,
+        private readonly UserRepositoryInterface $userRepository,
+        private readonly OrderRepositoryInterface $orderRepository
     ) {
     }
 

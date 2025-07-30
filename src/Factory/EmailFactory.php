@@ -12,8 +12,8 @@ use App\Entity\FailedEmail;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\EmailTemplate;
-use App\Repository\OrderRepository;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\OrderRepositoryInterface;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use DateTimeImmutable;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -21,8 +21,8 @@ use Symfony\Component\Mime\Email;
 class EmailFactory
 {
     public function __construct(
-        private readonly OrderRepository $orderRepository,
-        private readonly UserRepository $userRepository,
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly UserRepositoryInterface $userRepository,
     ) {
     }
 

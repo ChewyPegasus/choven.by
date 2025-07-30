@@ -7,7 +7,7 @@ namespace App\Controller\Api;
 use App\Entity\Order;
 use App\Enum\Package;
 use App\Enum\River;
-use App\Repository\OrderRepository;
+use App\Repository\Interfaces\OrderRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +22,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 class OrdersApiController extends AbstractController
 {
     public function __construct(
-        private readonly OrderRepository $orderRepository,
+        private readonly OrderRepositoryInterface $orderRepository,
         private readonly TranslatorInterface $translator,
     )
     {

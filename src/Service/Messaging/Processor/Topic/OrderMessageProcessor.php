@@ -6,7 +6,7 @@ namespace App\Service\Messaging\Processor\Topic;
 
 use App\Enum\EmailTemplate;
 use App\Factory\EmailFactory;
-use App\Repository\OrderRepository;
+use App\Repository\Interfaces\OrderRepositoryInterface;
 use App\Service\Messaging\Processor\MessageProcessorInterface;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Translation\LocaleSwitcher;
 class OrderMessageProcessor implements MessageProcessorInterface
 {
     public function __construct(
-        private readonly OrderRepository $orderRepository,
+        private readonly OrderRepositoryInterface $orderRepository,
         private readonly EmailFactory $emailFactory,
         private readonly EmailSender $sender,
         private readonly LocaleSwitcher $localeSwitcher,

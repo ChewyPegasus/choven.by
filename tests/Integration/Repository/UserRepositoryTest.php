@@ -6,6 +6,7 @@ namespace App\Tests\Integration\Repository;
 
 use App\Entity\User;
 use App\Enum\Role;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use App\Repository\UserRepository;
 use App\Tests\BaseWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
@@ -14,12 +15,12 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class UserRepositoryTest extends BaseWebTestCase
 {
-    private UserRepository $userRepository;
+    private UserRepositoryInterface $userRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = $this->entityManager->getRepository(User::class);
+        $this->userRepository = $this->getContainer()->get(UserRepository::class);
     }
 
     public function testFindByRole(): void

@@ -34,4 +34,14 @@ interface UserRepositoryInterface
     public function remove($user): void;
 
     public function flush(): void;
+
+    public function findOneBy(array $criteria, ?array $orderBy = null): ?object;
+
+    public function findAll(): array;
+
+    public function count(array $criteria = []): int;
+
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
+
+    public function find(mixed $id, \Doctrine\DBAL\LockMode|int|null $lockMode = null, ?int $lockVersion = null): ?object;
 }

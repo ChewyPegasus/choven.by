@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Authentication;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use libphonenumber\PhoneNumberUtil;
 use libphonenumber\NumberParseException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -23,7 +23,9 @@ class UserProvider implements UserProviderInterface
      */
     private array $identifierStrategies;
 
-    public function __construct(private readonly UserRepository $userRepository)
+    public function __construct(
+        private readonly UserRepositoryInterface $userRepository,
+    )
     {
         $this->initializeStrategies();
     }

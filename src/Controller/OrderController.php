@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\EmailQueue;
 use App\Form\OrderForm;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -12,14 +11,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Order;
 use App\Enum\EmailTemplate;
-use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
 use App\Factory\EmailFactory;
-use App\Repository\EmailQueueRepository;
-use App\Repository\OrderRepository;
+use App\Repository\Interfaces\EmailQueueRepositoryInterface;
+use App\Repository\Interfaces\OrderRepositoryInterface;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\OrderService;
-use EmailQueueFactory;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/order')]
@@ -28,8 +25,8 @@ final class OrderController extends AbstractController
     public function __construct(
         private readonly string $orderTopic,
         private readonly EmailFactory $emailFactory,
-        private readonly OrderRepository $orderRepository,
-        private readonly EmailQueueRepository $emailQueueRepository,
+        private readonly OrderRepositoryInterface $orderRepository,
+        private readonly EmailQueueRepositoryInterface $emailQueueRepository,
     )
     {
     }

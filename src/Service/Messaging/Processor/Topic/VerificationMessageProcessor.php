@@ -6,7 +6,7 @@ namespace App\Service\Messaging\Processor\Topic;
 
 use App\Enum\EmailTemplate;
 use App\Factory\EmailFactory;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\UserRepositoryInterface;
 use App\Service\Messaging\Processor\MessageProcessorInterface;
 use App\Service\Sending\EmailSender;
 use Psr\Log\LoggerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\Translation\LocaleSwitcher;
 class VerificationMessageProcessor implements MessageProcessorInterface
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
+        private readonly UserRepositoryInterface $userRepository,
         private readonly EmailFactory $emailFactory,
         private readonly EmailSender $sender,
         private readonly LoggerInterface $logger,

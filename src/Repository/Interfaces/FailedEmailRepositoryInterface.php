@@ -11,4 +11,8 @@ interface FailedEmailRepositoryInterface
     public function remove($failedEmail): void;
 
     public function flush(): void;
+
+    public function count(array $criteria = []): int;
+
+    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
 }

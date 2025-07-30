@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Service\Registration;
 
 use App\Entity\User;
-use App\Repository\UserRepository;
+use App\Repository\Interfaces\UserRepositoryInterface;
 
 class EmailVerificationService
 {
     public function __construct(
-        private readonly UserRepository $userRepository,
+        private readonly UserRepositoryInterface $userRepository,
     ) {
     }
 
