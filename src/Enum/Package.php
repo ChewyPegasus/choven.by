@@ -4,16 +4,45 @@ declare(strict_types=1);
 
 namespace App\Enum;
 
+/**
+ * Enum representing different types of packages offered for trips/services.
+ *
+ * Each case defines a specific package type and provides methods to retrieve
+ * its translatable label, description, and a list of features.
+ */
 enum Package: string
 {
+    /**
+     * Represents an "All-Inclusive" package.
+     */
     case ALL_INCLUSIVE = 'all_inclusive';
+
+    /**
+     * Represents a "Minimum" package.
+     */
     case MINIMUM = 'minimum';
+
+    /**
+     * Represents a "Rent Only" package.
+     */
     case RENT_ONLY = 'rent_only';
+
+    /**
+     * Represents a "Corporate" package, typically for team events.
+     */
     case CORPORATE = 'corporate';
+
+    /**
+     * Represents an "Other" or custom package type.
+     */
     case OTHER = 'other';
 
     /**
-     * Returning key for translation
+     * Returns the translation key for the package's display label.
+     *
+     * This key can be used with a Symfony Translator to get the localized title.
+     *
+     * @return string The translation key for the package label.
      */
     public function getLabel(): string
     {
@@ -26,6 +55,13 @@ enum Package: string
         };
     }
 
+    /**
+     * Returns the translation key for the package's description.
+     *
+     * This key can be used with a Symfony Translator to get the localized description.
+     *
+     * @return string The translation key for the package description.
+     */
     public function getDescription(): string
     {
         return match($this) {
@@ -37,6 +73,14 @@ enum Package: string
         };
     }
     
+    /**
+     * Returns an array of translation keys for the package's features.
+     *
+     * Each string in the array is a translation key that can be used to
+     * display individual features of the package.
+     *
+     * @return string[] An array of translation keys for package features.
+     */
     public function getFeatures(): array
     {
         return match($this) {

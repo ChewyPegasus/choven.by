@@ -17,18 +17,41 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * API controller for managing user accounts, accessible by administrators.
+ *
+ * This controller provides endpoints for searching, promoting, demoting,
+ * deleting, creating, retrieving, and updating user entities.
+ * All actions in this controller require the authenticated user to have the 'ROLE_ADMIN' role.
+ */
 #[Route('/api/admin/users')]
 #[IsGranted('ROLE_ADMIN')]
 class UsersApiController extends AbstractController
 {
+    /**
+     * Constructs a new UsersApiController instance.
+     *
+     * @param UserRepositoryInterface $userRepository The repository for managing User entities.
+     * @param UserPasswordHasherInterface $passwordHasher The service for hashing user passwords.
+     * @param TranslatorInterface $translator The translator service for internationalization.
+     */
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly TranslatorInterface $translator,
-    )
-    {
+    ) {
     }
 
+    /**
+     * Searches for users based on a query string.
+     *
+     * Requires a query parameter 'q' with a minimum length of 2 characters.
+     * Returns a list of users matching the query, including their ID, email,
+     * phone number, confirmation status, and roles.
+     *
+     * @param Request $request The HTTP request containing the search query.
+     * @return JsonResponse A JSON response with search results or an error.
+     */
     #[Route('/search', name: 'app_admin_api_users_search', methods: ['GET'])]
     public function searchUsers(Request $request): JsonResponse
     {
@@ -50,6 +73,15 @@ class UsersApiController extends AbstractController
         return $this->json(['success' => true, 'users' => $results, 'count' => count($results)]);
     }
 
+    /**
+     * Promotes a user to an administrator.
+     *
+     * Adds the 'ROLE_ADMIN' to the specified user's roles.
+     * Returns an error if the user is already an admin.
+     *
+     * @param User $user The User entity to promote, resolved by the route parameter.
+     * @return JsonResponse A JSON response indicating success or failure.
+     */
     #[Route('/{id}/promote', name: 'app_admin_api_users_promote', methods: ['POST'])]
     public function promoteUser(User $user): JsonResponse
     {
@@ -63,6 +95,15 @@ class UsersApiController extends AbstractController
         return $this->json(['success' => true, 'message' => 'User promoted successfully']);
     }
 
+    /**
+     * Demotes a user from an administrator.
+     *
+     * Removes the 'ROLE_ADMIN' from the specified user's roles.
+     * Prevents an admin from demoting themselves or if it's the last admin.
+     *
+     * @param User $user The User entity to demote, resolved by the route parameter.
+     * @return JsonResponse A JSON response indicating success or failure.
+     */
     #[Route('/{id}/demote', name: 'app_admin_api_users_demote', methods: ['POST'])]
     public function demoteUser(User $user): JsonResponse
     {
@@ -85,6 +126,14 @@ class UsersApiController extends AbstractController
         return $this->json(['success' => true, 'message' => 'Admin rights removed successfully']);
     }
 
+    /**
+     * Deletes a user account.
+     *
+     * Prevents an admin from deleting their own account or the last admin account.
+     *
+     * @param User $user The User entity to delete, resolved by the route parameter.
+     * @return JsonResponse A JSON response indicating success or failure.
+     */
     #[Route('/{id}', name: 'app_admin_api_users_delete', methods: ['DELETE'])]
     public function deleteUser(User $user): JsonResponse
     {
@@ -102,6 +151,16 @@ class UsersApiController extends AbstractController
         return $this->json(['success' => true, 'message' => 'User deleted successfully']);
     }
 
+    /**
+     * Creates a new user account.
+     *
+     * Requires 'email' and 'password' in the request payload.
+     * Hashes the password and allows setting 'isConfirmed' and 'isAdmin' flags.
+     * Returns an error if a user with the given email already exists.
+     *
+     * @param Request $request The HTTP request containing the new user data.
+     * @return JsonResponse A JSON response indicating success or failure.
+     */
     #[Route('/', name: 'app_admin_api_users_create', methods: ['POST'])]
     public function createUser(Request $request): JsonResponse
     {
@@ -131,6 +190,14 @@ class UsersApiController extends AbstractController
         return $this->json(['success' => true, 'message' => 'User created successfully'], Response::HTTP_CREATED);
     }
 
+    /**
+     * Retrieves a single user by their ID.
+     *
+     * Returns a UserDTO representation of the user.
+     *
+     * @param User $user The User entity to retrieve, resolved by the route parameter.
+     * @return JsonResponse A JSON response containing the user's data.
+     */
     #[Route('/{id}', name: 'app_admin_api_users_get', methods: ['GET'])]
     public function getUserById(User $user): JsonResponse
     {
@@ -138,6 +205,16 @@ class UsersApiController extends AbstractController
         return $this->json($dto);
     }
 
+    /**
+     * Updates an existing user account.
+     *
+     * Allows updating email, password, confirmation status, and roles.
+     * Returns an error if the new email already exists for another user.
+     *
+     * @param User $user The User entity to update, resolved by the route parameter.
+     * @param Request $request The HTTP request containing the updated user data.
+     * @return JsonResponse A JSON response indicating success or failure.
+     */
     #[Route('/{id}', name: 'app_admin_api_users_update', methods: ['PUT'])]
     public function updateUser(User $user, Request $request): JsonResponse
     {

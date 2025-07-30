@@ -11,25 +11,50 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
+/**
+ * API controller for managing route data, accessible by administrators.
+ *
+ * This controller provides endpoints to retrieve, create, update, and delete
+ * route definitions stored as JSON files. It ensures that only users with
+ * 'ROLE_ADMIN' can access these functionalities.
+ */
 #[Route('/api/admin/routes')]
 #[IsGranted('ROLE_ADMIN')]
 class RoutesApiController extends AbstractController
 {
+    /**
+     * Constructs a new RoutesApiController instance.
+     *
+     * @param TranslatorInterface $translator The translator service for internationalization.
+     * @param RouteService $routeService The service for managing route file operations.
+     */
     public function __construct(
         private readonly TranslatorInterface $translator,
         private readonly RouteService $routeService,
-    )
-    {
+    ) {
     }
 
+    /**
+     * Returns the absolute path to the directory where route JSON files are stored.
+     *
+     * @return string The path to the routes directory.
+     */
     private function getRoutesDirectory(): string
     {
         return $this->getParameter('kernel.project_dir') . '/assets/data/routes/';
     }
 
+    /**
+     * Retrieves a single route by its ID.
+     *
+     * Fetches the JSON file corresponding to the given route ID and returns its content.
+     * Handles cases where the file does not exist or contains invalid JSON.
+     *
+     * @param string $routeId The ID of the route to retrieve.
+     * @return JsonResponse A JSON response containing the route data or an error message.
+     */
     #[Route('/{routeId}', name: 'app_admin_api_routes_get', methods: ['GET'])]
     public function getRoute(string $routeId): JsonResponse
     {
@@ -49,6 +74,15 @@ class RoutesApiController extends AbstractController
         return $this->json($routeData);
     }
 
+    /**
+     * Creates a new route from the request content.
+     *
+     * Expects a JSON payload with 'id' and 'data' keys.
+     * Sanitizes the route ID, checks for existing routes, and saves the new route.
+     *
+     * @param Request $request The HTTP request containing the route data.
+     * @return JsonResponse A JSON response indicating the success or failure of the creation.
+     */
     #[Route('/', name: 'app_admin_api_routes_create', methods: ['POST'])]
     public function createRoute(Request $request): JsonResponse
     {
@@ -76,6 +110,16 @@ class RoutesApiController extends AbstractController
         return $this->json(['success' => true, 'message' => 'Route created successfully'], Response::HTTP_CREATED);
     }
 
+    /**
+     * Updates an existing route by its ID.
+     *
+     * Expects a JSON payload with the updated route data.
+     * Overwrites the existing route file with the new content.
+     *
+     * @param string $routeId The ID of the route to update.
+     * @param Request $request The HTTP request containing the updated route data.
+     * @return JsonResponse A JSON response indicating the success or failure of the update.
+     */
     #[Route('/{routeId}', name: 'app_admin_api_routes_update', methods: ['PUT'])]
     public function updateRoute(string $routeId, Request $request): JsonResponse
     {
@@ -98,6 +142,14 @@ class RoutesApiController extends AbstractController
         return $this->json(['success' => true, 'message' => 'Route updated successfully']);
     }
 
+    /**
+     * Deletes a route by its ID.
+     *
+     * Removes the JSON file corresponding to the given route ID.
+     *
+     * @param string $routeId The ID of the route to delete.
+     * @return JsonResponse A JSON response indicating the success or failure of the deletion.
+     */
     #[Route('/{routeId}', name: 'app_admin_api_routes_delete', methods: ['DELETE'])]
     public function deleteRoute(string $routeId): JsonResponse
     {

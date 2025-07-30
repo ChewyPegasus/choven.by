@@ -8,6 +8,15 @@ use App\Enum\Package;
 use App\Enum\River;
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Data Transfer Object (DTO) for handling order form submissions.
+ *
+ * This DTO encapsulates the data submitted through the order form,
+ * providing a structured way to transfer and validate this data.
+ * It includes properties for email, start date, duration, river,
+ * amount of people, package type, description, and locale, along with
+ * Symfony validation constraints.
+ */
 class FormOrderDTO implements DTO
 {
     #[Assert\NotBlank(message: 'order.form.error.email_required')]
