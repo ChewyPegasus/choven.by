@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\DTO\OrderCreateDTO;
+use App\DTO\OrderDTO;
 use App\Entity\Order;
 use App\Enum\Package;
 use App\Enum\River;
@@ -58,7 +58,7 @@ class OrdersApiController extends AbstractController
 
     #[Route('/', name: 'app_admin_api_orders_create', methods: ['POST'])]
     public function createOrder(
-        #[MapRequestPayload] OrderCreateDTO $dto,
+        #[MapRequestPayload] OrderDTO $dto,
         OrderFactory $orderFactory,
     ): JsonResponse
     {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use App\DTO\OrderCreateDTO;
+use App\DTO\OrderDTO;
 use App\Entity\Order;
 use App\Enum\Package;
 use App\Enum\River;
@@ -41,16 +41,16 @@ class OrderFactory
         return $order;
     }
 
-    public function createFromDTO(OrderCreateDTO $dto): array
+    public function createFromDTO(OrderDTO $dto): array
     {
         $order = new Order();
-        $order->setEmail($dto->email);
-        $order->setStartDate(new \DateTime($dto->startDate));
-        $order->setRiver(River::tryFrom($dto->river));
-        $order->setPackage(Package::tryFrom($dto->package));
-        $order->setAmountOfPeople($dto->amountOfPeople);
-        $order->setDurationDays($dto->durationDays);
-        $order->setDescription($dto->description);
+        $order->setEmail($dto->getEmail());
+        $order->setStartDate($dto->getStartDate());
+        $order->setRiver($dto->getRiver());
+        $order->setPackage($dto->getPackage());
+        $order->setAmountOfPeople($dto->getAmountOfPeople());
+        $order->setDurationDays($dto->getDurationDays());
+        $order->setDescription($dto->getDescription());
 
         $errors = $this->validator->validate($order);
 
