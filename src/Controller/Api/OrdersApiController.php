@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\DTO\OrderCreateDTO;
 use App\Entity\Order;
 use App\Enum\Package;
 use App\Enum\River;
+use App\Factory\OrderFactory;
 use App\Repository\Interfaces\OrderRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -54,20 +57,13 @@ class OrdersApiController extends AbstractController
     }
 
     #[Route('/', name: 'app_admin_api_orders_create', methods: ['POST'])]
-    public function createOrder(Request $request, ValidatorInterface $validator): JsonResponse
+    public function createOrder(
+        #[MapRequestPayload] OrderCreateDTO $dto,
+        OrderFactory $orderFactory,
+    ): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
-        
-        $order = new Order();
-        $order->setEmail($data['email'] ?? '');
-        $order->setStartDate(new \DateTime($data['startDate'] ?? 'now'));
-        $order->setRiver(River::tryFrom($data['river'] ?? ''));
-        $order->setPackage(Package::tryFrom($data['package'] ?? ''));
-        $order->setAmountOfPeople((int)($data['amountOfPeople'] ?? 1));
-        $order->setDurationDays((int)($data['durationDays'] ?? 1));
-        $order->setDescription($data['description'] ?? null);
+        [$order, $errors] = $orderFactory->createFromDTO($dto);
 
-        $errors = $validator->validate($order);
         if (count($errors) > 0) {
             return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
         }
