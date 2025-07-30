@@ -50,12 +50,12 @@
                         {{ form_errors(form.amountOfPeople) }}
                     </div>
                     <div class="form-group col-md-6">
-                        {{ form_label(form.durationDays) }}
+                        {{ form_label(form.duration) }}
                         <div class="duration-field">
-                            {{ form_widget(form.durationDays, {'attr': {'class': 'form-control duration-days'}}) }}
+                            {{ form_widget(form.duration, {'attr': {'class': 'form-control duration-days'}}) }}
                             <span class="duration-label">{{ 'order.form.days'|trans }}</span>
                         </div>
-                        {{ form_errors(form.durationDays) }}
+                        {{ form_errors(form.duration) }}
                     </div>
                 </div>
 

@@ -11,8 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\Order;
 use App\Enum\EmailTemplate;
+use App\Factory\DTOFactory;
 use Psr\Log\LoggerInterface;
 use App\Factory\EmailFactory;
+use App\Factory\OrderFactory;
 use App\Repository\Interfaces\EmailQueueRepositoryInterface;
 use App\Repository\Interfaces\OrderRepositoryInterface;
 use App\Service\Messaging\Producer\Producer;
@@ -36,26 +38,37 @@ final class OrderController extends AbstractController
         Request $request,
         LoggerInterface $logger,
         TranslatorInterface $translator,
-        OrderService $orderService,
         Producer $producer,
         EmailFactory $emailFactory,
+        DTOFactory $DTOFactory,
+        OrderFactory $orderFactory,
     ): Response
     {
-        $order = $orderService->create($request);
+        $dto = $DTOFactory->createFromRequest($request);
 
         $currentUser = $this->getUser();
         if ($currentUser) {
-            $order->setEmail($currentUser->getUserIdentifier());
+            $dto->email = ($currentUser->getUserIdentifier());
         }
 
-        $form = $this->createForm(OrderForm::class, $order, [
+        $form = $this->createForm(OrderForm::class, $dto, [
             'is_authenticated' => $currentUser !== null,
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $durationDays = $form->get('durationDays')->getData();
-            $order->setDurationDays($durationDays);
+            [$order, $errors] = $orderFactory->createFromFormDTO($dto);
+
+            if (count($errors) > 0) {
+                foreach ($errors as $error) {
+                    $this->addFlash('error', $error->getMessage());
+                }
+                
+                return $this->render('order/new.html.twig', [
+                    'form' => $form,
+                ]);
+            }
+
             $order->setLocale($request->getLocale());
 
             if ($this->getUser()) {
@@ -99,7 +112,6 @@ final class OrderController extends AbstractController
         }
 
         return $this->render('order/new.html.twig', [
-            'order' => $order,
             'form' => $form,
         ]);
     }

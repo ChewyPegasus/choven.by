@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use App\DTO\FormOrderDTO;
 use App\DTO\OrderDTO;
 use App\Entity\Order;
 use App\Enum\Package;
@@ -51,6 +52,23 @@ class OrderFactory
         $order->setAmountOfPeople($dto->getAmountOfPeople());
         $order->setDurationDays($dto->getDurationDays());
         $order->setDescription($dto->getDescription());
+
+        $errors = $this->validator->validate($order);
+
+        return [$order, $errors];
+    }
+
+    public function createFromFormDTO(FormOrderDTO $dto): array
+    {
+        $order = new Order();
+        $order->setEmail($dto->email);
+        $order->setStartDate($dto->startDate);
+        $order->setRiver($dto->river);
+        $order->setPackage($dto->package);
+        $order->setAmountOfPeople($dto->amountOfPeople);
+        $order->setDurationDays($dto->duration);
+        $order->setDescription($dto->description);
+        $order->setLocale($dto->locale);
 
         $errors = $this->validator->validate($order);
 
