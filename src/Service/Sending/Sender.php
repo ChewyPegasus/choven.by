@@ -7,6 +7,7 @@ namespace App\Service\Sending;
 use App\DTO\DTO;
 use App\Factory\EmailFactory;
 use App\Service\Rendering\EmailRenderer;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\MailerInterface;
 
 /**
@@ -28,11 +29,12 @@ abstract class Sender
      * @param EmailFactory $emailFactory The factory responsible for creating message objects (e.g., `Symfony\Component\Mime\Email`).
      */
     public function __construct(
-        protected MailerInterface $mailer,
-        protected EmailRenderer $renderer,
-        protected string $senderEmail,
-        protected string $adminEmail,
-        protected EmailFactory $emailFactory,
+        protected readonly MailerInterface $mailer,
+        protected readonly EmailRenderer $renderer,
+        protected readonly string $senderEmail,
+        protected readonly string $adminEmail,
+        protected readonly EmailFactory $emailFactory,
+        protected readonly LoggerInterface $logger
     ) {
     }
 
@@ -46,5 +48,5 @@ abstract class Sender
      * @return void
      * @throws \Exception If an error occurs during the sending process.
      */
-    abstract public function send(DTO $dto): void;
+    abstract function send(DTO $dto): void;
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Retry;
 
 use App\Enum\EmailTemplate;
-use App\Service\Messaging\Producer\EmailKafkaMessageFactory;
+use App\Factory\EmailKafkaMessageFactory;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\Sending\EmailSender;
 use JsonException;

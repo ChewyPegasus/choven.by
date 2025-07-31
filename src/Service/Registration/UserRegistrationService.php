@@ -11,7 +11,7 @@ use App\Factory\EmailFactory;
 use App\Factory\UserFactory;
 use App\Repository\Interfaces\EmailQueueRepositoryInterface;
 use App\Repository\Interfaces\UserRepositoryInterface;
-use App\Service\Messaging\Producer\EmailKafkaMessageFactory;
+use App\Factory\EmailKafkaMessageFactory;
 use App\Service\Messaging\Producer\Producer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;

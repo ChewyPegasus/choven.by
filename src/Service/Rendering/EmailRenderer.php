@@ -19,37 +19,6 @@ use Symfony\Contracts\Translation\TranslatorInterface; // Import TranslatorInter
  */
 class EmailRenderer extends Renderer
 {
-    // Assuming the base Renderer class has these properties initialized via its constructor:
-    // protected Environment $twig;
-    // protected TranslatorInterface $translator;
-    // protected string $siteName;
-    // protected string $siteUrl;
-    // protected string $senderEmail;
-
-    /**
-     * Constructs a new EmailRenderer instance.
-     *
-     * @param Environment $twig The Twig rendering environment.
-     * @param TranslatorInterface $translator The Symfony translator service.
-     * @param string $siteName The name of the site.
-     * @param string $siteUrl The URL of the site.
-     * @param string $senderEmail The default sender email address for outgoing emails.
-     *
-     * (Assuming parent::__construct handles these. If Renderer is an abstract class,
-     * its constructor would typically set these up. If it's a concrete class,
-     * this class might not need its own constructor unless adding new dependencies.)
-     */
-    public function __construct(
-        Environment $twig,
-        TranslatorInterface $translator,
-        string $siteName,
-        string $siteUrl,
-        string $senderEmail
-    ) {
-        parent::__construct($twig, $translator, $siteName, $siteUrl, $senderEmail);
-    }
-
-
     /**
      * Renders an email based on an AbstractEmailDTO.
      *

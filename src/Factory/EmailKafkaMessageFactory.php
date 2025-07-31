@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Service\Messaging\Producer;
+namespace App\Factory;
 
 use App\DTO\AbstractEmailDTO;
 use App\DTO\OrderDTO;

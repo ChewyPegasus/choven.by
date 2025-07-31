@@ -21,12 +21,6 @@ use Psr\Log\LoggerInterface; // Assuming this is needed for the parent's constru
  */
 class EmailSender extends Sender
 {
-    public function __construct(
-        private readonly LoggerInterface $logger
-    )
-    {
-        
-    }
     /**
      * Sends an email based on the provided Data Transfer Object.
      *

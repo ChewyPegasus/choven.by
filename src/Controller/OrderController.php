@@ -14,10 +14,10 @@ use App\Enum\EmailTemplate;
 use App\Factory\DTOFactory;
 use Psr\Log\LoggerInterface;
 use App\Factory\EmailFactory;
+use App\Factory\EmailKafkaMessageFactory;
 use App\Factory\OrderFactory;
 use App\Repository\Interfaces\EmailQueueRepositoryInterface;
 use App\Repository\Interfaces\OrderRepositoryInterface;
-use App\Service\Messaging\Producer\EmailKafkaMessageFactory;
 use App\Service\Messaging\Producer\Producer;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
