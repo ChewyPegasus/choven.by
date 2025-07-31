@@ -10,6 +10,7 @@ menu:
   logout: 'Выйсці'
   profile: 'Профіль'
   auth: 'Аўтарызацыя'
+  language: 'Мова'
 
 footer:
   copyright: 'Усе права абаронены'
