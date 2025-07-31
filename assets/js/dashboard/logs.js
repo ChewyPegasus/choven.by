@@ -24,7 +24,7 @@ function fallbackCopy(element) {
         document.execCommand('copy');
         showCopySuccess();
     } catch (err) {
-        console.error('{{ 'admin.logs.copy_failed'|trans }}', err);
+        console.error("{{ 'admin.logs.copy_failed'|trans }}'", err);
     }
     
     selection.removeAllRanges();
@@ -34,7 +34,7 @@ function showCopySuccess() {
     const btn = document.querySelector('.copy-btn');
     const originalHTML = btn.innerHTML;
     
-    btn.innerHTML = '<i class="fas fa-check"></i> {{ 'admin.logs.copied'|trans }}';
+    btn.innerHTML = "<i class=\"fas fa-check\"></i> {{ 'admin.logs.copied'|trans }}";
     btn.style.background = '#218838';
     
     setTimeout(() => {
@@ -43,9 +43,12 @@ function showCopySuccess() {
     }, 2000);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+function initComponents() {
     const logContent = document.getElementById('logContent');
     if (logContent) {
         logContent.scrollTop = logContent.scrollHeight;
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initComponents);
+document.addEventListener('turbo:load', initComponents);

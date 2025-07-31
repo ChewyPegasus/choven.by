@@ -11,7 +11,7 @@ function closeFlash(id) {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
+function initComponents() {
     const closeButtons = document.querySelectorAll('.close-btn');
     closeButtons.forEach(function (btn) {
         btn.addEventListener('click', function () {
@@ -111,4 +111,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', initComponents);
+document.addEventListener('turbo:load', initComponents);

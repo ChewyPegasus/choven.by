@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+function initComponents() {
     // Initialize Swiper
     const swiper = new Swiper('.hero-swiper', {
         // Optional parameters
@@ -72,4 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.style.overflow = '';
         }
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', initComponents);
+document.addEventListener('turbo:load', initComponents);

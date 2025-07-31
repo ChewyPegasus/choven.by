@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+function initComponents() {
     const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
     
     tabs.forEach(tab => {
@@ -17,4 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.querySelector(targetId).classList.add('show', 'active');
         });
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', initComponents);
+document.addEventListener('turbo:load', initComponents);

@@ -2,27 +2,25 @@
 
 {% block title %}{{ 'info.title'|trans }}{% endblock %}
 
-{% block head %}
-    {% block stylesheets %}
-        {{ parent() }}
-        <link rel="stylesheet" href="{{ asset('styles/info.css') }}">
-    {% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/info.css') }}">
 {% endblock %}
 
 {% block body %}
-    {# Safety rules #}
-    {% include 'partials/info/safety.html.twig' %}
+    <div {{ stimulus_controller('info') }}>
+        {# Safety rules #}
+        {% include 'partials/info/safety.html.twig' %}
 
-    {# How is it going #}
-    {% include 'partials/info/process.html.twig' %}
+        {# How is it going #}
+        {% include 'partials/info/process.html.twig' %}
 
-    {# FAQ #}
-    {% include 'partials/info/faq.html.twig' %}
+        {# FAQ #}
+        {% include 'partials/info/faq.html.twig' %}
+    </div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script src="{{ asset('js/info.js') }}"></script>
+    {# <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> #}
 {% endblock %}

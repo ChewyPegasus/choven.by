@@ -46,7 +46,7 @@ async function createUser() {
             },
             body: JSON.stringify({
                 email: email,
-                phone: phone || null,
+                phone: phone || nFull,
                 password: password,
                 isConfirmed: isConfirmed,
                 isAdmin: isAdmin

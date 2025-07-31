@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+function initComponents() {
     const dropdowns = document.querySelectorAll('.language-dropdown, .user-dropdown, .guest-dropdown');
 
     dropdowns.forEach(dropdown => {
@@ -21,4 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 200);
         });
     });
-});
+}
+
+document.addEventListener('DOMContentLoaded', initComponents);
+document.addEventListener('turbo:load', initComponents);
