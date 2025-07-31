@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\DTO;
 
 use App\DTO\DTO;
+use App\Entity\User;
 
 /**
  * Data Transfer Object (DTO) for User entities.
@@ -42,7 +43,7 @@ class UserDTO implements DTO
      * @param \App\Entity\User $user The User entity to convert.
      * @return self A new UserDTO instance.
      */
-    public static function fromEntity(\App\Entity\User $user): self
+    public static function fromEntity(User $user): self
     {
         return new self(
             $user->getId(),
