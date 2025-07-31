@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Messaging\Processor\Topic;
 
 use App\Enum\EmailTemplate;
+use App\Exception\OrderNotFoundException;
 use App\Factory\EmailFactory;
 use App\Repository\Interfaces\OrderRepositoryInterface;
 use App\Service\Messaging\Processor\MessageProcessorInterface;
@@ -63,15 +64,10 @@ class OrderMessageProcessor implements MessageProcessorInterface
             return false;
         }
         
-        $order = $this->orderRepository->find($orderId);
-        
-        if (!$order) {
-            $this->logger->error('Order not found', ['orderId' => $orderId]);
-            $output->writeln(sprintf('<error>Order with ID %s not found.</error>', $orderId));
-            return false;
-        }
-        
         try {
+            // Use getById which throws an exception if the order is not found
+            $order = $this->orderRepository->getById((int) $orderId); // Cast to int as ID is expected to be int
+            
             // Set locale if it is present in the order entity
             if ($locale = $order->getLocale()) {
                 $this->localeSwitcher->setLocale($locale);
@@ -88,13 +84,19 @@ class OrderMessageProcessor implements MessageProcessorInterface
             $this->logger->info(sprintf('Order confirmation email sent for order ID: %d', $order->getId()));
             
             return true;
+        } catch (OrderNotFoundException $e) {
+            // Handle specific exception from repository
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+            $output->writeln(sprintf('<error>%s</error>', $e->getMessage()));
+            return false;
         } catch (\Exception $e) {
-            $this->logger->error('Failed to process order email', [
-                'orderId' => $order->getId(),
-                'error' => $e->getMessage(),
-                'exception' => $e,
-            ]);
-            $output->writeln(sprintf('<error>Failed to send email for order %d: %s</error>', $order->getId(), $e->getMessage()));
+            // Catch any other general exceptions during email processing
+            $logContext = ['orderId' => $orderId, 'error' => $e->getMessage(), 'exception' => $e];
+            if (isset($order) && $order->getId()) {
+                $logContext['orderId'] = $order->getId(); // Use actual order ID if available
+            }
+            $this->logger->error('Failed to process order email', $logContext);
+            $output->writeln(sprintf('<error>Failed to send email for order %s: %s</error>', $orderId, $e->getMessage()));
             
             return false;
         }

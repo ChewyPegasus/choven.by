@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use App\Entity\User;
+use App\Exception\OrderNotFoundException;
+use App\Factory\ExceptionFactory;
 use App\Repository\Interfaces\OrderRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,6 +34,7 @@ class OrderRepository extends ServiceEntityRepository implements OrderRepository
     public function __construct(
         private readonly ManagerRegistry $registry,
         private readonly ClockInterface $clock,
+        private readonly ExceptionFactory $exceptionFactory,
     ) {
         parent::__construct($registry, Order::class);
     }
@@ -152,5 +155,19 @@ class OrderRepository extends ServiceEntityRepository implements OrderRepository
     public function find(mixed $id, LockMode|int|null $lockMode = null, ?int $lockVersion = null): ?object
     {
         return parent::find($id, $lockMode, $lockVersion);
+    }
+
+    /**
+     * @throws OrderNotFoundException If no order with the given ID exists.
+     */
+    public function getById(int $id): Order
+    {
+        $order = $this->find($id);
+
+        if (!$order) {
+            throw $this->exceptionFactory->createOrderNotFoundException($id);
+        }
+
+        return $order;
     }
 }

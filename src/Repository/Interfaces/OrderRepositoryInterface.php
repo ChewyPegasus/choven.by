@@ -88,4 +88,6 @@ interface OrderRepositoryInterface
      * @return object|null The entity found or null if not found.
      */
     public function find(mixed $id, LockMode|int|null $lockMode = null, ?int $lockVersion = null): ?object;
+
+    public function getById(int $id): Order;
 }
