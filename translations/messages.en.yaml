@@ -224,16 +224,6 @@ order:
     description_placeholder: 'Specify additional wishes or questions'
     submit: 'Submit request'
     days: 'days'
-    error:
-      email_required: 'Please enter your email'
-      email_invalid: 'Please enter a valid email'
-      date_required: 'Please select a date'
-      duration_required: 'Please specify the duration of the rafting'
-      duration_range: 'Duration must be between {{ min }} and {{ max }} days'
-      river_required: 'Please select a river'
-      people_required: 'Please specify the number of participants'
-      people_range: 'The number of participants must be between {{ min }} and {{ max }}'
-      type_required: 'Please select the type of rafting'
   success:
     order_created: 'Your order has been successfully submitted.'
     confirmation_sent: 'Your order has been successfully submitted. A confirmation email has been sent to your email address.'

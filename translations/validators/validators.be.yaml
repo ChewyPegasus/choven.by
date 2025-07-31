@@ -1,0 +1,12 @@
+order:
+  form:
+    error:
+      email_required: 'Калі ласка, увядзіце email'
+      email_invalid: 'Увядзіце карэктны email'
+      date_required: 'Калі ласка, абярыце дату пачатку'
+      duration_required: 'Калі ласка, укажыце працягласць сплаву'
+      duration_range: 'Працягласць павінна быць ад {{ min }} да {{ max }} дзён'
+      river_required: 'Калі ласка, абярыце раку'
+      people_required: 'Калі ласка, укажыце колькасць удзельнікаў'
+      people_range: 'Колькасць удзельнікаў павінна быць ад {{ min }} да {{ max }}'
+      type_required: 'Калі ласка, абярыце фармат сплаву'

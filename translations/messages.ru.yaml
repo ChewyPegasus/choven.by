@@ -224,16 +224,6 @@ order:
     description_placeholder: 'Укажите дополнительные пожелания или вопросы'
     submit: 'Отправить заявку'
     days: 'дней'
-    error:
-      email_required: 'Пожалуйста, введите email'
-      email_invalid: 'Введите корректный email'
-      date_required: 'Пожалуйста, выберите дату'
-      duration_required: 'Пожалуйста, укажите продолжительность сплава'
-      duration_range: 'Длительность должна быть от {{ min }} до {{ max }} дней'
-      river_required: 'Пожалуйста, выберите реку'
-      people_required: 'Пожалуйста, укажите количество участников'
-      people_range: 'Количество участников должно быть от {{ min }} до {{ max }}'
-      type_required: 'Пожалуйста, выберите тип сплава'
   success:
     order_created: 'Ваш заказ успешно отправлен.'
     confirmation_sent: 'Ваш заказ успешно отправлен. На ваш email отправлено подтверждение.'

@@ -16,7 +16,7 @@
         <h1 class="section-title">{{ 'order.title'|trans }}</h1>
         
         <div class="form-container">
-            {{ form_start(form, {'attr': {'class': 'reservation-form'}}) }}
+            {{ form_start(form, { attr: { class: 'reservation-form', novalidate: 'novalidate' }}) }}
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         {{ form_label(form.email) }}
