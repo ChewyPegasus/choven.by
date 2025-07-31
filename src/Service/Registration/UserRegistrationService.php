@@ -11,6 +11,7 @@ use App\Factory\EmailFactory;
 use App\Factory\UserFactory;
 use App\Repository\Interfaces\EmailQueueRepositoryInterface;
 use App\Repository\Interfaces\UserRepositoryInterface;
+use App\Service\Messaging\Producer\EmailKafkaMessageFactory;
 use App\Service\Messaging\Producer\Producer;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -45,6 +46,7 @@ class UserRegistrationService
         private readonly LoggerInterface $logger,
         private readonly UserFactory $userFactory,
         private readonly string $registrationTopic,
+        private readonly EmailKafkaMessageFactory $emailKafkaMessageFactory,
     ) {
     }
 
@@ -128,16 +130,19 @@ class UserRegistrationService
     public function sendVerificationEmail(User $user, string $confirmUrl, string $locale): bool
     {
         try {
+            $emailDto = $this->emailFactory->createDTO(
+                EmailTemplate::VERIFICATION,
+                [
+                    'user' => $user,
+                    'confirmUrl' => $confirmUrl,
+                    'locale' => $locale,
+                ]
+            );
+            $payload = $this->emailKafkaMessageFactory->createPayload($emailDto);
+
             $this->producer->produce(
                 $this->registrationTopic,
-                $this->emailFactory->createDTO(
-                    EmailTemplate::VERIFICATION,
-                    [
-                        'user' => $user,
-                        'confirmUrl' => $confirmUrl,
-                        'locale' => $locale,
-                    ]
-                ),
+                $payload,
                 'user_' . $user->getId(), // Message key for Kafka
             );
             

@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace App\Service\Messaging\Producer;
 
-use App\DTO\AbstractEmailDTO;
-use App\DTO\OrderDTO;
-use App\DTO\VerificationDTO;
 use App\Factory\KafkaConnectionFactory;
 use Psr\Log\LoggerInterface;
 use Interop\Queue\Context;
-use App\Service\Messaging\Producer\Producer as ProducerInterface;
+use App\Service\Messaging\Producer\Producer as ProducerInterface; // Assuming Producer is an interface
 
 /**
  * KafkaProducer class implements the ProducerInterface for producing messages to Kafka.
  *
  * This class handles the connection to Kafka, checks its availability,
- * and publishes messages based on different DTO types.
+ * and publishes raw string messages to specified topics. It is intentionally
+ * generic and does not deal with application-specific DTOs or message structures.
  */
 class KafkaProducer implements ProducerInterface
 {
@@ -46,15 +44,16 @@ class KafkaProducer implements ProducerInterface
     /**
      * Produces a message to a specified Kafka topic.
      *
-     * This method first checks Kafka's availability, then constructs the message payload
-     * based on the provided DTO type, and finally sends the message to Kafka.
+     * This method first checks Kafka's availability, then sends the provided
+     * payload (which is expected to be a ready-to-send string, typically JSON)
+     * to the Kafka topic.
      *
      * @param string $topic The Kafka topic to which the message will be published.
-     * @param AbstractEmailDTO $dto The data transfer object containing email-related information.
+     * @param string $payload The raw string payload of the message (e.g., JSON string).
      * @param string|null $key An optional message key for partitioning messages.
      * @throws \Exception If Kafka is unavailable or another error occurs during message production.
      */
-    public function produce(string $topic, AbstractEmailDTO $dto, ?string $key = null): void // Added void return type as per interface
+    public function produce(string $topic, string $payload, ?string $key = null): void
     {
         try {
             // Check Kafka availability before attempting to send a message
@@ -62,22 +61,8 @@ class KafkaProducer implements ProducerInterface
             
             $kafkaTopic = $this->context->createTopic($topic);
 
-            // Prepare common message data
-            $messageData = [
-                'type' => $this->getDTOType($dto),
-                'id' => $dto->getContext()['id'], // Assumes all DTOs have 'id' in their context
-            ];
-
-            // Add DTO-specific data to the message
-            $this->addDTOSpecificData(
-                $messageData,
-                $dto,
-            );
-
-            // Create Kafka message from JSON encoded data
-            $kafkaMessage = $this->context->createMessage(
-                json_encode($messageData, JSON_THROW_ON_ERROR),
-            );
+            // Create Kafka message from the provided string payload
+            $kafkaMessage = $this->context->createMessage($payload);
 
             // Set message key if provided
             if ($key !== null) {
@@ -91,9 +76,8 @@ class KafkaProducer implements ProducerInterface
                 'Message published to Kafka',
                 [
                     'topic' => $topic,
-                    'type' => $messageData['type'],
                     'key' => $key,
-                    'message_id' => $messageData['id'], // Log the ID of the entity
+                    'payload_length' => strlen($payload),
                     'timestamp' => (new \DateTimeImmutable())->format(\DateTimeImmutable::ATOM),
                 ]
             );
@@ -102,8 +86,7 @@ class KafkaProducer implements ProducerInterface
                 'Failed to publish message to Kafka',
                 [
                     'topic' => $topic,
-                    'dto_type' => get_class($dto),
-                    'dto_id' => $dto->getContext()['id'] ?? 'N/A',
+                    'key' => $key,
                     'error' => $e->getMessage(),
                     'exception_class' => get_class($e),
                     'trace' => $e->getTraceAsString(),
@@ -142,6 +125,7 @@ class KafkaProducer implements ProducerInterface
         }
         
         // Try to connect to the server with a short timeout
+        // Use error suppression (@) as fsockopen will emit a warning on failure
         $socket = @fsockopen($host, $port, $errno, $errstr, 2); // 2 seconds timeout
         
         if (!$socket) {
@@ -160,35 +144,5 @@ class KafkaProducer implements ProducerInterface
         
         fclose($socket);
         $this->logger->debug(sprintf('Successfully connected to Kafka at %s:%d.', $host, $port));
-    }
-
-    /**
-     * Determines the message type string based on the provided DTO instance.
-     *
-     * @param AbstractEmailDTO $dto The email DTO.
-     * @return string The type of the DTO (e.g., 'order', 'verification', 'unknown').
-     */
-    private function getDTOType(AbstractEmailDTO $dto): string
-    {
-        return match(true) {
-            $dto instanceof OrderDTO => 'order',
-            $dto instanceof VerificationDTO => 'verification',
-            default => 'unknown',
-        };
-    }
-
-    /**
-     * Adds DTO-specific data to the message payload.
-     *
-     * @param array<string, mixed> &$messageData The message data array to modify by reference.
-     * @param AbstractEmailDTO $dto The email DTO from which to extract specific data.
-     */
-    private function addDTOSpecificData(array &$messageData, AbstractEmailDTO $dto): void
-    {
-        if ($dto instanceof VerificationDTO) {
-            $messageData['confirmUrl'] = $dto->getConfirmUrl();
-            $messageData['locale'] = $dto->getLocale();
-        }
-        // Add more DTO-specific data for other DTO types as needed
     }
 }

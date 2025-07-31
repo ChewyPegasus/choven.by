@@ -18,16 +18,14 @@ interface Producer
     /**
      * Produces a message to a specified topic.
      *
-     * This method is responsible for serializing the provided DTO data
-     * and sending it to the designated messaging topic. An optional key
-     * can be provided, which is often used for message partitioning
-     * in systems like Kafka.
+     * Serializes and sends the provided payload to the given messaging topic.
+     * An optional key can be specified for message partitioning.
      *
-     * @param string $topic The name of the topic to which the message will be sent.
-     * @param AbstractEmailDTO $dto The data transfer object containing the message payload.
-     * @param string|null $key An optional key for the message, often used for partitioning.
+     * @param string $topic The topic to send the message to.
+     * @param string $payload The serialized message payload.
+     * @param string|null $key Optional key for partitioning.
      * @return void
-     * @throws \Exception If the message cannot be produced (e.g., connection error, serialization error).
+     * @throws \Exception If the message cannot be produced.
      */
-    public function produce(string $topic, AbstractEmailDTO $dto, ?string $key = null): void;
+    public function produce(string $topic, string $payload, ?string $key = null): void;
 }

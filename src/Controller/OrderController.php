@@ -17,6 +17,7 @@ use App\Factory\EmailFactory;
 use App\Factory\OrderFactory;
 use App\Repository\Interfaces\EmailQueueRepositoryInterface;
 use App\Repository\Interfaces\OrderRepositoryInterface;
+use App\Service\Messaging\Producer\EmailKafkaMessageFactory;
 use App\Service\Messaging\Producer\Producer;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -41,6 +42,7 @@ final class OrderController extends AbstractController
         private readonly EmailFactory $emailFactory,
         private readonly OrderRepositoryInterface $orderRepository,
         private readonly EmailQueueRepositoryInterface $emailQueueRepository,
+        private readonly EmailKafkaMessageFactory $emailKafkaMessageFactory,
     ) {
     }
 
@@ -106,16 +108,20 @@ final class OrderController extends AbstractController
             
             $this->orderRepository->save($order); // Persist the order
 
+            $emailDto = $emailFactory->createDTO(
+                EmailTemplate::ORDER_CONFIRMATION,
+                [
+                    'order' => $order,
+                ]
+            );
+
+            $payload = $this->emailKafkaMessageFactory->createPayload($emailDto);
+
             try {
                 // Attempt to publish order confirmation message to Kafka
                 $producer->produce(
                     $this->orderTopic,
-                    $emailFactory->createDTO(
-                        EmailTemplate::ORDER_CONFIRMATION,
-                        [
-                            'order' => $order,
-                        ]
-                    ),
+                    $payload,
                     'order_' . $order->getId(), // Message key
                 );
 

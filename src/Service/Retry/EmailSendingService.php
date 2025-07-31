@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Service\Retry;
 
 use App\Enum\EmailTemplate;
+use App\Service\Messaging\Producer\EmailKafkaMessageFactory;
 use App\Service\Messaging\Producer\Producer;
 use App\Service\Sending\EmailSender;
+use JsonException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -26,16 +28,17 @@ class EmailSendingService
     /**
      * Constructs a new EmailSendingService instance.
      *
-     * @param Producer $kafkaProducer The Kafka producer service for sending messages to Kafka topics.
+     * @param Producer $producer The Kafka producer service for sending messages to Kafka topics.
      * @param EmailSender $emailSender The service for direct email sending via Symfony Mailer.
      * @param LoggerInterface $logger The logger instance for recording operational logs and errors.
      * @param array<string, string> $topicMap An associative array mapping email types (string values of `EmailTemplate`) to Kafka topic names.
      */
     public function __construct(
-        private readonly Producer $kafkaProducer,
+        private readonly Producer $producer,
         private readonly EmailSender $emailSender,
         private readonly LoggerInterface $logger,
         array $topicMap, // Passed from config
+        private readonly EmailKafkaMessageFactory $emailKafkaMessageFactory,
     ) {
         $this->topicMap = $topicMap;
     }
@@ -78,11 +81,14 @@ class EmailSendingService
         try {
             // Determine the appropriate Kafka topic for this email type
             $topic = $this->determineKafkaTopic($emailType);
+
+            // Create the Kafka message payload
+            $payload = $this->emailKafkaMessageFactory->createPayload($emailDto);
             
             // Send the email DTO to Kafka
-            $this->kafkaProducer->produce(
+            $this->producer->produce(
                 $topic,
-                $emailDto,
+                $payload,
                 'retry_' . ($queuedEmailId ?? uniqid('email_')) // Use queue ID or a unique ID for the message
             );
             
@@ -92,7 +98,15 @@ class EmailSendingService
             ));
             
             return true;
-        } catch (\Exception $e) {
+        } catch (JsonException $e) {
+            $this->logger->error(sprintf(
+                'Failed to prepare JSON payload for email %s (type: %s) for Kafka: %s',
+                $queuedEmailId ? 'ID ' . $queuedEmailId : 'DTO',
+                $emailType->name,
+                $e->getMessage()
+            ), ['exception' => $e, 'email_id' => $queuedEmailId, 'email_type' => $emailType->name]);
+            return false;
+        } catch (\Exception $e) { // Catch other exceptions from producer
             $this->logger->warning(sprintf(
                 'Kafka delivery failed for email %s (type: %s): %s',
                 $queuedEmailId ? 'ID ' . $queuedEmailId : 'DTO',
