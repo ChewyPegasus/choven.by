@@ -10,3 +10,32 @@ order:
       people_required: 'Please specify the number of participants'
       people_range: 'The number of participants must be between {{ min }} and {{ max }}'
       type_required: 'Please select the type of rafting'
+      date_invalid: 'Please enter a valid date'
+
+user:
+  form:
+    error:
+      email_required: 'Email is required'
+      email_invalid: 'Please enter a valid email address'
+      password_required: 'Password is required'
+      password_min_length: 'Password must be at least 6 characters long'
+      phone_max_length: 'Phone number must not exceed 20 characters'
+
+route:
+  form:
+    error:
+      id_required: 'Route ID is required'
+      id_min_length: 'Route ID must be at least 2 characters'
+      id_max_length: 'Route ID must not exceed 50 characters'
+      id_invalid_format: 'Route ID can only contain letters, numbers, underscores and hyphens'
+      data_required: 'Route data is required'
+      name_required: 'Route name is required'
+      description_required: 'Route description is required'
+      points_required: 'Route points are required'
+      points_min_count: 'Route must have at least 2 points'
+      point_invalid_coordinates: 'Point must have valid coordinates array [lat, lng]
+
+registration:
+  form:
+    error:
+      phone_invalid: 'Please enter a valid phone number'

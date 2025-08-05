@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class UpdateRouteDTO implements DTO
 {
-    #[Assert\NotBlank(message: 'Route data is required')]
+    #[Assert\NotBlank(message: 'route.form.error.data_required')]
     public ?array $data = null;
 
     /**
@@ -28,7 +28,7 @@ class UpdateRouteDTO implements DTO
         $requiredFields = ['name', 'description', 'points'];
         foreach ($requiredFields as $field) {
             if (!isset($this->data[$field]) || empty($this->data[$field])) {
-                $context->buildViolation("Route data must contain '{$field}' field")
+                $context->buildViolation("route.form.error.{$field}_required")
                     ->atPath('data')
                     ->addViolation();
             }
@@ -37,14 +37,14 @@ class UpdateRouteDTO implements DTO
         // Validate points structure
         if (isset($this->data['points']) && is_array($this->data['points'])) {
             if (count($this->data['points']) < 2) {
-                $context->buildViolation('Route must have at least 2 points')
+                $context->buildViolation('route.form.error.points_min_count')
                     ->atPath('data.points')
                     ->addViolation();
             }
 
             foreach ($this->data['points'] as $index => $point) {
                 if (!isset($point['coordinates']) || !is_array($point['coordinates']) || count($point['coordinates']) !== 2) {
-                    $context->buildViolation("Point {$index} must have valid coordinates array [lat, lng]")
+                    $context->buildViolation('route.form.error.point_invalid_coordinates')
                         ->atPath("data.points.{$index}")
                         ->addViolation();
                 }
