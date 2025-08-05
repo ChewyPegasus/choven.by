@@ -86,3 +86,4 @@ services:
     App\Repository\Interfaces\EmailQueueRepositoryInterface: '@App\Repository\EmailQueueRepository'
     App\Repository\Interfaces\FailedEmailRepositoryInterface: '@App\Repository\FailedEmailRepository'
     App\Repository\Interfaces\OrderRepositoryInterface: '@App\Repository\OrderRepository'
+    App\Repository\Interfaces\RouteRepositoryInterface: '@App\Repository\RouteRepository'
