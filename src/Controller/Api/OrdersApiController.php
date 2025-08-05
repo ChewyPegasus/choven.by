@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\DTO\ApiResponse\OrderApiResponseDTO;
 use App\DTO\OrderDTO;
 use App\DTO\UpdateOrderDTO;
 use App\Entity\Order;
@@ -52,7 +53,7 @@ class OrdersApiController extends AbstractController
     #[Route('/{id}', name: 'app_admin_api_orders_get', methods: ['GET'])]
     public function getOrderById(Order $order): JsonResponse
     {
-        return $this->json([
+        $orderData = [
             'id' => $order->getId(),
             'email' => $order->getEmail(),
             'startDate' => $order->getStartDate()->format('c'),
@@ -63,7 +64,10 @@ class OrdersApiController extends AbstractController
             'description' => $order->getDescription(),
             'riverValue' => $order->getRiver()->value,
             'packageValue' => $order->getPackage()->value,
-        ]);
+        ];
+
+        $response = OrderApiResponseDTO::successWithOrder('Order retrieved successfully', $orderData);
+        return $this->json($response->toArray());
     }
 
     /**
@@ -77,7 +81,8 @@ class OrdersApiController extends AbstractController
     {
         $this->orderRepository->remove($order);
 
-        return $this->json(['success' => true, 'message' => 'Order deleted successfully']);
+        $response = OrderApiResponseDTO::success('Order deleted successfully');
+        return $this->json($response->toArray());
     }
 
     /**
@@ -95,12 +100,14 @@ class OrdersApiController extends AbstractController
         [$order, $errors] = $orderFactory->createFromDTO($dto);
 
         if ($errors->count() > 0) {
-            return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
+            $response = OrderApiResponseDTO::error('Validation failed', [(string) $errors]);
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         $this->orderRepository->save($order);
-
-        return $this->json(['success' => true, 'message' => 'Order created successfully'], Response::HTTP_CREATED);
+        
+        $response = OrderApiResponseDTO::success('Order created successfully');
+        return $this->json($response->toArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -120,11 +127,13 @@ class OrdersApiController extends AbstractController
         [$updatedOrder, $errors] = $orderFactory->updateFromDTO($order, $dto);
 
         if ($errors->count() > 0) {
-            return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
+            $response = OrderApiResponseDTO::error('Validation failed', [(string) $errors]);
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
-        $this->orderRepository->save($updatedOrder); // save вместо flush
-
-        return $this->json(['success' => true, 'message' => 'Order updated successfully']);
+        $this->orderRepository->save($updatedOrder);
+        
+        $response = OrderApiResponseDTO::success('Order updated successfully');
+        return $this->json($response->toArray());
     }
 }

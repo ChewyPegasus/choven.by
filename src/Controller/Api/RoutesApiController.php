@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\DTO\ApiResponse\RouteApiResponseDTO;
 use App\Repository\Interfaces\RouteRepositoryInterface;
 use App\Service\RouteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,10 +38,12 @@ class RoutesApiController extends AbstractController
         $routeData = $this->routeRepository->findById($routeId);
         
         if ($routeData === null) {
-            return $this->json(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+            $response = RouteApiResponseDTO::error('Route not found');
+            return $this->json($response->toArray(), Response::HTTP_NOT_FOUND);
         }
 
-        return $this->json($routeData);
+        $response = RouteApiResponseDTO::successWithRoute('Route retrieved successfully', $routeData);
+        return $this->json($response->toArray());
     }
 
     /**
@@ -51,27 +54,33 @@ class RoutesApiController extends AbstractController
     {
         $requestData = $this->decodeJsonRequest($request);
         if ($requestData === null) {
-            return $this->json(['error' => 'Invalid JSON request'], Response::HTTP_BAD_REQUEST);
+            $response = RouteApiResponseDTO::error('Invalid JSON request');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         if (!$this->validateCreateRequest($requestData)) {
-            return $this->json(['error' => 'Invalid request data. "id" and "data" are required.'], Response::HTTP_BAD_REQUEST);
+            $response = RouteApiResponseDTO::error('Invalid request data. "id" and "data" are required.');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         $routeId = $this->routeService->sanitizeRouteId($requestData['id']);
         if (empty($routeId)) {
-            return $this->json(['error' => 'Invalid route ID format'], Response::HTTP_BAD_REQUEST);
+            $response = RouteApiResponseDTO::error('Invalid route ID format');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         if ($this->routeRepository->exists($routeId)) {
-            return $this->json(['error' => 'Route with this ID already exists'], Response::HTTP_CONFLICT);
+            $response = RouteApiResponseDTO::error('Route with this ID already exists');
+            return $this->json($response->toArray(), Response::HTTP_CONFLICT);
         }
 
         if (!$this->routeRepository->save($routeId, $requestData['data'])) {
-            return $this->json(['error' => 'Failed to save route file'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response = RouteApiResponseDTO::error('Failed to save route file');
+            return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $this->json(['success' => true, 'message' => 'Route created successfully'], Response::HTTP_CREATED);
+        $response = RouteApiResponseDTO::success('Route created successfully');
+        return $this->json($response->toArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -81,19 +90,23 @@ class RoutesApiController extends AbstractController
     public function updateRoute(string $routeId, Request $request): JsonResponse
     {
         if (!$this->routeRepository->exists($routeId)) {
-            return $this->json(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+            $response = RouteApiResponseDTO::error('Route not found');
+            return $this->json($response->toArray(), Response::HTTP_NOT_FOUND);
         }
 
         $routeData = $this->decodeJsonRequest($request);
         if ($routeData === null) {
-            return $this->json(['error' => 'Invalid JSON data provided'], Response::HTTP_BAD_REQUEST);
+            $response = RouteApiResponseDTO::error('Invalid JSON data provided');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         if (!$this->routeRepository->save($routeId, $routeData)) {
-            return $this->json(['error' => 'Failed to update route file'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response = RouteApiResponseDTO::error('Failed to update route file');
+            return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $this->json(['success' => true, 'message' => 'Route updated successfully']);
+        $response = RouteApiResponseDTO::success('Route updated successfully');
+        return $this->json($response->toArray());
     }
 
     /**
@@ -103,14 +116,34 @@ class RoutesApiController extends AbstractController
     public function deleteRoute(string $routeId): JsonResponse
     {
         if (!$this->routeRepository->exists($routeId)) {
-            return $this->json(['error' => 'Route not found'], Response::HTTP_NOT_FOUND);
+            $response = RouteApiResponseDTO::error('Route not found');
+            return $this->json($response->toArray(), Response::HTTP_NOT_FOUND);
         }
 
         if (!$this->routeRepository->delete($routeId)) {
-            return $this->json(['error' => 'Failed to delete route file'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            $response = RouteApiResponseDTO::error('Failed to delete route file');
+            return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return $this->json(['success' => true, 'message' => 'Route deleted successfully']);
+        $response = RouteApiResponseDTO::success('Route deleted successfully');
+        return $this->json($response->toArray());
+    }
+
+    /**
+     * Retrieves all available routes.
+     */
+    #[Route('/', name: 'app_admin_api_routes_list', methods: ['GET'])]
+    public function getAllRoutes(): JsonResponse
+    {
+        $routes = $this->routeRepository->findAll();
+        
+        if (empty($routes)) {
+            $response = RouteApiResponseDTO::successWithRoutes('No routes found', []);
+            return $this->json($response->toArray());
+        }
+
+        $response = RouteApiResponseDTO::successWithRoutes('Routes retrieved successfully', $routes);
+        return $this->json($response->toArray());
     }
 
     /**

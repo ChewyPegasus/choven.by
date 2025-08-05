@@ -53,4 +53,15 @@ class UserDTO implements DTO
             $user->getRoles(),
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'isConfirmed' => $this->isConfirmed,
+            'roles' => $this->roles,
+        ];
+    }
 }

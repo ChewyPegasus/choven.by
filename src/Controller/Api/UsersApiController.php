@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\DTO\ApiResponse\UserApiResponseDTO;
 use App\Entity\User;
 use App\Enum\Role;
 use App\DTO\UserDTO;
@@ -36,6 +37,7 @@ class UsersApiController extends AbstractController
      * @param UserRepositoryInterface $userRepository The repository for managing User entities.
      * @param UserPasswordHasherInterface $passwordHasher The service for hashing user passwords.
      * @param TranslatorInterface $translator The translator service for internationalization.
+     * @param UserFactory $userFactory The factory for creating User entities.
      */
     public function __construct(
         private readonly UserRepositoryInterface $userRepository,
@@ -60,7 +62,8 @@ class UsersApiController extends AbstractController
     {
         $query = $request->query->get('q', '');
         if (mb_strlen($query) < 2) {
-            return $this->json(['error' => 'Query must be at least 2 characters long'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('Query must be at least 2 characters long');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         $users = $this->userRepository->searchUsers($query);
@@ -73,7 +76,8 @@ class UsersApiController extends AbstractController
             'roles' => $user->getRoles(),
         ], $users);
 
-        return $this->json(['success' => true, 'users' => $results, 'count' => count($results)]);
+        $response = UserApiResponseDTO::successWithUsers('Users found', $results);
+        return $this->json($response->toArray());
     }
 
     /**
@@ -89,13 +93,15 @@ class UsersApiController extends AbstractController
     public function promoteUser(User $user): JsonResponse
     {
         if ($user->isAdmin()) {
-            return $this->json(['success' => false, 'message' => 'User is already an admin'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('User is already an admin');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         $user->addRole(Role::ADMIN);
         $this->userRepository->save($user);
 
-        return $this->json(['success' => true, 'message' => 'User promoted successfully']);
+        $response = UserApiResponseDTO::success('User promoted successfully');
+        return $this->json($response->toArray());
     }
 
     /**
@@ -112,21 +118,25 @@ class UsersApiController extends AbstractController
     {
         $currentUser = $this->getUser();
         if ($currentUser instanceof User && $currentUser->getId() === $user->getId()) {
-            return $this->json(['success' => false, 'message' => 'You cannot remove admin rights from yourself'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('You cannot remove admin rights from yourself');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         if (!$user->isAdmin()) {
-            return $this->json(['success' => false, 'message' => 'User is not an admin'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('User is not an admin');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         if ($this->userRepository->countByRole(Role::ADMIN) <= 1) {
-            return $this->json(['success' => false, 'message' => 'Cannot remove the last admin'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('Cannot remove the last admin');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         $user->removeRole(Role::ADMIN);
         $this->userRepository->save($user);
 
-        return $this->json(['success' => true, 'message' => 'Admin rights removed successfully']);
+        $response = UserApiResponseDTO::success('Admin rights removed successfully');
+        return $this->json($response->toArray());
     }
 
     /**
@@ -142,16 +152,19 @@ class UsersApiController extends AbstractController
     {
         $currentUser = $this->getUser();
         if ($currentUser instanceof User && $currentUser->getId() === $user->getId()) {
-            return $this->json(['error' => 'You cannot delete yourself'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('You cannot delete yourself');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         if ($user->isAdmin() && $this->userRepository->countByRole(Role::ADMIN) <= 1) {
-            return $this->json(['error' => 'Cannot delete the last admin'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('Cannot delete the last admin');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         $this->userRepository->remove($user);
 
-        return $this->json(['success' => true, 'message' => 'User deleted successfully']);
+        $response = UserApiResponseDTO::success('User deleted successfully');
+        return $this->json($response->toArray());
     }
 
     /**
@@ -170,13 +183,16 @@ class UsersApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (empty($data['email']) || empty($data['password'])) {
-            return $this->json(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('Email and password are required');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         try {
             $this->userRepository->findOneByEmail($data['email']);
-            return $this->json(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
+            $response = UserApiResponseDTO::error('User with this email already exists');
+            return $this->json($response->toArray(), Response::HTTP_CONFLICT);
         } catch (UserNotFoundException) {
+            // User doesn't exist, continue
         }
 
         $user = $this->userFactory->create();
@@ -192,7 +208,8 @@ class UsersApiController extends AbstractController
 
         $this->userRepository->save($user);
 
-        return $this->json(['success' => true, 'message' => 'User created successfully'], Response::HTTP_CREATED);
+        $response = UserApiResponseDTO::success('User created successfully');
+        return $this->json($response->toArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -207,7 +224,8 @@ class UsersApiController extends AbstractController
     public function getUserById(User $user): JsonResponse
     {
         $dto = UserDTO::fromEntity($user);
-        return $this->json($dto);
+        $response = UserApiResponseDTO::successWithUser('User retrieved successfully', $dto);
+        return $this->json($response->toArray());
     }
 
     /**
@@ -226,12 +244,14 @@ class UsersApiController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         if (empty($data['email'])) {
-            return $this->json(['error' => 'Email is required'], Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::error('Email is required');
+            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
         if ($data['email'] !== $user->getEmail()) {
             if ($this->userRepository->findOneBy(['email' => $data['email']])) {
-                return $this->json(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
+                $response = UserApiResponseDTO::error('User with this email already exists');
+                return $this->json($response->toArray(), Response::HTTP_CONFLICT);
             }
             $user->setEmail($data['email']);
         }
@@ -248,8 +268,9 @@ class UsersApiController extends AbstractController
         }
         $user->setRoles($roles);
 
-        $this->userRepository->flush();
+        $this->userRepository->save($user);
 
-        return $this->json(['success' => true, 'message' => 'User updated successfully']);
+        $response = UserApiResponseDTO::success('User updated successfully');
+        return $this->json($response->toArray());
     }
 }
