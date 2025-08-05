@@ -170,4 +170,17 @@ class OrderRepository extends ServiceEntityRepository implements OrderRepository
 
         return $order;
     }
+
+    /**
+     * Finds orders with pagination support, ordered by start date descending.
+     */
+    public function findWithPagination(int $limit, int $offset): array
+    {
+        return $this->findBy(
+            [],
+            ['startDate' => 'DESC'],
+            $limit,
+            $offset
+        );
+    }
 }

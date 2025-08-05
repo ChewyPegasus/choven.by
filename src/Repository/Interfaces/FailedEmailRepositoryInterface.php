@@ -55,4 +55,6 @@ interface FailedEmailRepositoryInterface
      * @return FailedEmail[] An array of FailedEmail entities.
      */
     public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array;
+
+    public function findWithPagination(int $limit, int $offset): array;
 }

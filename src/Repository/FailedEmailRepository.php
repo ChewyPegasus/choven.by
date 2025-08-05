@@ -87,4 +87,17 @@ class FailedEmailRepository extends ServiceEntityRepository implements FailedEma
     {
         return parent::findBy($criteria, $orderBy, $limit, $offset);
     }
+
+    /**
+     * Finds failed emails with pagination support, ordered by creation date descending.
+     */
+    public function findWithPagination(int $limit, int $offset): array
+    {
+        return $this->findBy(
+            [],
+            ['createdAt' => 'DESC'],
+            $limit,
+            $offset
+        );
+    }
 }

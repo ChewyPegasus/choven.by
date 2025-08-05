@@ -70,9 +70,7 @@ class DashboardController extends AbstractController
             10
         );
         
-        $failedEmails = $this->failedEmailRepository->findBy(
-            [],
-            ['createdAt' => 'DESC'],
+        $failedEmails = $this->failedEmailRepository->findWithPagination(
             $paginationDTO->itemsPerPage,
             $paginationDTO->offset
         );
@@ -96,9 +94,7 @@ class DashboardController extends AbstractController
             20
         );
         
-        $orders = $this->orderRepository->findBy(
-            [],
-            ['startDate' => 'DESC'],
+        $orders = $this->orderRepository->findWithPagination(
             $paginationDTO->itemsPerPage,
             $paginationDTO->offset
         );
@@ -124,9 +120,7 @@ class DashboardController extends AbstractController
             20
         );
         
-        $users = $this->userRepository->findBy(
-            [],
-            ['id' => 'DESC'],
+        $users = $this->userRepository->findWithPagination(
             $paginationDTO->itemsPerPage,
             $paginationDTO->offset
         );

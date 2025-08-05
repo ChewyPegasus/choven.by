@@ -90,4 +90,6 @@ interface OrderRepositoryInterface
     public function find(mixed $id, LockMode|int|null $lockMode = null, ?int $lockVersion = null): ?object;
 
     public function getById(int $id): Order;
+
+    public function findWithPagination(int $limit, int $offset): array;
 }

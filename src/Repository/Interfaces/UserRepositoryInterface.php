@@ -132,4 +132,9 @@ interface UserRepositoryInterface
     public function findOneByConfirmationCode(string $code, ?array $orderBy = null): ?User;
 
     public function findOneByPhone(string $phone, ?array $orderBy = null): ?User;
+
+    /**
+     * Finds users with pagination support.
+     */
+    public function findWithPagination(int $limit, int $offset): array;
 }

@@ -274,4 +274,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return parent::find($id, $lockMode, $lockVersion);
     }
+
+    /**
+     * Finds users with pagination support, ordered by ID descending.
+     */
+    public function findWithPagination(int $limit, int $offset): array
+    {
+        return $this->findBy(
+            [],
+            ['id' => 'DESC'],
+            $limit,
+            $offset
+        );
+    }
 }
