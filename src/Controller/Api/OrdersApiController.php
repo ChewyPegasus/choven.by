@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\ApiResponse\OrderApiResponseDTO;
+use App\DTO\Order\CreateOrderDTO;
 use App\DTO\Order\OrderDTO;
 use App\DTO\Order\UpdateOrderDTO;
 use App\Entity\Order;
@@ -84,16 +85,16 @@ class OrdersApiController extends AbstractController
     /**
      * Creates a new order from the request payload.
      *
-     * @param OrderDTO $dto The OrderDTO object mapped from the request payload.
+     * @param CreateOrderDTO $dto The OrderDTO object mapped from the request payload.
      * @param OrderFactory $orderFactory The factory service for creating Order entities from DTOs.
      * @return JsonResponse A JSON response indicating the success or failure of the creation.
      */
     #[Route('/', name: 'app_admin_api_orders_create', methods: ['POST'])]
     public function createOrder(
-        #[MapRequestPayload] OrderDTO $dto,
+        #[MapRequestPayload] CreateOrderDTO $dto,
         OrderFactory $orderFactory,
     ): JsonResponse {
-        [$order, $errors] = $orderFactory->createFromDTO($dto);
+        [$order, $errors] = $orderFactory->createFromCreateDTO($dto);
 
         if ($errors->count() > 0) {
             $response = OrderApiResponseDTO::error('Validation failed', [(string) $errors]);

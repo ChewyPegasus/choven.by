@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
+use App\DTO\Order\CreateOrderDTO;
 use App\DTO\Order\FormOrderDTO;
 use App\DTO\Order\OrderDTO;
 use App\DTO\Order\UpdateOrderDTO;
@@ -158,6 +159,28 @@ class OrderFactory
         if ($dto->description !== null) {
             $order->setDescription($dto->description);
         }
+
+        $errors = $this->validator->validate($order);
+
+        return [$order, $errors];
+    }
+
+    /**
+     * Creates a new Order entity from a CreateOrderDTO and validates it.
+     *
+     * @param CreateOrderDTO $dto The CreateOrderDTO containing the order data.
+     * @return array An array containing the created Order entity and a ConstraintViolationList of errors.
+     */
+    public function createFromCreateDTO(CreateOrderDTO $dto): array
+    {
+        $order = new Order();
+        $order->setEmail($dto->email);
+        $order->setStartDate(new \DateTime($dto->startDate));
+        $order->setRiver($dto->river);
+        $order->setPackage($dto->package);
+        $order->setAmountOfPeople($dto->amountOfPeople);
+        $order->setDurationDays($dto->durationDays);
+        $order->setDescription($dto->description);
 
         $errors = $this->validator->validate($order);
 
