@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\ApiResponse\RouteApiResponseDTO;
+use App\DTO\Route\CreateRouteDTO;
+use App\DTO\Route\UpdateRouteDTO;
+use App\Factory\RouteFactory;
 use App\Repository\Interfaces\RouteRepositoryInterface;
 use App\Service\RouteService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -26,6 +29,7 @@ class RoutesApiController extends AbstractController
         private readonly TranslatorInterface $translator,
         private readonly RouteService $routeService,
         private readonly RouteRepositoryInterface $routeRepository,
+        private readonly RouteFactory $routeFactory,
     ) {
     }
 
@@ -50,31 +54,27 @@ class RoutesApiController extends AbstractController
      * Creates a new route from the request content.
      */
     #[Route('/', name: 'app_admin_api_routes_create', methods: ['POST'])]
-    public function createRoute(Request $request): JsonResponse
-    {
-        $requestData = $this->decodeJsonRequest($request);
-        if ($requestData === null) {
-            $response = RouteApiResponseDTO::error('Invalid JSON request');
+    public function createRoute(
+        #[MapRequestPayload] CreateRouteDTO $dto,
+    ): JsonResponse {
+        [$sanitizedRouteId, $routeData, $errors] = $this->routeFactory->processCreateDTO($dto);
+
+        if ($errors->count() > 0) {
+            $response = RouteApiResponseDTO::error('Validation failed', [(string) $errors]);
             return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
-        if (!$this->validateCreateRequest($requestData)) {
-            $response = RouteApiResponseDTO::error('Invalid request data. "id" and "data" are required.');
-            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
-        }
-
-        $routeId = $this->routeService->sanitizeRouteId($requestData['id']);
-        if (empty($routeId)) {
+        if (empty($sanitizedRouteId)) {
             $response = RouteApiResponseDTO::error('Invalid route ID format');
             return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
-        if ($this->routeRepository->exists($routeId)) {
+        if ($this->routeRepository->exists($sanitizedRouteId)) {
             $response = RouteApiResponseDTO::error('Route with this ID already exists');
             return $this->json($response->toArray(), Response::HTTP_CONFLICT);
         }
 
-        if (!$this->routeRepository->save($routeId, $requestData['data'])) {
+        if (!$this->routeRepository->save($sanitizedRouteId, $routeData)) {
             $response = RouteApiResponseDTO::error('Failed to save route file');
             return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
@@ -87,16 +87,19 @@ class RoutesApiController extends AbstractController
      * Updates an existing route by its ID.
      */
     #[Route('/{routeId}', name: 'app_admin_api_routes_update', methods: ['PUT'])]
-    public function updateRoute(string $routeId, Request $request): JsonResponse
-    {
+    public function updateRoute(
+        string $routeId,
+        #[MapRequestPayload] UpdateRouteDTO $dto,
+    ): JsonResponse {
         if (!$this->routeRepository->exists($routeId)) {
             $response = RouteApiResponseDTO::error('Route not found');
             return $this->json($response->toArray(), Response::HTTP_NOT_FOUND);
         }
 
-        $routeData = $this->decodeJsonRequest($request);
-        if ($routeData === null) {
-            $response = RouteApiResponseDTO::error('Invalid JSON data provided');
+        [$routeData, $errors] = $this->routeFactory->processUpdateDTO($dto);
+
+        if ($errors->count() > 0) {
+            $response = RouteApiResponseDTO::error('Validation failed', [(string) $errors]);
             return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
         }
 
@@ -144,24 +147,5 @@ class RoutesApiController extends AbstractController
 
         $response = RouteApiResponseDTO::successWithRoutes('Routes retrieved successfully', $routes);
         return $this->json($response->toArray());
-    }
-
-    /**
-     * Decodes JSON request content.
-     */
-    private function decodeJsonRequest(Request $request): ?array
-    {
-        $content = $request->getContent();
-        $decoded = json_decode($content, true);
-        
-        return json_last_error() === JSON_ERROR_NONE ? $decoded : null;
-    }
-
-    /**
-     * Validates create request data.
-     */
-    private function validateCreateRequest(array $data): bool
-    {
-        return isset($data['id']) && isset($data['data']);
     }
 }
