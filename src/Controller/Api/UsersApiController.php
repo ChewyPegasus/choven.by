@@ -7,6 +7,8 @@ namespace App\Controller\Api;
 use App\Entity\User;
 use App\Enum\Role;
 use App\DTO\UserDTO;
+use App\Exception\UserNotFoundException;
+use App\Factory\UserFactory;
 use App\Repository\Interfaces\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,6 +41,7 @@ class UsersApiController extends AbstractController
         private readonly UserRepositoryInterface $userRepository,
         private readonly UserPasswordHasherInterface $passwordHasher,
         private readonly TranslatorInterface $translator,
+        private readonly UserFactory $userFactory,
     ) {
     }
 
@@ -170,11 +173,13 @@ class UsersApiController extends AbstractController
             return $this->json(['error' => 'Email and password are required'], Response::HTTP_BAD_REQUEST);
         }
 
-        if ($this->userRepository->findOneBy(['email' => $data['email']])) {
+        try {
+            $this->userRepository->findOneByEmail($data['email']);
             return $this->json(['error' => 'User with this email already exists'], Response::HTTP_CONFLICT);
+        } catch (UserNotFoundException) {
         }
 
-        $user = new User();
+        $user = $this->userFactory->create();
         $user->setEmail($data['email']);
         $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
         $user->setIsConfirmed($data['isConfirmed'] ?? false);

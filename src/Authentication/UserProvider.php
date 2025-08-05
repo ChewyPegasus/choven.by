@@ -112,8 +112,13 @@ class UserProvider implements UserProviderInterface
      */
     private function findByEmail(string $identifier): ?User
     {
-        $user = $this->userRepository->findOneBy(['email' => $identifier]);
-        return $user instanceof User ? $user : null;
+        try {
+            $user = $this->userRepository->findOneByEmail($identifier);
+        } catch (UserNotFoundException $e) {
+            return null;
+        }
+        
+        return $user;
     }
 
     /**

@@ -6,6 +6,8 @@ namespace App\Repository;
 
 use App\Entity\User;
 use App\Enum\Role;
+use App\Exception\UserNotFoundException;
+use App\Factory\ExceptionFactory;
 use App\Repository\Interfaces\UserRepositoryInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -30,7 +32,10 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      *
      * @param ManagerRegistry $registry The Doctrine ManagerRegistry.
      */
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(
+        private readonly ManagerRegistry $registry,
+        private readonly ExceptionFactory $exceptionFactory,
+    )
     {
         parent::__construct($registry, User::class);
     }
@@ -172,6 +177,54 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findOneBy(array $criteria, ?array $orderBy = null): ?object
     {
         return parent::findOneBy($criteria, $orderBy);
+    }
+
+    public function findOneByEmail(string $email, ?array $orderBy = null): ?User
+    {
+        $user = parent::findOneBy(
+            [
+                'email' => $email,
+            ],
+            $orderBy,
+        );
+        
+        if ($user === null || !($user instanceof User)) {
+            throw $this->exceptionFactory->createUserNotFoundException($email);
+        }
+
+        return $user;
+    }
+
+    public function findOneByConfirmationCode(string $code, ?array $orderBy = null): ?User
+    {
+        $user = parent::findOneBy(
+            [
+                'confirmationCode' => $code,
+            ],
+            $orderBy,
+        );
+        
+        if ($user === null || !($user instanceof User)) {
+            throw $this->exceptionFactory->createUserNotFoundException($code);
+        }
+
+        return $user;
+    }
+
+    public function findOneByPhone(string $phone, ?array $orderBy = null): ?User
+    {
+        $user = parent::findOneBy(
+            [
+                'phone' => $phone
+            ],
+            $orderBy,
+        );
+        
+        if ($user === null || !($user instanceof User)) {
+            throw $this->exceptionFactory->createUserNotFoundException($phone);
+        }
+
+        return $user;
     }
 
     /**

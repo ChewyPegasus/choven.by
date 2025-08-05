@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Service\Registration;
 
 use App\Entity\User;
+use App\Exception\UserNotFoundException;
 use App\Repository\Interfaces\UserRepositoryInterface;
 
 /**
@@ -33,8 +34,13 @@ class EmailVerificationService
      */
     public function findUserByConfirmationCode(string $code): ?User
     {
-        // Use findOneBy to retrieve a single user matching the confirmation code
-        return $this->userRepository->findOneBy(['confirmationCode' => $code]);
+        try {
+            $user = $this->userRepository->findOneByConfirmationCode($code);
+        } catch (UserNotFoundException $e) {
+            return null;
+        }
+
+        return $user;
     }
 
     /**

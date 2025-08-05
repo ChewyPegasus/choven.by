@@ -7,6 +7,7 @@ namespace App\Service\Registration;
 use App\Entity\User;
 use App\Enum\EmailTemplate;
 use App\Enum\Role;
+use App\Exception\UserNotFoundException;
 use App\Factory\EmailFactory;
 use App\Factory\UserFactory;
 use App\Repository\Interfaces\EmailQueueRepositoryInterface;
@@ -72,18 +73,25 @@ class UserRegistrationService
      */
     public function validateUserUniqueness(User $user): ?string
     {
-        // Check for existing user by email
-        $existingUser = $this->userRepository->findOneBy(['email' => $user->getEmail()]);
-        if ($existingUser && $existingUser->getId() !== $user->getId()) { // Ensure it's not the same user on update
-            return 'registration.email.already_exists';
+        try {
+            $existingUser = $this->userRepository->findOneByEmail($user->getEmail());
+            if ($existingUser->getId() !== $user->getId()) { // Ensure it's not the same user on update
+                return 'registration.email.already_exists';
+            }
+        } catch (UserNotFoundException) {
+            return null;
         }
 
         // Check for existing user by phone number
         // Only check if phone number is provided, as it's nullable
         if ($user->getPhone() !== null) {
-            $existingUserByPhone = $this->userRepository->findOneBy(['phone' => $user->getPhone()]);
-            if ($existingUserByPhone && $existingUserByPhone->getId() !== $user->getId()) { // Ensure it's not the same user on update
-                return 'registration.phone.already_used';
+            try {
+                $existingUserByPhone = $this->userRepository->findOneByPhone($user->getPhone()->__toString());
+                if ($existingUserByPhone->getId() !== $user->getId()) { // Ensure it's not the same user on update
+                    return 'registration.phone.already_used';
+                }
+            } catch (UserNotFoundException) {
+                return null;
             }
         }
 

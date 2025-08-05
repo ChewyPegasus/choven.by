@@ -126,4 +126,10 @@ interface UserRepositoryInterface
      * @return object|null The entity found or null if not found.
      */
     public function find(mixed $id, LockMode|int|null $lockMode = null, ?int $lockVersion = null): ?object;
+
+    public function findOneByEmail(string $email, ?array $orderBy = null): ?User;
+
+    public function findOneByConfirmationCode(string $code, ?array $orderBy = null): ?User;
+
+    public function findOneByPhone(string $phone, ?array $orderBy = null): ?User;
 }

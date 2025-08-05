@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Enum\Role;
+use App\Exception\UserNotFoundException;
 use App\Factory\StyleFactory;
 use App\Repository\Interfaces\UserRepositoryInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -63,9 +64,9 @@ class CreateAdminCommand extends Command
         $io = $this->styleFactory->create($input, $output);
         $email = $input->getArgument('email');
 
-        $user = $this->userRepository->findOneBy(['email' => $email]);
-
-        if (!$user) {
+        try {
+            $user = $this->userRepository->findOneByEmail($email);
+        } catch (UserNotFoundException $e) {
             $io->error(sprintf('User with email "%s" not found', $email));
             return Command::FAILURE;
         }
