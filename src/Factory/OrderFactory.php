@@ -6,6 +6,7 @@ namespace App\Factory;
 
 use App\DTO\FormOrderDTO;
 use App\DTO\OrderDTO;
+use App\DTO\UpdateOrderDTO;
 use App\Entity\Order;
 use App\Enum\Package;
 use App\Enum\River;
@@ -115,6 +116,48 @@ class OrderFactory
         $order->setDurationDays($dto->duration); // Assuming duration property in DTO is int (days)
         $order->setDescription($dto->description);
         $order->setLocale($dto->locale);
+
+        $errors = $this->validator->validate($order);
+
+        return [$order, $errors];
+    }
+
+    /**
+     * Updates an existing order from UpdateOrderDTO.
+     *
+     * @param Order $order
+     * @param UpdateOrderDTO $dto
+     * @return array{Order, ConstraintViolationListInterface}
+     */
+    public function updateFromDTO(Order $order, UpdateOrderDTO $dto): array
+    {
+        if ($dto->email !== null) {
+            $order->setEmail($dto->email);
+        }
+        
+        if ($dto->startDate !== null) {
+            $order->setStartDate(new \DateTime($dto->startDate));
+        }
+        
+        if ($dto->river !== null) {
+            $order->setRiver($dto->river);
+        }
+        
+        if ($dto->package !== null) {
+            $order->setPackage($dto->package);
+        }
+        
+        if ($dto->amountOfPeople !== null) {
+            $order->setAmountOfPeople($dto->amountOfPeople);
+        }
+        
+        if ($dto->durationDays !== null) {
+            $order->setDurationDays($dto->durationDays);
+        }
+        
+        if ($dto->description !== null) {
+            $order->setDescription($dto->description);
+        }
 
         $errors = $this->validator->validate($order);
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\OrderDTO;
+use App\DTO\UpdateOrderDTO;
 use App\Entity\Order;
 use App\Enum\Package;
 use App\Enum\River;
@@ -93,7 +94,7 @@ class OrdersApiController extends AbstractController
     ): JsonResponse {
         [$order, $errors] = $orderFactory->createFromDTO($dto);
 
-        if (count($errors) > 0) {
+        if ($errors->count() > 0) {
             return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
         }
 
@@ -106,30 +107,23 @@ class OrdersApiController extends AbstractController
      * Updates an existing order by its ID.
      *
      * @param Order $order The Order entity resolved by the route parameter.
-     * @param Request $request The current HTTP request containing the update data.
-     * @param ValidatorInterface $validator The validator service for validating the updated order.
+     * @param UpdateOrderDTO $dto The DTO containing update data.
+     * @param OrderFactory $orderFactory The factory service for updating orders.
      * @return JsonResponse A JSON response indicating the success or failure of the update.
      */
     #[Route('/{id}', name: 'app_admin_api_orders_update', methods: ['PUT'])]
-    public function updateOrder(Order $order, Request $request, ValidatorInterface $validator): JsonResponse
-    {
-        $data = json_decode($request->getContent(), true);
+    public function updateOrder(
+        Order $order, 
+        #[MapRequestPayload] UpdateOrderDTO $dto,
+        OrderFactory $orderFactory
+    ): JsonResponse {
+        [$updatedOrder, $errors] = $orderFactory->updateFromDTO($order, $dto);
 
-        // Update order properties, using existing values as fallback
-        $order->setEmail($data['email'] ?? $order->getEmail());
-        $order->setStartDate(new \DateTime($data['startDate'] ?? $order->getStartDate()->format('Y-m-d')));
-        $order->setRiver(River::tryFrom($data['river'] ?? $order->getRiver()->value));
-        $order->setPackage(Package::tryFrom($data['package'] ?? $order->getPackage()->value));
-        $order->setAmountOfPeople((int)($data['amountOfPeople'] ?? $order->getAmountOfPeople()));
-        $order->setDurationDays((int)($data['durationDays'] ?? $order->getDurationDays()));
-        $order->setDescription($data['description'] ?? $order->getDescription());
-
-        $errors = $validator->validate($order);
-        if (count($errors) > 0) {
+        if ($errors->count() > 0) {
             return $this->json(['error' => (string) $errors], Response::HTTP_BAD_REQUEST);
         }
 
-        $this->orderRepository->flush();
+        $this->orderRepository->save($updatedOrder); // save вместо flush
 
         return $this->json(['success' => true, 'message' => 'Order updated successfully']);
     }
