@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\DTO\FormOrderDTO;
+use App\DTO\Order\FormOrderDTO;
 use App\Enum\River;
 use App\Enum\Package;
 use Symfony\Contracts\Translation\TranslatorInterface;

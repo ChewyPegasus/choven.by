@@ -7,7 +7,7 @@ namespace App\Controller\Api;
 use App\DTO\ApiResponse\UserApiResponseDTO;
 use App\Entity\User;
 use App\Enum\Role;
-use App\DTO\UserDTO;
+use App\DTO\User\UserDTO;
 use App\Exception\UserNotFoundException;
 use App\Factory\UserFactory;
 use App\Repository\Interfaces\UserRepositoryInterface;

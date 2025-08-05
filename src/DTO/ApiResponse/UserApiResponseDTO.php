@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\DTO\ApiResponse;
 
-use App\DTO\UserDTO;
+use App\DTO\User\UserDTO;
 
 /**
  * DTO for User API responses.

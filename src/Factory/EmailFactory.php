@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\DTO\DTO;
-use App\DTO\OrderDTO;
-use App\DTO\VerificationDTO;
+use App\DTO\Order\OrderDTO;
+use App\DTO\User\UserVerificationDTO;
 use App\Entity\EmailQueue;
 use App\Entity\FailedEmail;
 use App\Entity\Order;
@@ -91,10 +91,10 @@ class EmailFactory
      * If a user ID is provided, it attempts to fetch the `User` entity.
      *
      * @param array $data An associative array containing 'user', 'confirmUrl', and optionally 'locale'.
-     * @return VerificationDTO The created VerificationDTO.
+     * @return UserVerificationDTO The created VerificationDTO.
      * @throws \InvalidArgumentException If the user is not found when an ID is provided.
      */
-    private function createVerificationDTO(array $data): VerificationDTO
+    private function createVerificationDTO(array $data): UserVerificationDTO
     {
         $user = $data['user'];
         
@@ -106,7 +106,7 @@ class EmailFactory
             }
         }
         
-        return new VerificationDTO(
+        return new UserVerificationDTO(
             $user,
             $data['confirmUrl'],
             $data['locale'] ?? null, // Optional locale

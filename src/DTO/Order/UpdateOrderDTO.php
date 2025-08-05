@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\DTO;
+namespace App\DTO\Order;
 
+use App\DTO\DTO;
 use App\Enum\Package;
 use App\Enum\River;
 use Symfony\Component\Validator\Constraints as Assert;

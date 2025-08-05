@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\DTO;
+namespace App\DTO\Order;
 
+use App\DTO\AbstractEmailDTO;
 use App\Entity\Order;
 use App\Enum\EmailTemplate;
 use App\Enum\Package;

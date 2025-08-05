@@ -5,21 +5,17 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\DTO\ApiResponse\OrderApiResponseDTO;
-use App\DTO\OrderDTO;
-use App\DTO\UpdateOrderDTO;
+use App\DTO\Order\OrderDTO;
+use App\DTO\Order\UpdateOrderDTO;
 use App\Entity\Order;
-use App\Enum\Package;
-use App\Enum\River;
 use App\Factory\OrderFactory;
 use App\Repository\Interfaces\OrderRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**

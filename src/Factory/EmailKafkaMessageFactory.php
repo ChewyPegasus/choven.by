@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Factory;
 
 use App\DTO\AbstractEmailDTO;
-use App\DTO\OrderDTO;
-use App\DTO\VerificationDTO;
+use App\DTO\Order\OrderDTO;
+use App\DTO\User\UserVerificationDTO;
 use JsonException;
 use Psr\Log\LoggerInterface;
 
@@ -65,7 +65,7 @@ class EmailKafkaMessageFactory
     {
         return match(true) {
             $dto instanceof OrderDTO => 'order',
-            $dto instanceof VerificationDTO => 'verification',
+            $dto instanceof UserVerificationDTO => 'verification',
             default => throw new \InvalidArgumentException(sprintf('Unknown email DTO type: %s', get_class($dto))),
         };
     }
@@ -84,7 +84,7 @@ class EmailKafkaMessageFactory
     {
         // Example: If 'confirmUrl' or 'locale' are frequently accessed and not
         // deep within the context, you might want them at the top level.
-        if ($dto instanceof VerificationDTO) {
+        if ($dto instanceof UserVerificationDTO) {
             $messageData['confirmUrl'] = $dto->getConfirmUrl();
             $messageData['locale'] = $dto->getLocale();
         }

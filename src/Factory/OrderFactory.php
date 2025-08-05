@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Factory;
 
-use App\DTO\FormOrderDTO;
-use App\DTO\OrderDTO;
-use App\DTO\UpdateOrderDTO;
+use App\DTO\Order\FormOrderDTO;
+use App\DTO\Order\OrderDTO;
+use App\DTO\Order\UpdateOrderDTO;
 use App\Entity\Order;
 use App\Enum\Package;
 use App\Enum\River;

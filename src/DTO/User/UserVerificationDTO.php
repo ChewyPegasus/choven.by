@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\DTO;
+namespace App\DTO\User;
 
+use App\DTO\AbstractEmailDTO;
 use App\Entity\User;
 use App\Enum\EmailTemplate;
 
@@ -14,7 +15,7 @@ use App\Enum\EmailTemplate;
  * to a user, including the user's details, the generated confirmation URL, and locale.
  * It ensures that all required data for the verification email is readily available.
  */
-readonly class VerificationDTO extends AbstractEmailDTO
+readonly class UserVerificationDTO extends AbstractEmailDTO
 {
     private string $email;
     private int $id;
