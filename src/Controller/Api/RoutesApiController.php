@@ -7,6 +7,8 @@ namespace App\Controller\Api;
 use App\DTO\ApiResponse\RouteApiResponseDTO;
 use App\DTO\Route\CreateRouteDTO;
 use App\DTO\Route\UpdateRouteDTO;
+use App\Exception\ValidationException;
+use App\Exception\ValidationHttpException;
 use App\Factory\RouteFactory;
 use App\Repository\Interfaces\RouteRepositoryInterface;
 use App\Service\RouteService;
@@ -57,30 +59,24 @@ class RoutesApiController extends AbstractController
     public function createRoute(
         #[MapRequestPayload] CreateRouteDTO $dto,
     ): JsonResponse {
-        [$sanitizedRouteId, $routeData, $errors] = $this->routeFactory->processCreateDTO($dto);
+        try {
+            [$sanitizedRouteId, $routeData] = $this->routeFactory->processCreateDTO($dto);
 
-        if ($errors->count() > 0) {
-            $response = RouteApiResponseDTO::error('Validation failed', [(string) $errors]);
-            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
+            if ($this->routeRepository->exists($sanitizedRouteId)) {
+                $response = RouteApiResponseDTO::error('Route with this ID already exists');
+                return $this->json($response->toArray(), Response::HTTP_CONFLICT);
+            }
+
+            if (!$this->routeRepository->save($sanitizedRouteId, $routeData)) {
+                $response = RouteApiResponseDTO::error('Failed to save route file');
+                return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $response = RouteApiResponseDTO::success('Route created successfully');
+            return $this->json($response->toArray(), Response::HTTP_CREATED);
+        } catch (ValidationException $e) {
+            throw new ValidationHttpException($e->getViolations(), 'Validation failed');
         }
-
-        if (empty($sanitizedRouteId)) {
-            $response = RouteApiResponseDTO::error('Invalid route ID format');
-            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
-        }
-
-        if ($this->routeRepository->exists($sanitizedRouteId)) {
-            $response = RouteApiResponseDTO::error('Route with this ID already exists');
-            return $this->json($response->toArray(), Response::HTTP_CONFLICT);
-        }
-
-        if (!$this->routeRepository->save($sanitizedRouteId, $routeData)) {
-            $response = RouteApiResponseDTO::error('Failed to save route file');
-            return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        $response = RouteApiResponseDTO::success('Route created successfully');
-        return $this->json($response->toArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -96,20 +92,19 @@ class RoutesApiController extends AbstractController
             return $this->json($response->toArray(), Response::HTTP_NOT_FOUND);
         }
 
-        [$routeData, $errors] = $this->routeFactory->processUpdateDTO($dto);
+        try {
+            [$routeData] = $this->routeFactory->processUpdateDTO($dto);
 
-        if ($errors->count() > 0) {
-            $response = RouteApiResponseDTO::error('Validation failed', [(string) $errors]);
-            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
+            if (!$this->routeRepository->save($routeId, $routeData)) {
+                $response = RouteApiResponseDTO::error('Failed to update route file');
+                return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+
+            $response = RouteApiResponseDTO::success('Route updated successfully');
+            return $this->json($response->toArray());
+        } catch (ValidationException $e) {
+            throw new ValidationHttpException($e->getViolations(), 'Validation failed');
         }
-
-        if (!$this->routeRepository->save($routeId, $routeData)) {
-            $response = RouteApiResponseDTO::error('Failed to update route file');
-            return $this->json($response->toArray(), Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        $response = RouteApiResponseDTO::success('Route updated successfully');
-        return $this->json($response->toArray());
     }
 
     /**

@@ -91,6 +91,12 @@ class OrderFactory
      */
     public function createFromCreateDTO(CreateOrderDTO $dto): Order
     {
+        $errors = $this->validator->validate($dto);
+
+        if ($errors->count() > 0) {
+            throw new ValidationException($errors);
+        }
+
         $order = new Order();
         $order->setEmail($dto->email);
         $order->setStartDate(new \DateTime($dto->startDate));
@@ -100,10 +106,10 @@ class OrderFactory
         $order->setDurationDays($dto->durationDays);
         $order->setDescription($dto->description);
 
-        $errors = $this->validator->validate($order);
+        $entityErrors = $this->validator->validate($order);
 
-        if ($errors->count() > 0) {
-            throw new ValidationException($errors);
+        if ($entityErrors->count() > 0) {
+            throw new ValidationException($entityErrors);
         }
 
         return $order;
@@ -119,6 +125,12 @@ class OrderFactory
      */
     public function updateFromDTO(Order $order, UpdateOrderDTO $dto): Order
     {
+        $errors = $this->validator->validate($dto);
+
+        if ($errors->count() > 0) {
+            throw new ValidationException($errors);
+        }
+
         if ($dto->email !== null) {
             $order->setEmail($dto->email);
         }
@@ -147,10 +159,10 @@ class OrderFactory
             $order->setDescription($dto->description);
         }
 
-        $errors = $this->validator->validate($order);
+        $entityErrors = $this->validator->validate($order);
 
-        if ($errors->count() > 0) {
-            throw new ValidationException($errors);
+        if ($entityErrors->count() > 0) {
+            throw new ValidationException($entityErrors);
         }
 
         return $order;

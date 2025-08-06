@@ -9,8 +9,11 @@ use App\DTO\User\UpdateUserDTO;
 use App\Entity\User;
 use App\Enum\Role;
 use App\Exception\UserNotFoundException;
+use App\Exception\ValidationException;
 use App\Repository\Interfaces\UserRepositoryInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -27,27 +30,34 @@ class UserFactory
 
     /**
      * Creates a new User entity from CreateUserDTO.
+     *
+     * @param CreateUserDTO $dto
+     * @return User The created and validated User entity.
+     * @throws ValidationException If validation fails.
      */
-    public function createFromCreateDTO(CreateUserDTO $dto): array
+    public function createFromCreateDTO(CreateUserDTO $dto): User
     {
         $errors = $this->validator->validate($dto);
         
         if ($errors->count() > 0) {
-            return [null, $errors];
+            throw new ValidationException($errors);
         }
 
         // Check if user with email already exists
         try {
             $this->userRepository->findOneByEmail($dto->email);
-            $errors->add(new \Symfony\Component\Validator\ConstraintViolation(
-                'User with this email already exists',
-                null,
-                [],
-                $dto,
-                'email',
-                $dto->email
-            ));
-            return [null, $errors];
+            throw new ValidationException(
+                new ConstraintViolationList([
+                    new ConstraintViolation(
+                        'User with this email already exists',
+                        null,
+                        [],
+                        $dto,
+                        'email',
+                        $dto->email
+                    )
+                ])
+            );
         } catch (UserNotFoundException) {
             // User doesn't exist, continue
         }
@@ -66,32 +76,44 @@ class UserFactory
 
         $entityErrors = $this->validator->validate($user);
         
-        return [$user, $entityErrors];
+        if ($entityErrors->count() > 0) {
+            throw new ValidationException($entityErrors);
+        }
+
+        return $user;
     }
 
     /**
      * Updates an existing User entity from UpdateUserDTO.
+     *
+     * @param User $user
+     * @param UpdateUserDTO $dto
+     * @return User The updated and validated User entity.
+     * @throws ValidationException If validation fails.
      */
-    public function updateFromUpdateDTO(User $user, UpdateUserDTO $dto): array
+    public function updateFromUpdateDTO(User $user, UpdateUserDTO $dto): User
     {
         $errors = $this->validator->validate($dto);
         
         if ($errors->count() > 0) {
-            return [$user, $errors];
+            throw new ValidationException($errors);
         }
 
         // Check if email is being changed and if new email already exists
         if ($dto->email !== $user->getEmail()) {
             if ($this->userRepository->findOneBy(['email' => $dto->email])) {
-                $errors->add(new \Symfony\Component\Validator\ConstraintViolation(
-                    'User with this email already exists',
-                    null,
-                    [],
-                    $dto,
-                    'email',
-                    $dto->email
-                ));
-                return [$user, $errors];
+                throw new ValidationException(
+                    new ConstraintViolationList([
+                        new ConstraintViolation(
+                            'User with this email already exists',
+                            null,
+                            [],
+                            $dto,
+                            'email',
+                            $dto->email
+                        )
+                    ])
+                );
             }
             $user->setEmail($dto->email);
         }
@@ -111,7 +133,11 @@ class UserFactory
 
         $entityErrors = $this->validator->validate($user);
         
-        return [$user, $entityErrors];
+        if ($entityErrors->count() > 0) {
+            throw new ValidationException($entityErrors);
+        }
+
+        return $user;
     }
 
     /**

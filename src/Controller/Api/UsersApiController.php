@@ -10,6 +10,8 @@ use App\DTO\User\UpdateUserDTO;
 use App\DTO\User\UserDTO;
 use App\Entity\User;
 use App\Enum\Role;
+use App\Exception\ValidationException;
+use App\Exception\ValidationHttpException;
 use App\Factory\UserFactory;
 use App\Repository\Interfaces\UserRepositoryInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -142,17 +144,15 @@ class UsersApiController extends AbstractController
     public function createUser(
         #[MapRequestPayload] CreateUserDTO $dto,
     ): JsonResponse {
-        [$user, $errors] = $this->userFactory->createFromCreateDTO($dto);
+        try {
+            $user = $this->userFactory->createFromCreateDTO($dto);
+            $this->userRepository->save($user);
 
-        if ($errors->count() > 0) {
-            $response = UserApiResponseDTO::error('Validation failed', [(string) $errors]);
-            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::success('User created successfully');
+            return $this->json($response->toArray(), Response::HTTP_CREATED);
+        } catch (ValidationException $e) {
+            throw new ValidationHttpException($e->getViolations(), 'Validation failed');
         }
-
-        $this->userRepository->save($user);
-
-        $response = UserApiResponseDTO::success('User created successfully');
-        return $this->json($response->toArray(), Response::HTTP_CREATED);
     }
 
     /**
@@ -174,16 +174,14 @@ class UsersApiController extends AbstractController
         User $user,
         #[MapRequestPayload] UpdateUserDTO $dto,
     ): JsonResponse {
-        [$updatedUser, $errors] = $this->userFactory->updateFromUpdateDTO($user, $dto);
+        try {
+            $updatedUser = $this->userFactory->updateFromUpdateDTO($user, $dto);
+            $this->userRepository->save($updatedUser);
 
-        if ($errors->count() > 0) {
-            $response = UserApiResponseDTO::error('Validation failed', [(string) $errors]);
-            return $this->json($response->toArray(), Response::HTTP_BAD_REQUEST);
+            $response = UserApiResponseDTO::success('User updated successfully');
+            return $this->json($response->toArray());
+        } catch (ValidationException $e) {
+            throw new ValidationHttpException($e->getViolations(), 'Validation failed');
         }
-
-        $this->userRepository->save($updatedUser);
-
-        $response = UserApiResponseDTO::success('User updated successfully');
-        return $this->json($response->toArray());
     }
 }
