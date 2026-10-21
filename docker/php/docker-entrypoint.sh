@@ -34,8 +34,12 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'bin/console' ]; then
         fi
     fi
 
-    setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var public/uploads 2>/dev/null || chmod -R a+rwX var public/uploads
-    setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var public/uploads 2>/dev/null || true
+    # In production the directories live inside the image/volumes; in development they are a bind mount
+    # (often from Windows/macOS) where recursive permission changes are slow and unnecessary.
+    if [ "$APP_ENV" = 'prod' ]; then
+        setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX var public/uploads 2>/dev/null || chmod -R a+rwX var public/uploads
+        setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX var public/uploads 2>/dev/null || true
+    fi
 fi
 
 exec docker-php-entrypoint "$@"

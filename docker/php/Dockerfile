@@ -37,7 +37,7 @@ COPY --chmod=755 docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoin
 
 WORKDIR /app
 
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD ["php-fpm-healthcheck"]
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=180s --start-interval=3s CMD ["php-fpm-healthcheck"]
 COPY --chmod=755 docker/php/php-fpm-healthcheck.sh /usr/local/bin/php-fpm-healthcheck
 
 ENTRYPOINT ["docker-entrypoint"]
