@@ -54,9 +54,11 @@ make init
 
 `make init` поднимает контейнеры (PHP-FPM, nginx, воркер очереди, PostgreSQL, Redis, Mailpit), ставит зависимости, применяет миграции и загружает демо-данные. Команды: `make help`.
 
+> **Windows:** Docker Desktop монтирует файлы с диска Windows медленно, и в dev-режиме страницы открываются по несколько секунд. Держите проект внутри WSL2 (`\\wsl$\Ubuntu\home\…`) или запускайте PHP прямо в Windows, как описано ниже, — тогда в Docker нужны только база, Redis и Mailpit.
+
 ### Без Docker (например, Windows)
 
-Нужны PHP 8.2+ с расширениями `intl`, `pdo_pgsql`, `gd`, `mbstring`, Composer и PostgreSQL (можно поднять только базу: `docker compose up -d database mailer`).
+Нужны PHP 8.2+ с расширениями `intl`, `pdo_pgsql`, `gd`, `mbstring`, `sodium`, Composer и PostgreSQL (можно поднять только сервисы: `docker compose up -d database redis mailer`).
 
 ```bash
 composer install
