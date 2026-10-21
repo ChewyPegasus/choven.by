@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'legal.terms.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'legal.terms.description'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="page-head">
+        <div class="container container-narrow">
+            <h1>{{ 'legal.terms.title'|trans }}</h1>
+            <p class="legal-meta">{{ 'legal.effective'|trans({'%date%': '08.07.2025', '%updated%': '22.10.2026'}) }}</p>
+        </div>
+    </section>
+    <section class="section" style="padding-top: 0">
+        <div class="container container-narrow prose">
+            {% include 'legal/_terms.' ~ (app.request.locale in ['ru', 'be', 'en'] ? app.request.locale : 'ru') ~ '.html.twig' %}
+        </div>
+    </section>
+{% endblock %}

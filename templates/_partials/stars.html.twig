@@ -1,0 +1,3 @@
+<span class="stars" aria-label="{{ 'review.rating_label'|trans({'%rating%': rating}) }}" title="{{ rating }}/5">
+    {%- for i in 1..5 -%}<span class="{{ i <= rating|round ? '' : 'off' }}">★</span>{%- endfor -%}
+</span>

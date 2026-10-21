@@ -1,0 +1,33 @@
+{% set image = image_url(tour.image) %}
+<article class="tour-card">
+    <a class="tour-media" href="{{ path('app_tour_show', {slug: tour.slug}) }}" tabindex="-1" aria-hidden="true">
+        {% if image %}
+            <img src="{{ image }}" alt="" loading="lazy" decoding="async" width="640" height="400">
+        {% else %}
+            <div class="img-placeholder"><i class="fa-solid fa-water"></i></div>
+        {% endif %}
+        {% if tour.priceFrom %}
+            <span class="tour-price">
+                {{ 'tour.price_from'|trans }} {{ tour.priceFrom|byn }}
+                <small>/ {{ ('tour.price_unit.' ~ tour.priceUnit)|trans }}</small>
+            </span>
+        {% endif %}
+    </a>
+    <div class="tour-body">
+        <div class="tour-meta">
+            {% if tour.durationDays %}
+                <span class="badge badge-water"><i class="fa-regular fa-clock"></i> {{ 'tour.days'|trans({'%count%': tour.durationDays}) }}</span>
+            {% endif %}
+            {% if tour.river %}
+                <span class="badge"><i class="fa-solid fa-water"></i> {{ tour.river|trans }}</span>
+            {% endif %}
+            <span class="badge badge-primary">{{ tour.package|trans }}</span>
+        </div>
+        <h3><a href="{{ path('app_tour_show', {slug: tour.slug}) }}">{{ tour.title|localized }}</a></h3>
+        <p>{{ tour.summary|localized }}</p>
+        <div class="tour-actions">
+            <a class="btn btn-outline btn-sm" href="{{ path('app_tour_show', {slug: tour.slug}) }}">{{ 'tour.details'|trans }}</a>
+            <a class="btn btn-sm" href="{{ path('app_order_new', {tour: tour.slug}) }}">{{ 'tour.book'|trans }}</a>
+        </div>
+    </div>
+</article>

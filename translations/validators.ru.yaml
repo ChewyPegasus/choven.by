@@ -1,0 +1,78 @@
+phone:
+    invalid: 'Введите корректный номер телефона, например +375 29 123-45-67.'
+
+form:
+    agree_required: 'Необходимо согласие с условиями.'
+    spam_detected: 'Форма заполнена некорректно.'
+
+localized:
+    default_required: 'Заполните текст хотя бы на русском языке.'
+
+user:
+    email:
+        not_blank: 'Введите email.'
+        invalid: 'Введите корректный email.'
+        already_used: 'Этот email уже зарегистрирован. Войдите или восстановите пароль.'
+    phone:
+        already_used: 'Этот номер уже привязан к другому аккаунту.'
+
+registration:
+    error:
+        password_required: 'Введите пароль.'
+        password_too_short: 'Пароль должен быть не короче {{ limit }} символов.'
+        passwords_mismatch: 'Пароли не совпадают.'
+
+profile:
+    password:
+        current_invalid: 'Текущий пароль указан неверно.'
+
+order:
+    error:
+        name_required: 'Укажите имя.'
+        email_required: 'Укажите email.'
+        email_invalid: 'Введите корректный email.'
+        phone_required: 'Укажите телефон для связи.'
+        river_required: 'Выберите реку.'
+        package_required: 'Выберите пакет услуг.'
+        date_required: 'Выберите дату.'
+        date_in_past: 'Дата не может быть в прошлом.'
+        date_too_far: 'Бронирование возможно не более чем на год вперёд.'
+        duration_required: 'Укажите длительность.'
+        duration_range: 'Длительность — от {{ min }} до {{ max }} дней.'
+        people_required: 'Укажите количество участников.'
+        people_range: 'Количество участников — от {{ min }} до {{ max }}. Для больших групп позвоните нам.'
+        date_blocked: '{{ date }} сплавы не проводятся. Выберите другую дату.'
+        sold_out: 'На {{ date }} мест нет. Выберите другую дату.'
+        not_enough_places: 'На {{ date }} свободно только {{ free }} мест.'
+
+contact:
+    error:
+        name_required: 'Укажите имя.'
+        phone_required: 'Укажите телефон.'
+
+review:
+    error:
+        name_required: 'Укажите имя.'
+        text_required: 'Напишите пару слов о поездке.'
+        text_too_short: 'Отзыв слишком короткий (минимум {{ limit }} символов).'
+
+tour:
+    slug:
+        invalid: 'Только латинские буквы, цифры и дефисы.'
+        already_used: 'Такой адрес уже занят.'
+
+route:
+    slug:
+        invalid: 'Только латинские буквы, цифры и дефисы.'
+        already_used: 'Такой адрес уже занят.'
+    points:
+        min_count: 'Добавьте минимум две точки.'
+        invalid_coordinates: 'Некорректные координаты точки.'
+
+admin:
+    settings:
+        error:
+            handle: 'Укажите только имя аккаунта (латиница, цифры, точка, подчёркивание).'
+    tours:
+        error:
+            image_type: 'Загрузите изображение JPG, PNG или WebP.'

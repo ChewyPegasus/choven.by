@@ -1,66 +1,57 @@
 security:
-    # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
-        App\Entity\User:
-            algorithm: auto
 
-    # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         app_user_provider:
-            id: App\Authentication\UserProvider
+            id: App\Security\UserProvider
 
     firewalls:
         dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            pattern: ^/(_profiler|_wdt|assets|uploads|build)/
             security: false
         main:
             lazy: true
             provider: app_user_provider
-            custom_authenticator: App\Authentication\UserAuthenticator
+            user_checker: App\Security\UserChecker
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                username_parameter: identifier
+                password_parameter: password
+                enable_csrf: true
+                csrf_token_id: authenticate
+                default_target_path: app_profile_orders
+                use_referer: true
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
             logout:
                 path: app_logout
                 target: app_main
+                enable_csrf: true
+                csrf_token_id: logout
             remember_me:
                 secret: '%kernel.secret%'
-                lifetime: 604800
+                lifetime: 2592000 # 30 days
                 path: /
+                samesite: lax
+                signature_properties: ['password', 'email']
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
-
-    # Easy way to control access for large sections of your site
-    # Note: Only the *first* access control that matches will be used
+    # Controllers also carry #[IsGranted] attributes; this is a second line of defence.
     access_control:
-        # Public pages
-        - { path: ^/(?:ru|be|en)/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/(?:ru|be|en)/register$, roles: PUBLIC_ACCESS }
-        - { path: ^/(?:ru|be|en)/verify/, roles: PUBLIC_ACCESS }
-        - { path: ^/change-locale/, roles: PUBLIC_ACCESS }
-        - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/register$, roles: PUBLIC_ACCESS }
-        - { path: ^/verify/, roles: PUBLIC_ACCESS }
-        
-        # Protected pages (only for authorized users)
-        - { path: ^/(?:ru|be|en)/profile, roles: ROLE_USER }
-        - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/profile, roles: ROLE_USER }
-        
-        # All other pages available for everybody
-        - { path: ^/, roles: PUBLIC_ACCESS }
+        - { path: '^/(ru|be|en)/admin', roles: ROLE_ADMIN }
+        - { path: '^/(ru|be|en)/profile', roles: ROLE_USER }
 
 when@test:
     security:
         password_hashers:
-            # By default, password hashers are resource intensive and take time. This is
-            # important to generate secure password hashes. In tests however, secure hashes
-            # are not important, waste resources and increase test times. The following
-            # reduces the work factor to the lowest possible values.
+            # Fast (insecure) hashing in tests.
             Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface:
                 algorithm: auto
-                cost: 4 # Lowest possible value for bcrypt
-                time_cost: 3 # Lowest possible value for argon
-                memory_cost: 10 # Lowest possible value for argon
+                cost: 4
+                time_cost: 3
+                memory_cost: 10

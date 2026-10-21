@@ -1,0 +1,59 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.reviews'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.reviews'|trans }}</h1>
+    </div>
+
+    {% set current = status ? status.value : 'all' %}
+    <div class="chip-filter">
+        {% for value in ['pending', 'approved', 'rejected', 'all'] %}
+            <a href="{{ path('app_admin_reviews', {status: value}) }}" class="{{ current == value ? 'is-active' }}">
+                {{ value == 'all' ? 'admin.common.all'|trans : ('review.status.' ~ value)|trans }}
+                {% if value == 'pending' and pending_count > 0 %}({{ pending_count }}){% endif %}
+            </a>
+        {% endfor %}
+    </div>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-regular fa-star"></i>{{ 'admin.reviews.empty'|trans }}</div>
+    {% else %}
+        <div class="stack">
+            {% for review in page.items %}
+                <article class="card">
+                    <div class="cluster" style="justify-content: space-between">
+                        <div class="cluster">
+                            {% include '_partials/stars.html.twig' with {rating: review.rating} %}
+                            <strong>{{ review.authorName }}</strong>
+                            <span class="text-small text-muted">{{ review.createdAt|date('d.m.Y H:i') }} · {{ review.locale|upper }}</span>
+                            {% if review.order %}<a class="text-small" href="{{ path('app_admin_order_edit', {id: review.order.id}) }}">{{ review.order.reference }}</a>{% endif %}
+                        </div>
+                        <span class="badge badge-status-{{ review.status.value }}">{{ review.status|trans }}</span>
+                    </div>
+                    <p class="mt-2" style="white-space: pre-line">{{ review.text }}</p>
+                    <div class="cluster">
+                        {% for target in ['approved', 'rejected'] %}
+                            {% if review.status.value != target %}
+                                <form method="post" action="{{ path('app_admin_review_status', {id: review.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('review-' ~ review.id) }}">
+                                    <input type="hidden" name="status" value="{{ target }}">
+                                    <input type="hidden" name="back" value="{{ current }}">
+                                    <button type="submit" class="btn btn-sm {{ target == 'approved' ? 'btn-success' : 'btn-outline' }}">
+                                        <i class="fa-solid {{ target == 'approved' ? 'fa-check' : 'fa-ban' }}"></i> {{ ('admin.reviews.' ~ target)|trans }}
+                                    </button>
+                                </form>
+                            {% endif %}
+                        {% endfor %}
+                        <form method="post" action="{{ path('app_admin_review_delete', {id: review.id}) }}" data-turbo-confirm="{{ 'admin.reviews.delete_confirm'|trans }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('review-' ~ review.id) }}">
+                            <button type="submit" class="btn btn-sm btn-ghost text-danger"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

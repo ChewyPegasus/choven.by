@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'booking.title'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="error-page">
+        <div class="container container-narrow">
+            <div class="auth-icon"><i class="fa-regular fa-snowflake"></i></div>
+            <h1>{{ 'booking.closed.title'|trans }}</h1>
+            <p>{{ 'booking.closed.text'|trans }}</p>
+            <div class="cluster" style="justify-content: center">
+                <a class="btn" href="tel:{{ settings.phoneLink }}"><i class="fa-solid fa-phone"></i> {{ settings.phone }}</a>
+                <a class="btn btn-outline" href="{{ path('app_main') }}#contact">{{ 'contact.form.title'|trans }}</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

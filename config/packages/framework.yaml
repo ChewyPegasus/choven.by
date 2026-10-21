@@ -1,25 +1,42 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix']
 
-    # Note that the session will be started ONLY if you read or write from it.
+    # Sessions start only when something is written to them (login, flash message, CSRF token),
+    # so anonymous visitors of public pages never create one.
     session:
-        enabled: true
-        handler_id: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%'
-        cookie_secure: true
-        cookie_samesite: 'lax'
-        cookie_lifetime: 86400  # 24 hours
-        gc_maxlifetime: 86400   # 24 hours
-    
-    cache:
-        app: cache.adapter.redis
-        default_redis_provider: 'redis://%env(REDIS_HOST)%:%env(REDIS_PORT)%'
+        handler_id: '%env(resolve:SESSION_DSN)%'
+        cookie_secure: auto
+        cookie_samesite: lax
+        cookie_lifetime: 0
+        gc_maxlifetime: 86400
 
-    csrf_protection:
-        enabled: true
+    http_method_override: false
+    handle_all_throwables: true
 
-    #esi: true
-    #fragments: true
+    php_errors:
+        log: true
+
+    rate_limiter:
+        # Public forms; keyed by client IP.
+        booking:
+            policy: sliding_window
+            limit: 5
+            interval: '15 minutes'
+        contact:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
+        registration:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
+        verification:
+            policy: sliding_window
+            limit: 3
+            interval: '1 hour'
 
 when@test:
     framework:

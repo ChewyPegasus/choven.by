@@ -1,0 +1,9 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block content %}
+    <h1 style="margin:0 0 12px;font-size:22px;color:#1b2a3a;">{{ 'email.review_invitation.title'|trans({'%name%': order.name}) }}</h1>
+    <p>{{ 'email.review_invitation.text'|trans({'%date%': order.startDate|format_date('long', locale: order.locale)}) }}</p>
+    <p style="font-size:30px;letter-spacing:4px;color:#f59e0b;margin:10px 0;">★★★★★</p>
+    {% include 'emails/_button.html.twig' with {href: review_url, label: 'email.review_invitation.button'|trans} %}
+    <p style="color:#64748b;font-size:14px;">{{ 'email.review_invitation.footer'|trans }}</p>
+{% endblock %}

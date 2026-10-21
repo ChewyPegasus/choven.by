@@ -1,0 +1,72 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.orders'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.orders'|trans }}</h1>
+        <div class="cluster">
+            <a class="btn btn-sm btn-outline" href="{{ path('app_admin_orders_export', filter.toQuery) }}" data-turbo="false"><i class="fa-solid fa-file-csv"></i> {{ 'admin.orders.export'|trans }}</a>
+            <a class="btn btn-sm" href="{{ path('app_admin_order_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.orders.new'|trans }}</a>
+        </div>
+    </div>
+
+    {{ form_start(filter_form, {attr: {class: 'filters card', 'data-controller': 'autosubmit', 'data-action': 'change->autosubmit#submit input->autosubmit#submit', 'data-turbo-action': 'replace'}}) }}
+        {{ form_row(filter_form.q, {row_attr: {class: 'filter-query'}}) }}
+        {{ form_row(filter_form.status) }}
+        {{ form_row(filter_form.river) }}
+        {{ form_row(filter_form.package) }}
+        {{ form_row(filter_form.from) }}
+        {{ form_row(filter_form.to) }}
+        {{ form_row(filter_form.sort) }}
+        <div class="form-group">
+            <a class="btn btn-ghost btn-sm" href="{{ path('app_admin_orders') }}">{{ 'admin.common.reset'|trans }}</a>
+        </div>
+    {{ form_end(filter_form, {render_rest: false}) }}
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-regular fa-calendar-xmark"></i>{{ 'admin.orders.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.orders.col.date'|trans }}</th>
+                        <th>{{ 'admin.orders.col.customer'|trans }}</th>
+                        <th>{{ 'admin.orders.col.trip'|trans }}</th>
+                        <th class="num">{{ 'admin.orders.col.people'|trans }}</th>
+                        <th>{{ 'admin.orders.field.status'|trans }}</th>
+                        <th>{{ 'admin.orders.col.created'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in page.items %}
+                        <tr>
+                            <td data-label="{{ 'admin.orders.col.date'|trans }}" class="nowrap">
+                                <strong>{{ order.startDate|date('d.m.Y') }}</strong>
+                                {% if order.durationDays > 1 %}<br><span class="text-small text-muted">→ {{ order.endDate|date('d.m') }}</span>{% endif %}
+                            </td>
+                            <td data-label="{{ 'admin.orders.col.customer'|trans }}">
+                                <a href="{{ path('app_admin_order_edit', {id: order.id}) }}"><strong>{{ order.name }}</strong></a>
+                                <div class="text-small">
+                                    {% if order.phoneE164 %}<a href="tel:{{ order.phoneE164 }}">{{ order.phoneFormatted }}</a><br>{% endif %}
+                                    <span class="text-muted">{{ order.email }}</span>
+                                </div>
+                            </td>
+                            <td data-label="{{ 'admin.orders.col.trip'|trans }}">
+                                {{ order.tour ? order.tour.title|localized : order.river|trans }}
+                                <div class="text-small text-muted">{{ order.river|trans }} · {{ order.package|trans }} · {{ order.reference }}</div>
+                            </td>
+                            <td data-label="{{ 'admin.orders.col.people'|trans }}" class="num">{{ order.amountOfPeople }}</td>
+                            <td data-label="{{ 'admin.orders.field.status'|trans }}"><span class="badge badge-status-{{ order.status.value }}">{{ order.status|trans }}</span></td>
+                            <td data-label="{{ 'admin.orders.col.created'|trans }}" class="text-small text-muted nowrap">{{ order.createdAt|date('d.m.Y H:i') }}</td>
+                            <td><div class="table-actions"><a class="btn btn-sm btn-outline" href="{{ path('app_admin_order_edit', {id: order.id}) }}">{{ 'admin.common.open'|trans }}</a></div></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

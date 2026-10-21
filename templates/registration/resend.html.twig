@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'registration.resend.title'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block body %}
+    <section class="auth-page">
+        <div class="auth-card">
+            <div class="card">
+                <div class="auth-icon"><i class="fa-solid fa-envelope-circle-check"></i></div>
+                <h1>{{ 'registration.resend.title'|trans }}</h1>
+                <p class="lead">{{ 'registration.resend.text'|trans }}</p>
+                {{ form_start(form) }}
+                    {{ form_row(form.email) }}
+                    <button type="submit" class="btn btn-block">{{ 'registration.resend.submit'|trans }}</button>
+                {{ form_end(form) }}
+                <p class="form-footer"><a href="{{ path('app_login') }}">← {{ 'login.title'|trans }}</a></p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,4 @@
+security:
+    account_not_verified: 'Please confirm your email: we sent you a link when you signed up.'
+'Invalid credentials.': 'Wrong email/phone or password.'
+'Bad credentials.': 'Wrong email/phone or password.'

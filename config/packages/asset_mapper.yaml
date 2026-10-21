@@ -1,8 +1,9 @@
 framework:
     asset_mapper:
-        # The paths to make available to the asset mapper.
         paths:
             - assets/
+        excluded_patterns:
+            - '*/assets/files/**/*.md'
         missing_import_mode: strict
 
 when@prod:

@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'registration.check_email.title'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block body %}
+    <section class="auth-page">
+        <div class="auth-card">
+            <div class="card text-center">
+                <div class="auth-icon"><i class="fa-regular fa-envelope-open"></i></div>
+                <h1>{{ 'registration.check_email.title'|trans }}</h1>
+                <p>{{ 'registration.check_email.text'|trans({'%email%': '<strong>' ~ (email ?? '')|e ~ '</strong>'})|raw }}</p>
+                <p class="text-small text-muted">{{ 'registration.check_email.spam'|trans }}</p>
+                <a class="btn btn-outline" href="{{ path('app_verify_resend') }}">{{ 'registration.check_email.resend'|trans }}</a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

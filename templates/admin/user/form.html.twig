@@ -1,0 +1,56 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set is_new = user.id is null %}
+{% block title %}{{ is_new ? 'admin.users.new'|trans : user.email }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <div class="breadcrumbs"><a href="{{ path('app_admin_users') }}">{{ 'admin.menu.users'|trans }}</a> /</div>
+        <h1>{{ is_new ? 'admin.users.new'|trans : user.email }}</h1>
+    </div>
+
+    <div class="admin-form-layout">
+        <div class="card">
+            {{ form_start(form) }}
+                {{ form_errors(form) }}
+                <div class="form-row">
+                    {{ form_row(form.email) }}
+                    {{ form_row(form.name) }}
+                </div>
+                <div class="form-row">
+                    {{ form_row(form.phone) }}
+                    {{ form_row(form.locale) }}
+                </div>
+                {{ form_row(form.newPassword) }}
+                {{ form_row(form.isVerified) }}
+                {{ form_row(form.admin) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> {{ 'admin.common.save'|trans }}</button>
+            {{ form_end(form) }}
+        </div>
+
+        {% if not is_new %}
+            <aside>
+                <div class="card">
+                    <dl class="dl text-small">
+                        <dt>{{ 'admin.users.col.created'|trans }}</dt><dd>{{ user.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dt>{{ 'admin.users.last_login'|trans }}</dt><dd>{{ user.lastLoginAt ? user.lastLoginAt|date('d.m.Y H:i') : '—' }}</dd>
+                        <dt>{{ 'admin.users.bookings'|trans }}</dt><dd><a href="{{ path('app_admin_orders', {q: user.email}) }}">{{ user.orders|length }}</a></dd>
+                    </dl>
+                    {% if not user.verified %}
+                        <form method="post" action="{{ path('app_admin_user_resend', {id: user.id}) }}" class="mt-2">
+                            <input type="hidden" name="_token" value="{{ csrf_token('resend-' ~ user.id) }}">
+                            <button type="submit" class="btn btn-sm btn-outline btn-block"><i class="fa-solid fa-paper-plane"></i> {{ 'admin.users.resend'|trans }}</button>
+                        </form>
+                    {% endif %}
+                    {% if user.id != app.user.id %}
+                        <form method="post" action="{{ path('app_admin_user_delete', {id: user.id}) }}" class="mt-2" data-turbo-confirm="{{ 'admin.users.delete_confirm'|trans }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete-user-' ~ user.id) }}">
+                            <button type="submit" class="btn btn-sm btn-ghost text-danger btn-block"><i class="fa-solid fa-trash"></i> {{ 'admin.common.delete'|trans }}</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </aside>
+        {% endif %}
+    </div>
+{% endblock %}

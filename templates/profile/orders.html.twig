@@ -1,110 +1,50 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ 'profile.orders.title'|trans }}{% endblock %}
-
-{% block head %}
-    {% block stylesheets %}
-        {{ parent() }}
-        <link rel="stylesheet" href="{{ asset('styles/orders.css') }}">
-    {% endblock %}
-{% endblock %}
+{% block title %}{{ 'nav.my_bookings'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
 
 {% block body %}
-<div class="container my-5">
-    <h1 class="mb-4">{{ 'profile.orders.title'|trans }}</h1>
-    
-    <div class="tab-container mb-4">
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" href="#upcoming" role="tab">
-                    {{ 'profile.orders.upcoming'|trans }}
-                    {% if upcomingOrders|length > 0 %}
-                        <span class="badge bg-primary">{{ upcomingOrders|length }}</span>
-                    {% endif %}
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" id="past-tab" data-bs-toggle="tab" href="#past" role="tab">
-                    {{ 'profile.orders.past'|trans }}
-                    {% if pastOrders|length > 0 %}
-                        <span class="badge bg-secondary">{{ pastOrders|length }}</span>
-                    {% endif %}
-                </a>
-            </li>
-        </ul>
-    </div>
-    
-    <div class="tab-content">
-        <div class="tab-pane fade show active" id="upcoming" role="tabpanel">
-            {% if upcomingOrders is empty %}
-                <div class="alert alert-info">{{ 'profile.orders.no_upcoming'|trans }}</div>
-            {% else %}
-                <div class="row">
-                    {% for order in upcomingOrders %}
-                        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span class="badge bg-primary float-end">{{ order.startDate|date('d.m.Y') }}</span>
-                                    {{ ('river.'~order.river.value)|trans }}
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ ('package.'~order.package.value~'.title')|trans }}</h5>
-                                    <ul class="list-group list-group-flush mb-3">
-                                        <li class="list-group-item">
-                                            <i class="fas fa-calendar-alt me-2"></i> {{ order.durationDays }} {{ 'profile.orders.days'|trans }}
-                                        </li>
-                                        <li class="list-group-item">
-                                            <i class="fas fa-users me-2"></i> {{ order.amountOfPeople }} {{ 'profile.orders.people'|trans }}
-                                        </li>
-                                    </ul>
-                                    <a href="{{ path('app_order_show', {'id': order.id}) }}" class="btn btn-primary">
-                                        {{ 'profile.orders.details'|trans }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+    <section class="page-head">
+        <div class="container">
+            <h1>{{ 'profile.hello'|trans({'%name%': app.user.displayName}) }}</h1>
+            <p>{{ 'profile.orders_subtitle'|trans }}</p>
         </div>
-        
-        <div class="tab-pane fade" id="past" role="tabpanel">
-            {% if pastOrders is empty %}
-                <div class="alert alert-info">{{ 'profile.orders.no_past'|trans }}</div>
-            {% else %}
-                <div class="row">
-                    {% for order in pastOrders %}
-                        <div class="col-lg-4 col-md-6 col-sm-6 mb-4">
-                            <div class="card">
-                                <div class="card-header">
-                                    <span class="badge bg-secondary float-end">{{ order.startDate|date('d.m.Y') }}</span>
-                                    {{ 'river.'~order.river.value|trans }}
-                                </div>
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ 'package.'~order.package.value|trans }}</h5>
-                                    <ul class="list-group list-group-flush mb-3">
-                                        <li class="list-group-item">
-                                            <i class="fas fa-calendar-alt me-2"></i> {{ order.durationDays }} {{ 'profile.orders.days'|trans }}
-                                        </li>
-                                        <li class="list-group-item">
-                                            <i class="fas fa-users me-2"></i> {{ order.amountOfPeople }} {{ 'profile.orders.people'|trans }}
-                                        </li>
-                                    </ul>
-                                    <a href="{{ path('app_order_show', {'id': order.id}) }}" class="btn btn-secondary">
-                                        {{ 'profile.orders.details'|trans }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
-{% endblock %}
+    </section>
 
-{% block javascripts %}
-    {{ parent() }}
-    <script src="{{ asset('js/orders.js') }}"></script>
+    <section class="section" style="padding-top: 0">
+        <div class="container container-narrow">
+            {% include 'profile/_nav.html.twig' %}
+
+            <div data-controller="tabs">
+                <div class="tabs" role="tablist">
+                    <button type="button" class="tab" role="tab" id="tab-upcoming" aria-controls="upcoming" aria-selected="true" data-tabs-target="tab" data-action="tabs#select">
+                        {{ 'profile.upcoming'|trans }} <span class="badge">{{ upcoming|length }}</span>
+                    </button>
+                    <button type="button" class="tab" role="tab" id="tab-past" aria-controls="past" aria-selected="false" data-tabs-target="tab" data-action="tabs#select">
+                        {{ 'profile.past'|trans }} <span class="badge">{{ past|length }}</span>
+                    </button>
+                </div>
+
+                <div id="upcoming" role="tabpanel" aria-labelledby="tab-upcoming" data-tabs-target="panel" class="stack">
+                    {% for order in upcoming %}
+                        {% include 'profile/_order_card.html.twig' %}
+                    {% else %}
+                        <div class="empty">
+                            <i class="fa-regular fa-calendar"></i>
+                            <p>{{ 'profile.no_upcoming'|trans }}</p>
+                            <a class="btn" href="{{ path('app_order_new') }}">{{ 'nav.book'|trans }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div id="past" role="tabpanel" aria-labelledby="tab-past" data-tabs-target="panel" class="stack" hidden>
+                    {% for order in past %}
+                        {% include 'profile/_order_card.html.twig' %}
+                    {% else %}
+                        <div class="empty"><i class="fa-regular fa-folder-open"></i>{{ 'profile.no_past'|trans }}</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}

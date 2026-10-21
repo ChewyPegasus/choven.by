@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% set title = tour.title|localized %}
+{% set image = image_url(tour.image) %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block meta_description %}{{ tour.summary|localized }}{% endblock %}
+{% block og_type %}product{% endblock %}
+{% block og_image %}
+    {% if image %}<meta property="og:image" content="{{ absolute_url(image) }}">{% else %}{{ parent() }}{% endif %}
+{% endblock %}
+
+{% block structured_data %}
+    {% set data = {
+        '@context': 'https://schema.org',
+        '@type': 'TouristTrip',
+        name: title,
+        description: tour.summary|localized,
+        touristType: tour.package|trans,
+        provider: {'@type': 'TravelAgency', name: site_name, url: url('app_main')},
+    } %}
+    {% if tour.priceFrom %}
+        {% set data = data|merge({offers: {'@type': 'Offer', price: tour.priceFrom, priceCurrency: 'BYN', url: url('app_order_new', {tour: tour.slug}), availability: 'https://schema.org/InStock'}}) %}
+    {% endif %}
+    {% if image %}{% set data = data|merge({image: absolute_url(image)}) %}{% endif %}
+    <script type="application/ld+json">{{ data|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+{% endblock %}
+
+{% block body %}
+    <section class="page-head">
+        <div class="container">
+            <p class="text-small"><a href="{{ path('app_main') }}#tours">← {{ 'tour.all_tours'|trans }}</a></p>
+            <h1>{{ title }}</h1>
+            <p>{{ tour.summary|localized }}</p>
+        </div>
+    </section>
+
+    <section class="section pt-0" style="padding-top:0">
+        <div class="container booking-layout">
+            <div class="stack">
+                <div class="tour-media" style="border-radius: var(--radius-lg)">
+                    {% if image %}
+                        <img src="{{ image }}" alt="{{ title }}" fetchpriority="high" width="1200" height="750">
+                    {% else %}
+                        <div class="img-placeholder"><i class="fa-solid fa-water"></i></div>
+                    {% endif %}
+                </div>
+
+                {% set description = tour.description|localized %}
+                {% if description %}
+                    <div class="prose">{{ description|nl2br }}</div>
+                {% endif %}
+
+                <div class="card">
+                    <h2 class="card-title">{{ 'package.included'|trans }} — {{ tour.package|trans }}</h2>
+                    <p class="text-muted">{{ tour.package.description|trans }}</p>
+                    <ul class="check-list">
+                        {% for feature in tour.package.features %}
+                            <li>{{ feature|trans }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                {% if map_routes is not empty %}
+                    <div>
+                        <h2>{{ 'tour.route'|trans }}</h2>
+                        {% include '_partials/map.html.twig' %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <aside class="booking-aside">
+                <div class="card">
+                    {% if tour.priceFrom %}
+                        <div class="text-muted text-small">{{ 'tour.price_from'|trans }}</div>
+                        <div class="price-estimate">{{ tour.priceFrom|byn }}</div>
+                        <div class="text-muted text-small mb-2">{{ ('tour.price_unit_long.' ~ tour.priceUnit)|trans }}</div>
+                    {% endif %}
+                    <dl class="dl mb-3">
+                        {% if tour.durationDays %}
+                            <dt>{{ 'booking.form.duration'|trans }}</dt>
+                            <dd>{{ 'tour.days'|trans({'%count%': tour.durationDays}) }}</dd>
+                        {% endif %}
+                        {% if tour.river %}
+                            <dt>{{ 'booking.form.river'|trans }}</dt>
+                            <dd>{{ tour.river|trans }}</dd>
+                        {% endif %}
+                        <dt>{{ 'booking.form.package'|trans }}</dt>
+                        <dd>{{ tour.package|trans }}</dd>
+                    </dl>
+                    <a class="btn btn-block btn-lg" href="{{ path('app_order_new', {tour: tour.slug}) }}">{{ 'tour.book'|trans }}</a>
+                    <p class="text-small text-muted mt-2 mb-0">{{ 'tour.no_prepayment'|trans }}</p>
+                </div>
+                <div class="card card-muted">
+                    <p class="mb-1 fw-bold">{{ 'tour.questions'|trans }}</p>
+                    <p class="mb-0"><i class="fa-solid fa-phone"></i> <a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a></p>
+                </div>
+            </aside>
+        </div>
+    </section>
+
+    {% if other_tours is not empty %}
+        <section class="section section-soft">
+            <div class="container">
+                <h2 class="section-title text-center">{{ 'tour.other'|trans }}</h2>
+                <div class="tour-grid mt-3">
+                    {% for tour in other_tours %}
+                        {% include '_partials/tour_card.html.twig' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.logs'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.logs'|trans }} <span class="text-muted text-small">{{ file_name }}</span></h1>
+        <form method="get" class="cluster" data-controller="autosubmit" data-action="change->autosubmit#submit">
+            <select name="level" class="form-select" style="min-height:38px;width:auto" aria-label="{{ 'admin.logs.level'|trans }}">
+                <option value="">{{ 'admin.logs.all_levels'|trans }}</option>
+                {% for l in ['error', 'warning', 'info', 'debug'] %}
+                    <option value="{{ l }}" {{ level == l ? 'selected' }}>{{ l|upper }}</option>
+                {% endfor %}
+            </select>
+            <select name="lines" class="form-select" style="min-height:38px;width:auto" aria-label="{{ 'admin.logs.lines'|trans }}">
+                {% for n in [100, 200, 500, 1000, 2000] %}
+                    <option value="{{ n }}" {{ lines == n ? 'selected' }}>{{ 'admin.logs.last_lines'|trans({'%count%': n}) }}</option>
+                {% endfor %}
+            </select>
+        </form>
+    </div>
+
+    {% if not file_exists %}
+        <div class="empty"><i class="fa-regular fa-file"></i>{{ 'admin.logs.no_file'|trans }}</div>
+    {% elseif entries is empty %}
+        <div class="empty"><i class="fa-regular fa-face-smile"></i>{{ 'admin.logs.empty'|trans }}</div>
+    {% else %}
+        <div class="log-view">
+            {% for line in entries %}
+                {% set lvl = '' %}
+                {% for candidate in ['EMERGENCY', 'ALERT', 'CRITICAL', 'ERROR', 'WARNING', 'NOTICE', 'INFO', 'DEBUG'] %}
+                    {% if lvl == '' and ('.' ~ candidate ~ ':') in line %}{% set lvl = candidate %}{% endif %}
+                {% endfor %}
+                <div class="lvl-{{ lvl }}">{{ line }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

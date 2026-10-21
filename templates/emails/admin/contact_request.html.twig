@@ -1,0 +1,12 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block content %}
+    <h1 style="margin:0 0 12px;font-size:20px;color:#1b2a3a;">Просьба перезвонить: {{ request.name }}</h1>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:10px;font-size:14px;">
+        <tr><td style="padding:10px 14px;color:#64748b;width:35%;border-bottom:1px solid #e2e8f0;">Телефон</td><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;"><a href="tel:{{ request.phoneE164 }}" style="color:#d95a00;font-weight:bold;">{{ request.phoneFormatted }}</a></td></tr>
+        <tr><td style="padding:10px 14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Email</td><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;">{{ request.email ?? '—' }}</td></tr>
+        <tr><td style="padding:10px 14px;color:#64748b;border-bottom:1px solid #e2e8f0;">Язык сайта</td><td style="padding:10px 14px;border-bottom:1px solid #e2e8f0;">{{ request.locale|upper }}</td></tr>
+        <tr><td style="padding:10px 14px;color:#64748b;vertical-align:top;">Сообщение</td><td style="padding:10px 14px;white-space:pre-line;">{{ request.message ?? '—' }}</td></tr>
+    </table>
+    {% include 'emails/_button.html.twig' with {href: admin_url, label: 'Все заявки'} %}
+{% endblock %}

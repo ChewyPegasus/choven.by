@@ -1,0 +1,155 @@
+{% use 'form_div_layout.html.twig' %}
+
+{# Rows --------------------------------------------------------------------- #}
+{%- block form_row -%}
+    {%- set widget_attr = {} -%}
+    {%- if help is not empty -%}
+        {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
+    {%- endif -%}
+    {%- set row_class = 'form-group' ~ (errors|length > 0 ? ' is-invalid') ~ (row_attr.class is defined ? ' ' ~ row_attr.class) -%}
+    <div{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_label(form) -}}
+        {{- form_widget(form, widget_attr) -}}
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+    </div>
+{%- endblock form_row -%}
+
+{%- block checkbox_row -%}
+    {%- set row_class = 'form-check' ~ (errors|length > 0 ? ' is-invalid') ~ (row_attr.class is defined ? ' ' ~ row_attr.class) -%}
+    <div{% with {attr: row_attr|merge({class: row_class})} %}{{ block('attributes') }}{% endwith %}>
+        {{- form_widget(form) -}}
+        <div>
+            {{- form_label(form) -}}
+            {{- form_help(form) -}}
+            {{- form_errors(form) -}}
+        </div>
+    </div>
+{%- endblock checkbox_row -%}
+
+{%- block hidden_row -%}{{ form_widget(form) }}{%- endblock hidden_row -%}
+
+{# Labels, help and errors ------------------------------------------------- #}
+{%- block form_label -%}
+    {%- if label is not same as(false) -%}
+        {%- if compound is defined and compound -%}
+            {%- set element = 'legend' -%}
+        {%- endif -%}
+        {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' form-label' ~ (required ? ' required'))|trim}) -%}
+        {{- parent() -}}
+    {%- endif -%}
+{%- endblock form_label -%}
+
+{%- block checkbox_label -%}
+    {%- set label_attr = label_attr|merge({class: (label_attr.class|default('') ~ ' form-check-label')|trim, for: id}) -%}
+    {%- if label is empty -%}{%- set label = name|humanize -%}{%- endif -%}
+    <label{% with {attr: label_attr} %}{{ block('attributes') }}{% endwith %}>
+        {%- if translation_domain is same as(false) -%}
+            {{- label_html ? label|raw : label -}}
+        {%- else -%}
+            {{- label_html ? label|trans(label_translation_parameters, translation_domain)|raw : label|trans(label_translation_parameters, translation_domain) -}}
+        {%- endif -%}
+    </label>
+{%- endblock checkbox_label -%}
+
+{%- block form_help -%}
+    {%- if help is not empty -%}
+        <small id="{{ id }}_help" class="form-help">
+            {%- if translation_domain is same as(false) -%}
+                {{- help_html ? help|raw : help -}}
+            {%- else -%}
+                {{- help_html ? help|trans(help_translation_parameters, translation_domain)|raw : help|trans(help_translation_parameters, translation_domain) -}}
+            {%- endif -%}
+        </small>
+    {%- endif -%}
+{%- endblock form_help -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+        <ul class="form-errors{{ form.parent is null ? ' form-errors-global alert alert-error' }}" role="alert">
+            {%- for error in errors -%}
+                <li>{{ error.message }}</li>
+            {%- endfor -%}
+        </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{# Widgets ------------------------------------------------------------------ #}
+{%- block form_widget_simple -%}
+    {%- if type is not defined or type not in ['file', 'hidden', 'range', 'checkbox', 'radio'] -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    {%- elseif type == 'file' -%}
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    {%- endif -%}
+    {%- if errors|length > 0 -%}{%- set attr = attr|merge({'aria-invalid': 'true'}) -%}{%- endif -%}
+    {{- parent() -}}
+{%- endblock form_widget_simple -%}
+
+{%- block textarea_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control')|trim}) -%}
+    {%- if errors|length > 0 -%}{%- set attr = attr|merge({'aria-invalid': 'true'}) -%}{%- endif -%}
+    {{- parent() -}}
+{%- endblock textarea_widget -%}
+
+{%- block choice_widget_collapsed -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-select')|trim}) -%}
+    {%- if errors|length > 0 -%}{%- set attr = attr|merge({'aria-invalid': 'true'}) -%}{%- endif -%}
+    {{- parent() -}}
+{%- endblock choice_widget_collapsed -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }} class="form-check-group">
+        {%- for child in form -%}
+            <div class="form-check">
+                {{- form_widget(child) -}}
+                {{- form_label(child, null, {translation_domain: choice_translation_domain}) -}}
+            </div>
+        {%- endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{%- block checkbox_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-check-input')|trim}) -%}
+    {{- parent() -}}
+{%- endblock checkbox_widget -%}
+
+{%- block radio_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-check-input')|trim}) -%}
+    {{- parent() -}}
+{%- endblock radio_widget -%}
+
+{%- block radio_label -%}{{- block('checkbox_label') -}}{%- endblock radio_label -%}
+
+{# Compound field with one input per language. #}
+{%- block localized_text_row -%}
+    <fieldset class="form-fieldset{{ errors|length > 0 ? ' is-invalid' }}">
+        {%- if label is not same as(false) -%}
+            <legend class="form-label{{ required ? ' required' }}">{{ label|trans(label_translation_parameters, translation_domain) }}</legend>
+        {%- endif -%}
+        <div class="localized-fields">
+            {%- for child in form -%}
+                {{- form_row(child) -}}
+            {%- endfor -%}
+        </div>
+        {{- form_help(form) -}}
+        {{- form_errors(form) -}}
+    </fieldset>
+{%- endblock localized_text_row -%}
+
+{# Star rating of the review form. #}
+{%- block _review_rating_widget -%}
+    <div class="rating-input" role="radiogroup">
+        {%- for child in form -%}
+            <input type="radio" id="{{ child.vars.id }}" name="{{ child.vars.full_name }}" value="{{ child.vars.value }}"{{ child.vars.checked ? ' checked' }}>
+            <label for="{{ child.vars.id }}" title="{{ child.vars.value }}/5">★<span class="sr-only">{{ child.vars.value }}</span></label>
+        {%- endfor -%}
+    </div>
+{%- endblock _review_rating_widget -%}
+
+{%- block _review_rating_row -%}
+    <fieldset class="form-fieldset{{ errors|length > 0 ? ' is-invalid' }}">
+        <legend class="form-label required">{{ label|trans({}, translation_domain) }}</legend>
+        {{- form_widget(form) -}}
+        {{- form_errors(form) -}}
+    </fieldset>
+{%- endblock _review_rating_row -%}

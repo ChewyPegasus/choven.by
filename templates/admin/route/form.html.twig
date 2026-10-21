@@ -1,0 +1,67 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set is_new = route.id is null %}
+{% block title %}{{ is_new ? 'admin.routes.new'|trans : route.name|localized }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <div class="breadcrumbs"><a href="{{ path('app_admin_routes') }}">{{ 'admin.menu.routes'|trans }}</a> /</div>
+        <h1>{{ is_new ? 'admin.routes.new'|trans : route.name|localized }}</h1>
+    </div>
+
+    {{ form_start(form) }}
+    <div data-controller="route-editor">
+        <div class="admin-form-layout">
+            <div class="stack">
+                <div class="card" data-controller="slug" data-slug-source-value="#{{ form.name.ru.vars.id }}">
+                    {{ form_errors(form) }}
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.slug, {attr: {'data-slug-target': 'slug', 'data-action': 'slug#edited'}}) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.duration) }}
+                </div>
+
+                <div class="card">
+                    <h2 class="card-title">{{ 'admin.routes.field.points'|trans }}</h2>
+                    <p class="text-small text-muted">{{ 'admin.routes.points_hint'|trans }}</p>
+                    <div class="route-preview mb-2" data-route-editor-target="map"></div>
+                    {{ form_errors(form.points) }}
+                    <div data-controller="form-collection"
+                         data-form-collection-index-value="{{ form.points|length > 0 ? form.points|last.vars.name + 1 : 0 }}"
+                         data-form-collection-prototype-value="{{ include('admin/route/_point.html.twig', {point: form.points.vars.prototype})|e('html_attr') }}">
+                        <div class="points-list" data-form-collection-target="list">
+                            {% for point in form.points %}
+                                {{ include('admin/route/_point.html.twig', {point: point, number: loop.index}) }}
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline mt-2" data-action="form-collection#add"><i class="fa-solid fa-plus"></i> {{ 'admin.routes.add_point'|trans }}</button>
+                    </div>
+                    {% do form.points.setRendered %}
+                </div>
+            </div>
+
+            <aside>
+                <div class="card">
+                    {{ form_row(form.river) }}
+                    {{ form_row(form.difficulty) }}
+                    <div class="form-row">
+                        {{ form_row(form.distanceKm) }}
+                        {{ form_row(form.color, {attr: {'data-route-editor-target': 'color'}}) }}
+                    </div>
+                    {{ form_row(form.position) }}
+                    {{ form_row(form.isActive) }}
+                    {{ form_rest(form) }}
+                    <button type="submit" class="btn btn-block"><i class="fa-solid fa-floppy-disk"></i> {{ 'admin.common.save'|trans }}</button>
+                </div>
+            </aside>
+        </div>
+    </div>
+    {{ form_end(form) }}
+
+    {% if not is_new %}
+        <form method="post" action="{{ path('app_admin_route_delete', {id: route.id}) }}" class="mt-3" data-turbo-confirm="{{ 'admin.routes.delete_confirm'|trans }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete-route-' ~ route.id) }}">
+            <button type="submit" class="btn btn-sm btn-ghost text-danger"><i class="fa-solid fa-trash"></i> {{ 'admin.common.delete'|trans }}</button>
+        </form>
+    {% endif %}
+{% endblock %}

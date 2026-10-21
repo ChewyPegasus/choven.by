@@ -1,8 +1,14 @@
 parameters:
-    level: 6
+    level: 8
     paths:
-        - bin/
-        - config/
-        - public/
-        - src/
-        - tests/
+        - src
+        - tests
+        - migrations
+    tmpDir: var/cache/phpstan
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+        consoleApplicationLoader: tests/phpstan/console-application.php
+    doctrine:
+        objectManagerLoader: tests/phpstan/object-manager.php
+        # Entities use nullable properties so that forms can bind empty input before validation runs.
+        allowNullablePropertyForRequiredField: true

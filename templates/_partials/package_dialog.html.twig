@@ -1,0 +1,20 @@
+{# A native <dialog> with the details of a service package; opened by <button data-modal-open="package-…"> #}
+<dialog class="modal" id="package-{{ package.value }}" aria-labelledby="package-{{ package.value }}-title">
+    <div class="modal-header">
+        <h2 id="package-{{ package.value }}-title">{{ package|trans }}</h2>
+        <button type="button" class="modal-close" data-modal-close aria-label="{{ 'a11y.close'|trans }}">&times;</button>
+    </div>
+    <div class="modal-body">
+        <p>{{ package.description|trans }}</p>
+        <h3 class="mt-2">{{ 'package.included'|trans }}</h3>
+        <ul class="check-list">
+            {% for feature in package.features %}
+                <li>{{ feature|trans }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <a class="btn" href="{{ path('app_order_new', {package: package.value}) }}">{{ 'package.book'|trans }}</a>
+        <button type="button" class="btn btn-ghost" data-modal-close>{{ 'a11y.close'|trans }}</button>
+    </div>
+</dialog>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="{{ email_locale|default('ru') }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <title>{{ subject|default(site_name) }}</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:Arial,Helvetica,sans-serif;color:#334155;">
+{% block preheader %}{% endblock %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;padding:24px 12px;">
+    <tr>
+        <td align="center">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:600px;background:#ffffff;border-radius:14px;overflow:hidden;">
+                <tr>
+                    <td style="background:#1b2a3a;padding:22px 28px;">
+                        <a href="{{ url('app_main', {_locale: email_locale|default('ru')}) }}" style="color:#ffffff;text-decoration:none;font-size:22px;font-weight:bold;">Ч<span style="color:#ff6b00;">ö</span>вен</a>
+                        <span style="color:#94a3b8;font-size:13px;padding-left:8px;">{{ 'email.tagline'|trans }}</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:28px;font-size:15px;line-height:1.6;">
+                        {% block content %}{% endblock %}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:20px 28px;background:#f8fafc;border-top:1px solid #e2e8f0;font-size:13px;color:#64748b;line-height:1.5;">
+                        {% block footer %}
+                            {{ 'email.footer.questions'|trans }}
+                            <a href="tel:{{ settings.phoneLink }}" style="color:#d95a00;">{{ settings.phone }}</a> ·
+                            <a href="mailto:{{ settings.email }}" style="color:#d95a00;">{{ settings.email }}</a><br>
+                            © {{ 'now'|date('Y') }} {{ site_name }}
+                        {% endblock %}
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

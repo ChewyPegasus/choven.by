@@ -8,7 +8,7 @@ use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
 /**
- * Comprehensive migration for Choven.by project
+ * Comprehensive migration for Choven.by project.
  */
 final class Version20250708085210 extends AbstractMigration
 {
@@ -50,7 +50,7 @@ final class Version20250708085210 extends AbstractMigration
             )
         SQL);
         $this->addSql('COMMENT ON COLUMN orders.duration IS \'(DC2Type:dateinterval)\'');
-        
+
         // Add foreign key constraint from orders to users
         $this->addSql(<<<'SQL'
             ALTER TABLE orders 
@@ -111,7 +111,7 @@ final class Version20250708085210 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN messenger_messages.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN messenger_messages.available_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN messenger_messages.delivered_at IS \'(DC2Type:datetime_immutable)\'');
-        
+
         // Create notification function for Messenger
         $this->addSql(<<<'SQL'
             CREATE OR REPLACE FUNCTION notify_messenger_messages() RETURNS TRIGGER AS $$

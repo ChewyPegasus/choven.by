@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'reset_password.reset.title'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block body %}
+    <section class="auth-page">
+        <div class="auth-card">
+            <div class="card">
+                <div class="auth-icon"><i class="fa-solid fa-lock"></i></div>
+                <h1>{{ 'reset_password.reset.title'|trans }}</h1>
+                {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                    <div data-controller="password-toggle" data-password-toggle-show-value="{{ 'a11y.show_password'|trans }}" data-password-toggle-hide-value="{{ 'a11y.hide_password'|trans }}">
+                        {{ form_row(form.plainPassword.first) }}
+                    </div>
+                    {{ form_row(form.plainPassword.second) }}
+                    {{ form_errors(form.plainPassword) }}
+                    {{ form_rest(form) }}
+                    <button type="submit" class="btn btn-block btn-lg">{{ 'reset_password.reset.submit'|trans }}</button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

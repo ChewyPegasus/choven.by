@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Kernel;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Dotenv\Dotenv;
 
-require dirname(__DIR__, 2) . '/vendor/autoload.php';
+require dirname(__DIR__, 2).'/vendor/autoload.php';
 
-$kernel = new Kernel('dev', true);
+(new Dotenv())->bootEnv(dirname(__DIR__, 2).'/.env');
 
-return new Application($kernel);
+return new Application(new Kernel('dev', true));

@@ -1,41 +1,28 @@
 <?php
 
-use App\Kernel;
-use Doctrine\ORM\Tools\SchemaTool;
+declare(strict_types=1);
+
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\Process\Process;
 
 require dirname(__DIR__).'/vendor/autoload.php';
 
-if (file_exists(dirname(__DIR__).'/config/bootstrap.php')) {
-    require dirname(__DIR__).'/config/bootstrap.php';
-} elseif (method_exists(Dotenv::class, 'bootEnv')) {
-    (new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+(new Dotenv())->bootEnv(dirname(__DIR__).'/.env');
+
+if ($_SERVER['APP_DEBUG'] ?? false) {
+    umask(0o000);
 }
 
-echo "Bootstrapping test environment...\n";
-
-// Create the kernel in the test environment
-$kernel = new Kernel($_SERVER['APP_ENV'], (bool) $_SERVER['APP_DEBUG']);
-$kernel->boot();
-
-// Get the EntityManager
-$entityManager = $kernel->getContainer()->get('doctrine')->getManager();
-
-// Get all metadata (description of all your Entities)
-$metadata = $entityManager->getMetadataFactory()->getAllMetadata();
-
-// Create SchemaTool
-$schemaTool = new SchemaTool($entityManager);
-
-echo "Dropping existing schema (if any)...\n";
-// First, drop the old schema to avoid errors
-$schemaTool->dropSchema($metadata);
-
-echo "Creating new schema for test database...\n";
-// Create a new, clean schema
-$schemaTool->createSchema($metadata);
-
-echo "Test environment ready.\n";
-
-// Shutdown the kernel so tests can create their own instances
-$kernel->shutdown();
+// Fresh test database, built by the real migrations (so they are tested too). Set SKIP_DB_RESET=1 to reuse it.
+if (!($_SERVER['SKIP_DB_RESET'] ?? $_ENV['SKIP_DB_RESET'] ?? false)) {
+    $console = [\PHP_BINARY, dirname(__DIR__).'/bin/console', '--env=test', '--no-interaction', '-q'];
+    foreach ([
+        ['doctrine:database:drop', '--force', '--if-exists'],
+        ['doctrine:database:create'],
+        ['doctrine:migrations:migrate', '--allow-no-migration'],
+    ] as $command) {
+        $process = new Process([...$console, ...$command]);
+        $process->setTimeout(300);
+        $process->mustRun();
+    }
+}

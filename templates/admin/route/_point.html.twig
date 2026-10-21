@@ -1,0 +1,15 @@
+<div class="point-item" data-collection-item>
+    <div class="point-item-head">
+        <span class="badge badge-water">#<span data-collection-number>{{ number|default('') }}</span></span>
+        {{ 'admin.routes.point.title'|trans }}
+        <button type="button" class="btn btn-sm btn-ghost text-danger" data-action="form-collection#remove" aria-label="{{ 'admin.common.delete'|trans }}"><i class="fa-solid fa-trash"></i></button>
+    </div>
+    <div class="point-coords">
+        {{ form_row(point.lat) }}
+        {{ form_row(point.lng) }}
+        {{ form_row(point.type) }}
+    </div>
+    {{ form_row(point.name) }}
+    {{ form_row(point.description) }}
+    {{ form_rest(point) }}
+</div>

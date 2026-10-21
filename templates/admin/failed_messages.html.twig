@@ -1,0 +1,50 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.emails'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.emails'|trans }}</h1>
+    </div>
+    <p class="text-muted">{{ 'admin.emails.hint'|trans }}</p>
+
+    {% if messages is empty %}
+        <div class="empty"><i class="fa-solid fa-envelope-circle-check"></i>{{ 'admin.emails.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.emails.col.subject'|trans }}</th>
+                        <th>{{ 'admin.emails.col.to'|trans }}</th>
+                        <th>{{ 'admin.emails.col.error'|trans }}</th>
+                        <th>{{ 'admin.emails.col.failed_at'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for message in messages %}
+                        <tr>
+                            <td data-label="{{ 'admin.emails.col.subject'|trans }}">{{ message.subject }}</td>
+                            <td data-label="{{ 'admin.emails.col.to'|trans }}">{{ message.to }}</td>
+                            <td data-label="{{ 'admin.emails.col.error'|trans }}" class="text-small text-danger" style="max-width: 360px">{{ message.error ?? '—' }}</td>
+                            <td data-label="{{ 'admin.emails.col.failed_at'|trans }}" class="text-small nowrap">{{ message.failed_at ? message.failed_at|date('d.m.Y H:i') : '—' }}<br><span class="text-muted">{{ 'admin.emails.retries'|trans({'%count%': message.retries}) }}</span></td>
+                            <td>
+                                <div class="table-actions">
+                                    <form method="post" action="{{ path('app_admin_failed_message_retry', {id: message.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('failed-' ~ message.id) }}">
+                                        <button type="submit" class="btn btn-sm"><i class="fa-solid fa-rotate-right"></i> {{ 'admin.emails.retry'|trans }}</button>
+                                    </form>
+                                    <form method="post" action="{{ path('app_admin_failed_message_delete', {id: message.id}) }}" data-turbo-confirm="{{ 'admin.emails.delete_confirm'|trans }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('failed-' ~ message.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-ghost text-danger" aria-label="{{ 'admin.common.delete'|trans }}"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,30 @@
+{% set locale = email_locale|default(order.locale) %}
+{% set rows = [
+    ['booking.form.start_date'|trans, order.startDate|format_date('full', locale: locale) ~ (order.durationDays > 1 ? ' — ' ~ order.endDate|format_date('long', locale: locale) : '')],
+    ['booking.form.duration'|trans, 'tour.days'|trans({'%count%': order.durationDays})],
+    ['booking.form.people'|trans, order.amountOfPeople],
+    ['booking.form.river'|trans, order.river|trans],
+    ['booking.form.package'|trans, order.package|trans],
+] %}
+{% if order.tour %}{% set rows = rows|merge([['booking.selected_tour'|trans, order.tour.title|localized(locale)]]) %}{% endif %}
+{% if order.estimatedPrice %}{% set rows = rows|merge([['booking.estimate'|trans, order.estimatedPrice|byn]]) %}{% endif %}
+{% if show_contacts|default(false) %}
+    {% set rows = rows|merge([
+        ['booking.form.name'|trans, order.name],
+        ['booking.form.phone'|trans, order.phoneFormatted ?? '—'],
+        ['booking.form.email'|trans, order.email],
+    ]) %}
+{% endif %}
+{% if order.description %}{% set rows = rows|merge([['booking.form.comment'|trans, order.description]]) %}{% endif %}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:10px;font-size:14px;">
+    <tr>
+        <td style="padding:10px 14px;color:#64748b;width:40%;border-bottom:1px solid #e2e8f0;">{{ 'booking.show.reference'|trans }}</td>
+        <td style="padding:10px 14px;color:#1b2a3a;border-bottom:1px solid #e2e8f0;"><strong style="font-family:monospace;font-size:16px;letter-spacing:1px;">{{ order.reference }}</strong></td>
+    </tr>
+    {% for row in rows %}
+        <tr>
+            <td style="padding:10px 14px;color:#64748b;width:40%;vertical-align:top;{{ not loop.last ? 'border-bottom:1px solid #e2e8f0;' }}">{{ row[0] }}</td>
+            <td style="padding:10px 14px;color:#1b2a3a;vertical-align:top;white-space:pre-line;{{ not loop.last ? 'border-bottom:1px solid #e2e8f0;' }}">{{ row[1] }}</td>
+        </tr>
+    {% endfor %}
+</table>

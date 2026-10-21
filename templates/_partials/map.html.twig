@@ -1,0 +1,28 @@
+{# Interactive route map; expects `map_routes` (list of arrays from MapDataProvider). #}
+{% if map_routes is not empty %}
+    <div class="map-layout" data-controller="map" data-map-routes-value="{{ map_routes|json_encode }}">
+        <div class="map-sidebar" role="list">
+            {% for route in map_routes %}
+                <button type="button" class="route-item" role="listitem" style="--route-color: {{ route.color }}"
+                        data-map-target="item" data-route-id="{{ route.id }}" data-action="map#select">
+                    <h3>{{ route.name }}</h3>
+                    {% if route.description %}<p>{{ route.description }}</p>{% endif %}
+                    <div class="route-facts">
+                        {% if route.duration %}<span><i class="fa-regular fa-clock"></i>{{ route.duration }}</span>{% endif %}
+                        {% if route.distanceKm %}<span><i class="fa-solid fa-route"></i>{{ 'map.km'|trans({'%km%': route.distanceKm|number_format(route.distanceKm == route.distanceKm|round ? 0 : 1, ',', ' ')}) }}</span>{% endif %}
+                        <span><i class="fa-solid fa-gauge"></i>{{ route.difficultyLabel }}</span>
+                        <span><i class="fa-solid fa-location-dot"></i>{{ 'map.points'|trans({'%count%': route.points|length}) }}</span>
+                    </div>
+                </button>
+            {% endfor %}
+        </div>
+        <div class="map-canvas" data-map-target="canvas">
+            <div class="map-loading"><span><i class="fa-solid fa-spinner fa-spin"></i> {{ 'map.loading'|trans }}</span></div>
+            {% if map_routes|length > 1 %}
+                <div class="map-controls">
+                    <button type="button" class="btn btn-light btn-sm" data-action="map#showAll"><i class="fa-solid fa-expand"></i> {{ 'map.show_all'|trans }}</button>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endif %}

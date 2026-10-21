@@ -1,26 +1,119 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'info.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'info.meta_description'|trans }}{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('styles/info.css') }}">
+{% block structured_data %}
+    {% set faq = [] %}
+    {% for i in 1..7 %}
+        {% set faq = faq|merge([{'@type': 'Question', name: ('info.faq.' ~ i ~ '.question')|trans, acceptedAnswer: {'@type': 'Answer', text: ('info.faq.' ~ i ~ '.answer')|trans}}]) %}
+    {% endfor %}
+    <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 {% endblock %}
 
 {% block body %}
-    <div {{ stimulus_controller('info') }}>
-        {# Safety rules #}
-        {% include 'partials/info/safety.html.twig' %}
+    <section class="page-head">
+        <div class="container">
+            <span class="eyebrow">{{ 'info.eyebrow'|trans }}</span>
+            <h1>{{ 'info.title'|trans }}</h1>
+            <p>{{ 'info.subtitle'|trans }}</p>
+        </div>
+    </section>
 
-        {# How is it going #}
-        {% include 'partials/info/process.html.twig' %}
+    {# Safety rules #}
+    <section class="section section-soft" id="safety">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">{{ 'info.safety.title'|trans }}</h2>
+            </div>
+            <div class="grid grid-3">
+                {% for rule in [
+                    {key: 'life_jacket', icon: 'fa-life-ring'},
+                    {key: 'sober', icon: 'fa-champagne-glasses'},
+                    {key: 'not_alone', icon: 'fa-people-group'},
+                    {key: 'oars', icon: 'fa-hand-fist'},
+                    {key: 'trees', icon: 'fa-tree'},
+                    {key: 'posture', icon: 'fa-person'},
+                ] %}
+                    <div class="card rule-card">
+                        <span class="benefit-icon"><i class="fa-solid {{ rule.icon }}"></i></span>
+                        <div>
+                            <h3>{{ ('info.safety.' ~ rule.key ~ '.title')|trans }}</h3>
+                            <p>{{ ('info.safety.' ~ rule.key ~ '.text')|trans }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
 
-        {# FAQ #}
-        {% include 'partials/info/faq.html.twig' %}
-    </div>
-{% endblock %}
+            <div class="card mt-3">
+                <h3 class="card-title">{{ 'info.tips.title'|trans }}</h3>
+                <ul class="check-list">
+                    {% for key in ['dry_bag', 'spare_clothes', 'sun', 'instructor', 'enjoy'] %}
+                        <li>{{ ('info.tips.' ~ key)|trans }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </section>
 
-{% block javascripts %}
-    {{ parent() }}
-    {# <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js" integrity="sha512-fD9DI5bZwQxOi7MhYWnnNPlvXdp/2Pj3XSTRrFs5FQa4mizyGLnJcN6tuvUS6LbmgN1ut+XGSABKvjN0H6Aoow==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> #}
+    {# How it goes #}
+    <section class="section" id="process">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">{{ 'info.process.title'|trans }}</h2>
+            </div>
+            <div class="timeline">
+                {% for i in 1..5 %}
+                    <div class="timeline-item">
+                        <div class="card">
+                            <span class="eyebrow">{{ 'info.process.step'|trans({'%number%': i}) }}</span>
+                            <h3>{{ ('info.process.' ~ i ~ '.title')|trans }}</h3>
+                            <p class="mb-0">{{ ('info.process.' ~ i ~ '.text')|trans }}</p>
+                            <ul>
+                                {% for j in 1..3 %}
+                                    <li>{{ ('info.process.' ~ i ~ '.points.' ~ j)|trans }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="cta mt-4" style="grid-template-columns: 1fr auto">
+                <div>
+                    <h2 class="mb-1">{{ 'info.promo.title'|trans }}</h2>
+                    <p class="mb-0">{{ 'info.promo.text'|trans }}</p>
+                </div>
+                <a class="btn btn-lg btn-light" href="{{ path('app_order_new') }}">{{ 'nav.book'|trans }}</a>
+            </div>
+        </div>
+    </section>
+
+    {# FAQ #}
+    <section class="section section-soft" id="faq">
+        <div class="container container-narrow">
+            <div class="section-header">
+                <h2 class="section-title">{{ 'info.faq.title'|trans }}</h2>
+            </div>
+            <div class="accordion">
+                {% for i in 1..7 %}
+                    <details {{ loop.first ? 'open' }}>
+                        <summary>{{ ('info.faq.' ~ i ~ '.question')|trans }}</summary>
+                        <div class="accordion-body">
+                            <p>{{ ('info.faq.' ~ i ~ '.answer')|trans }}</p>
+                            {% if i == 5 %}
+                                <ul class="check-list">
+                                    {% for j in 1..5 %}
+                                        <li>{{ ('info.faq.5.list.' ~ j)|trans }}</li>
+                                    {% endfor %}
+                                </ul>
+                                <a class="btn btn-outline btn-sm" href="{{ asset('files/' ~ ('files.checklist'|trans) ~ '.docx') }}" download>
+                                    <i class="fa-solid fa-download"></i> {{ 'info.faq.5.download'|trans }}
+                                </a>
+                            {% endif %}
+                        </div>
+                    </details>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 {% endblock %}

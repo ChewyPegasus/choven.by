@@ -1,0 +1,47 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.routes'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.routes'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_route_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.routes.new'|trans }}</a>
+    </div>
+    <p class="text-muted">{{ 'admin.routes.hint'|trans }}</p>
+
+    {% if routes is empty %}
+        <div class="empty"><i class="fa-solid fa-map"></i>{{ 'admin.routes.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.routes.field.name'|trans }}</th>
+                        <th>{{ 'admin.routes.field.difficulty'|trans }}</th>
+                        <th class="num">{{ 'admin.routes.field.distance'|trans }}</th>
+                        <th class="num">{{ 'admin.routes.field.points'|trans }}</th>
+                        <th>{{ 'admin.tours.col.visible'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for route in routes %}
+                        <tr>
+                            <td data-label="{{ 'admin.routes.field.name'|trans }}">
+                                <span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:{{ route.color }};margin-right:6px"></span>
+                                <a href="{{ path('app_admin_route_edit', {id: route.id}) }}"><strong>{{ route.name|localized }}</strong></a>
+                            </td>
+                            <td data-label="{{ 'admin.routes.field.difficulty'|trans }}">{{ route.difficulty|trans }}</td>
+                            <td data-label="{{ 'admin.routes.field.distance'|trans }}" class="num">{{ route.distanceKm ? 'map.km'|trans({'%km%': route.distanceKm}) : '—' }}</td>
+                            <td data-label="{{ 'admin.routes.field.points'|trans }}" class="num">{{ route.points|length }}</td>
+                            <td data-label="{{ 'admin.tours.col.visible'|trans }}">
+                                <span class="badge {{ route.active ? 'badge-success' }}">{{ (route.active ? 'admin.tours.visible' : 'admin.tours.hidden')|trans }}</span>
+                            </td>
+                            <td><div class="table-actions"><a class="btn btn-sm btn-outline" href="{{ path('app_admin_route_edit', {id: route.id}) }}">{{ 'admin.common.edit'|trans }}</a></div></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.settings'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.settings'|trans }}</h1>
+    </div>
+
+    {{ form_start(form) }}
+        {{ form_errors(form) }}
+        <div class="grid grid-2" style="align-items: start">
+            <div class="card">
+                <h2 class="card-title">{{ 'admin.settings.contacts'|trans }}</h2>
+                {{ form_row(form.phone) }}
+                {{ form_row(form.email) }}
+                <div class="form-row">
+                    {{ form_row(form.instagram) }}
+                    {{ form_row(form.telegram) }}
+                </div>
+                {{ form_row(form.notification_email) }}
+            </div>
+            <div class="card">
+                <h2 class="card-title">{{ 'admin.settings.booking'|trans }}</h2>
+                {{ form_row(form.booking_enabled) }}
+                {{ form_row(form.daily_capacity) }}
+                {{ form_row(form.blocked_dates) }}
+            </div>
+        </div>
+        <div class="card mt-3">
+            <h2 class="card-title">{{ 'admin.settings.announcement'|trans }}</h2>
+            {{ form_row(form.announcement) }}
+        </div>
+        {{ form_rest(form) }}
+        <div class="form-actions mt-3">
+            <button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> {{ 'admin.common.save'|trans }}</button>
+        </div>
+    {{ form_end(form) }}
+{% endblock %}

@@ -1,52 +1,257 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'main.title'|trans }}{% endblock %}
+{% block title_suffix %}{% endblock %}
+{% block meta_description %}{{ 'main.meta_description'|trans }}{% endblock %}
 
-{% block head %}
-    {% block stylesheets %}
-        {{ parent() }} 
-        <!-- slider -->
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-    
-        <!-- styles -->
-        <link rel="stylesheet" href="{{ asset('styles/slider.css') }}">
-        <link rel="stylesheet" href="{{ asset('styles/cards.css') }}">
-        <link rel="stylesheet" href="{{ asset('styles/popup.css') }}">
+{% block og_image %}
+    {% if asset_exists('images/slider/kayaks.png') %}
+        <meta property="og:image" content="{{ absolute_url(asset('images/slider/kayaks.png')) }}">
+    {% else %}{{ parent() }}{% endif %}
+{% endblock %}
 
-        <!-- Leaflet CSS -->
-        <link rel="stylesheet" href="{{ asset('styles/maps.css') }}">
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    {% endblock %}
+{% block structured_data %}
+    {% set org = {
+        '@context': 'https://schema.org',
+        '@type': 'TravelAgency',
+        name: site_name,
+        url: url('app_main'),
+        telephone: settings.phoneLink,
+        email: settings.email,
+        areaServed: 'Belarus',
+        priceRange: 'BYN',
+        address: {'@type': 'PostalAddress', addressCountry: 'BY', addressLocality: 'Minsk'},
+    } %}
+    {% if rating.count > 0 %}
+        {% set org = org|merge({aggregateRating: {'@type': 'AggregateRating', ratingValue: rating.average, reviewCount: rating.count, bestRating: 5}}) %}
+    {% endif %}
+    {% if settings.instagram %}
+        {% set org = org|merge({sameAs: ['https://www.instagram.com/' ~ settings.instagram ~ '/']}) %}
+    {% endif %}
+    <script type="application/ld+json">{{ org|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
 {% endblock %}
 
 {% block body %}
+    {# Hero ------------------------------------------------------------------- #}
+    <section class="hero" aria-label="{{ 'main.hero.label'|trans }}">
+        <div class="swiper" data-controller="slider">
+            <div class="swiper-wrapper">
+                {% for slide in [
+                    {image: 'images/slider/kayaks.png', key: '1', href: path('app_order_new'), icon: 'fa-water'},
+                    {image: 'images/slider/view.jpg', key: '2', href: path('app_main') ~ '#routes', icon: 'fa-map-location-dot'},
+                    {image: 'images/slider/campfire.jpg', key: '3', href: path('app_info'), icon: 'fa-fire'},
+                ] %}
+                    <div class="swiper-slide hero-slide">
+                        {% if asset_exists(slide.image) %}
+                            <img src="{{ asset(slide.image) }}" alt="" {{ loop.first ? 'fetchpriority="high"' : 'loading="lazy"' }} decoding="async">
+                        {% else %}
+                            <div class="img-placeholder"><i class="fa-solid {{ slide.icon }}"></i></div>
+                        {% endif %}
+                        <div class="container">
+                            <div class="hero-content">
+                                <span class="eyebrow" style="color:#ffd2b0">{{ 'main.hero.eyebrow'|trans }}</span>
+                                {% if loop.first %}
+                                    <h1>{{ ('main.hero.slide' ~ slide.key ~ '.title')|trans }}</h1>
+                                {% else %}
+                                    <h2>{{ ('main.hero.slide' ~ slide.key ~ '.title')|trans }}</h2>
+                                {% endif %}
+                                <p>{{ ('main.hero.slide' ~ slide.key ~ '.text')|trans }}</p>
+                                <div class="cluster">
+                                    <a class="btn btn-lg" href="{{ path('app_order_new') }}">{{ 'main.hero.book'|trans }}</a>
+                                    <a class="btn btn-lg btn-light" href="{{ slide.href }}">{{ ('main.hero.slide' ~ slide.key ~ '.button')|trans }}</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
+        </div>
+    </section>
 
-    <!-- Slider -->
-    {% include 'partials/hero/slider.html.twig' %}
+    {# Benefits --------------------------------------------------------------- #}
+    <section class="benefits" aria-label="{{ 'main.benefits.label'|trans }}">
+        <div class="container">
+            <div class="grid grid-4">
+                {% for item in [
+                    {icon: 'fa-life-ring', key: 'safety'},
+                    {icon: 'fa-person-swimming', key: 'beginners'},
+                    {icon: 'fa-van-shuttle', key: 'transfer'},
+                    {icon: 'fa-campground', key: 'equipment'},
+                ] %}
+                    <div class="benefit">
+                        <span class="benefit-icon"><i class="fa-solid {{ item.icon }}"></i></span>
+                        <div>
+                            <h3>{{ ('main.benefits.' ~ item.key ~ '.title')|trans }}</h3>
+                            <p>{{ ('main.benefits.' ~ item.key ~ '.text')|trans }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
 
-    <!-- Photo grid -->
-    {% include 'partials/cards/grid.html.twig' %}
+    {# Tours ------------------------------------------------------------------ #}
+    <section class="section" id="tours">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">{{ 'main.tours.eyebrow'|trans }}</span>
+                <h2 class="section-title">{{ 'main.tours.title'|trans }}</h2>
+                <p>{{ 'main.tours.subtitle'|trans }}</p>
+            </div>
+            {% if tours is not empty %}
+                <div class="tour-grid">
+                    {% for tour in tours %}
+                        {% include '_partials/tour_card.html.twig' %}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty"><i class="fa-solid fa-water"></i>{{ 'main.tours.empty'|trans }}</div>
+            {% endif %}
+        </div>
+    </section>
 
-    <!-- Interactive Maps -->
-    {% include 'partials/maps/interactive_map.html.twig' %}
+    {# Packages --------------------------------------------------------------- #}
+    <section class="section section-soft" id="packages">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">{{ 'main.packages.eyebrow'|trans }}</span>
+                <h2 class="section-title">{{ 'main.packages.title'|trans }}</h2>
+                <p>{{ 'main.packages.subtitle'|trans }}</p>
+            </div>
+            <div class="grid grid-4">
+                {% set icons = {all_inclusive: 'fa-star', minimum: 'fa-life-ring', rent_only: 'fa-key', corporate: 'fa-people-group'} %}
+                {% for package in packages %}
+                    <div class="card package-card">
+                        <span class="benefit-icon"><i class="fa-solid {{ icons[package.value] ?? 'fa-water' }}"></i></span>
+                        <h3 class="card-title">{{ package|trans }}</h3>
+                        <p>{{ package.description|trans|u.truncate(140, '…', false) }}</p>
+                        <div class="cluster">
+                            <button type="button" class="btn btn-outline btn-sm" data-modal-open="package-{{ package.value }}">{{ 'package.details'|trans }}</button>
+                            <a class="btn btn-sm" href="{{ path('app_order_new', {package: package.value}) }}">{{ 'tour.book'|trans }}</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            {% for package in packages %}
+                {% include '_partials/package_dialog.html.twig' %}
+            {% endfor %}
+        </div>
+    </section>
 
-    <!-- Popups -->
-    {% include 'partials/popups/all_inclusive.html.twig' %}
-    {% include 'partials/popups/minimum.html.twig' %}
-    {% include 'partials/popups/rent_only.html.twig' %}
-    {% include 'partials/popups/corporate.html.twig' %}
-{% endblock %}
+    {# How it works ----------------------------------------------------------- #}
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <span class="eyebrow">{{ 'main.steps.eyebrow'|trans }}</span>
+                <h2 class="section-title">{{ 'main.steps.title'|trans }}</h2>
+            </div>
+            <div class="steps">
+                {% for i in 1..4 %}
+                    <div class="step">
+                        <h3>{{ ('main.steps.' ~ i ~ '.title')|trans }}</h3>
+                        <p>{{ ('main.steps.' ~ i ~ '.text')|trans }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+            <p class="text-center mt-3"><a class="btn btn-outline" href="{{ path('app_info') }}">{{ 'main.steps.more'|trans }}</a></p>
+        </div>
+    </section>
 
-{% block javascripts %}
-    {{ parent() }}
-    <!-- Leaflet JS -->
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Routes data -->
-    <script>
-        window.routesData = {{ routesJson|raw }};
-    </script>
-    <script src="{{ asset('js/main.js') }}"></script>
-    <script src="{{ asset('js/maps.js') }}"></script>
+    {# Map -------------------------------------------------------------------- #}
+    {% if map_routes is not empty %}
+        <section class="section section-water" id="routes">
+            <div class="container">
+                <div class="section-header">
+                    <span class="eyebrow">{{ 'main.map.eyebrow'|trans }}</span>
+                    <h2 class="section-title">{{ 'main.map.title'|trans }}</h2>
+                    <p>{{ 'main.map.subtitle'|trans }}</p>
+                </div>
+                {% include '_partials/map.html.twig' %}
+            </div>
+        </section>
+    {% endif %}
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    {# Reviews ---------------------------------------------------------------- #}
+    {% if reviews is not empty %}
+        <section class="section" id="reviews">
+            <div class="container">
+                <div class="section-header">
+                    <span class="eyebrow">{{ 'main.reviews.eyebrow'|trans }}</span>
+                    <h2 class="section-title">{{ 'main.reviews.title'|trans }}</h2>
+                    {% if rating.count > 0 %}
+                        <div class="rating-summary">
+                            <strong>{{ rating.average|number_format(1, ',') }}</strong>
+                            <div class="text-left">
+                                {% include '_partials/stars.html.twig' with {rating: rating.average} %}
+                                <div class="text-small text-muted">{{ 'main.reviews.count'|trans({'%count%': rating.count}) }}</div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="grid grid-3">
+                    {% for review in reviews %}
+                        <article class="card review-card">
+                            {% include '_partials/stars.html.twig' with {rating: review.rating} %}
+                            <blockquote>{{ review.text|nl2br }}</blockquote>
+                            <div class="review-author">
+                                <span class="avatar">{{ review.authorName|first|upper }}</span>
+                                <div>
+                                    <strong>{{ review.authorName }}</strong><br>
+                                    {{ review.publishedAt|format_date('long', locale: app.request.locale) }}
+                                </div>
+                            </div>
+                        </article>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+
+    {# FAQ -------------------------------------------------------------------- #}
+    <section class="section section-soft" id="faq">
+        <div class="container container-narrow">
+            <div class="section-header">
+                <h2 class="section-title">{{ 'info.faq.title'|trans }}</h2>
+            </div>
+            <div class="accordion">
+                {% for i in [1, 2, 4] %}
+                    <details>
+                        <summary>{{ ('info.faq.' ~ i ~ '.question')|trans }}</summary>
+                        <div class="accordion-body">{{ ('info.faq.' ~ i ~ '.answer')|trans }}</div>
+                    </details>
+                {% endfor %}
+            </div>
+            <p class="text-center mt-3"><a href="{{ path('app_info') }}#faq">{{ 'main.faq.more'|trans }} →</a></p>
+        </div>
+    </section>
+
+    {# Contact / call back ---------------------------------------------------- #}
+    <section class="section" id="contact">
+        <div class="container">
+            <div class="cta">
+                <div>
+                    <span class="eyebrow" style="color:#ffd2b0">{{ 'main.contact.eyebrow'|trans }}</span>
+                    <h2>{{ 'main.contact.title'|trans }}</h2>
+                    <p>{{ 'main.contact.text'|trans }}</p>
+                    <ul class="cta-contacts">
+                        <li><i class="fa-solid fa-phone"></i><a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a></li>
+                        <li><i class="fa-solid fa-envelope"></i><a href="mailto:{{ settings.email }}">{{ settings.email }}</a></li>
+                        {% if settings.instagram %}
+                            <li><i class="fa-brands fa-instagram"></i><a href="https://www.instagram.com/{{ settings.instagram }}/" target="_blank" rel="noopener">@{{ settings.instagram }}</a></li>
+                        {% endif %}
+                        {% if settings.telegram %}
+                            <li><i class="fa-brands fa-telegram"></i><a href="https://t.me/{{ settings.telegram }}" target="_blank" rel="noopener">@{{ settings.telegram }}</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3 class="card-title">{{ 'contact.form.title'|trans }}</h3>
+                    {% include '_partials/contact_form.html.twig' %}
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}

@@ -1,0 +1,78 @@
+phone:
+    invalid: 'Please enter a valid phone number, e.g. +375 29 123-45-67.'
+
+form:
+    agree_required: 'You need to accept the terms.'
+    spam_detected: 'The form was filled in incorrectly.'
+
+localized:
+    default_required: 'Please fill in the text at least in Russian.'
+
+user:
+    email:
+        not_blank: 'Please enter your email.'
+        invalid: 'Please enter a valid email.'
+        already_used: 'This email is already registered. Log in or reset your password.'
+    phone:
+        already_used: 'This number is already linked to another account.'
+
+registration:
+    error:
+        password_required: 'Please enter a password.'
+        password_too_short: 'Your password must be at least {{ limit }} characters long.'
+        passwords_mismatch: 'The passwords don’t match.'
+
+profile:
+    password:
+        current_invalid: 'The current password is incorrect.'
+
+order:
+    error:
+        name_required: 'Please enter your name.'
+        email_required: 'Please enter your email.'
+        email_invalid: 'Please enter a valid email.'
+        phone_required: 'Please enter a contact phone number.'
+        river_required: 'Please choose a river.'
+        package_required: 'Please choose a package.'
+        date_required: 'Please choose a date.'
+        date_in_past: 'The date can’t be in the past.'
+        date_too_far: 'Bookings can be made no more than a year in advance.'
+        duration_required: 'Please enter the duration.'
+        duration_range: 'The duration must be between {{ min }} and {{ max }} days.'
+        people_required: 'Please enter the number of people.'
+        people_range: 'The number of people must be between {{ min }} and {{ max }}. For larger groups, please give us a call.'
+        date_blocked: 'No trips run on {{ date }}. Please choose another date.'
+        sold_out: 'There are no places left on {{ date }}. Please choose another date.'
+        not_enough_places: 'Only {{ free }} places are available on {{ date }}.'
+
+contact:
+    error:
+        name_required: 'Please enter your name.'
+        phone_required: 'Please enter your phone number.'
+
+review:
+    error:
+        name_required: 'Please enter your name.'
+        text_required: 'Please write a few words about the trip.'
+        text_too_short: 'Your review is too short (at least {{ limit }} characters).'
+
+tour:
+    slug:
+        invalid: 'Only Latin letters, digits and hyphens are allowed.'
+        already_used: 'This URL is already taken.'
+
+route:
+    slug:
+        invalid: 'Only Latin letters, digits and hyphens are allowed.'
+        already_used: 'This URL is already taken.'
+    points:
+        min_count: 'Add at least two points.'
+        invalid_coordinates: 'Invalid point coordinates.'
+
+admin:
+    settings:
+        error:
+            handle: 'Enter only the account name (Latin letters, digits, dots, underscores).'
+    tours:
+        error:
+            image_type: 'Please upload a JPG, PNG or WebP image.'

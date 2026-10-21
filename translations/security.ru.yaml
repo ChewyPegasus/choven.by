@@ -1,0 +1,4 @@
+security:
+    account_not_verified: 'Подтвердите email: мы отправили ссылку при регистрации.'
+'Invalid credentials.': 'Неверный email/телефон или пароль.'
+'Bad credentials.': 'Неверный email/телефон или пароль.'

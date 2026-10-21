@@ -22,7 +22,7 @@ final class Version20250709144838 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('DROP INDEX UNIQ_USERS_PHONE ON users');
+        $this->addSql('DROP INDEX IF EXISTS uniq_users_phone');
         $this->addSql('ALTER TABLE users DROP COLUMN phone');
     }
 }

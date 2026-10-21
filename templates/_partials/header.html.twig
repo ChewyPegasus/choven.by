@@ -1,0 +1,71 @@
+{% set current_route = app.request.attributes.get('_route') %}
+<header class="site-header" data-controller="nav">
+    <div class="container">
+        <a class="logo" href="{{ path('app_main') }}" aria-label="{{ site_name }}">
+            {% include '_partials/logo_mark.svg.twig' %}
+            <span class="logo-text">Ч<span>ö</span>вен</span>
+        </a>
+
+        <nav class="main-nav" id="main-nav" data-nav-target="menu" aria-label="{{ 'nav.label'|trans }}">
+            <ul>
+                <li><a href="{{ path('app_main') }}#tours">{{ 'nav.tours'|trans }}</a></li>
+                <li><a href="{{ path('app_info') }}" {{ current_route == 'app_info' ? 'aria-current="page"' }}>{{ 'nav.info'|trans }}</a></li>
+                <li><a href="{{ path('app_about') }}" {{ current_route == 'app_about' ? 'aria-current="page"' }}>{{ 'nav.about'|trans }}</a></li>
+                <li><a href="{{ path('app_main') }}#contact">{{ 'nav.contacts'|trans }}</a></li>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <li><a href="{{ path('app_admin_dashboard') }}" {{ current_route starts with 'app_admin' ? 'aria-current="page"' }}><i class="fa-solid fa-gauge-high"></i> {{ 'nav.admin'|trans }}</a></li>
+                {% endif %}
+                <li><a class="btn btn-sm" href="{{ path('app_order_new') }}">{{ 'nav.book'|trans }}</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-tools">
+            <div class="dropdown" data-controller="dropdown">
+                <button class="dropdown-toggle" type="button" data-action="dropdown#toggle" aria-expanded="false" aria-haspopup="true" aria-label="{{ 'nav.language'|trans }}">
+                    <i class="fa-solid fa-globe"></i> {{ app.request.locale|upper }}
+                </button>
+                <div class="dropdown-menu" role="menu">
+                    {% for l in supported_locales() %}
+                        <a href="{{ locale_url(l) }}" hreflang="{{ l }}" lang="{{ l }}" role="menuitem" class="{{ l == app.request.locale ? 'is-active' }}" data-turbo="false">
+                            {{ ('locale.' ~ l)|trans({}, 'messages', l) }}
+                        </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="dropdown" data-controller="dropdown">
+                {% if app.user %}
+                    <button class="dropdown-toggle" type="button" data-action="dropdown#toggle" aria-expanded="false" aria-haspopup="true" aria-label="{{ 'nav.account'|trans }}">
+                        <i class="fa-solid fa-circle-user fa-lg"></i>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                        <div class="dropdown-label">{{ app.user.email }}</div>
+                        <a href="{{ path('app_profile_orders') }}" role="menuitem"><i class="fa-solid fa-calendar-check"></i> {{ 'nav.my_bookings'|trans }}</a>
+                        <a href="{{ path('app_profile_settings') }}" role="menuitem"><i class="fa-solid fa-gear"></i> {{ 'nav.settings'|trans }}</a>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <a href="{{ path('app_admin_dashboard') }}" role="menuitem"><i class="fa-solid fa-gauge-high"></i> {{ 'nav.admin'|trans }}</a>
+                        {% endif %}
+                        <hr>
+                        <form method="post" action="{{ path('app_logout') }}">
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+                            <button type="submit" role="menuitem"><i class="fa-solid fa-right-from-bracket"></i> {{ 'nav.logout'|trans }}</button>
+                        </form>
+                    </div>
+                {% else %}
+                    <button class="dropdown-toggle" type="button" data-action="dropdown#toggle" aria-expanded="false" aria-haspopup="true" aria-label="{{ 'nav.account'|trans }}">
+                        <i class="fa-regular fa-circle-user fa-lg"></i>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                        <a href="{{ path('app_login') }}" role="menuitem"><i class="fa-solid fa-right-to-bracket"></i> {{ 'nav.login'|trans }}</a>
+                        <a href="{{ path('app_register') }}" role="menuitem"><i class="fa-solid fa-user-plus"></i> {{ 'nav.register'|trans }}</a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <button class="btn btn-ghost btn-icon nav-toggle" type="button" data-nav-target="button" data-action="nav#toggle"
+                    aria-controls="main-nav" aria-expanded="false" aria-label="{{ 'nav.menu'|trans }}">
+                <i class="fa-solid fa-bars fa-lg"></i>
+            </button>
+        </div>
+    </div>
+</header>

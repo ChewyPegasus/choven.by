@@ -1,0 +1,14 @@
+{% set flashes = app.flashes %}
+{% if flashes is not empty %}
+    <div class="flash-stack" aria-live="polite">
+        {% for type, messages in flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type }} flash" data-controller="flash" role="{{ type == 'error' ? 'alert' : 'status' }}">
+                    <i class="fa-solid {{ {success: 'fa-circle-check', error: 'fa-circle-exclamation', warning: 'fa-triangle-exclamation'}[type] ?? 'fa-circle-info' }}"></i>
+                    <div>{{ message|trans }}</div>
+                    <button type="button" class="flash-close" data-action="flash#close" aria-label="{{ 'a11y.close'|trans }}">&times;</button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+{% endif %}

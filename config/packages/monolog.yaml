@@ -10,14 +10,6 @@ when@dev:
                 path: "%kernel.logs_dir%/%kernel.environment%.log"
                 level: debug
                 channels: ["!event"]
-            # uncomment to get logging in your browser
-            # you may have to allow bigger header sizes in your Web server configuration
-            #firephp:
-            #    type: firephp
-            #    level: info
-            #chromephp:
-            #    type: chromephp
-            #    level: info
             console:
                 type: console
                 process_psr_3_messages: false
@@ -40,23 +32,26 @@ when@test:
 when@prod:
     monolog:
         handlers:
-            main:
+            # Everything from INFO up goes to the container output (docker logs) as JSON...
+            stderr:
                 type: fingers_crossed
                 action_level: error
-                handler: nested
+                handler: stderr_nested
                 excluded_http_codes: [404, 405]
-                buffer_size: 50 # How many messages should be saved? Prevent memory leaks
-            nested:
+                buffer_size: 50
+            stderr_nested:
                 type: stream
                 path: php://stderr
-                level: debug
+                level: info
                 formatter: monolog.formatter.json
+            # ...and warnings are also kept in a rotating file shown in Admin → Logs.
+            file:
+                type: rotating_file
+                path: "%kernel.logs_dir%/%kernel.environment%.log"
+                level: warning
+                max_files: 14
+                channels: ["!deprecation"]
             console:
                 type: console
                 process_psr_3_messages: false
                 channels: ["!event", "!doctrine"]
-            deprecation:
-                type: stream
-                channels: [deprecation]
-                path: php://stderr
-                formatter: monolog.formatter.json

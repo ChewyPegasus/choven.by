@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'about.title'|trans }}{% endblock %}
+
+{% block head %}
+    {% block stylesheets %}
+        {{ parent() }}
+        <link rel="stylesheet" href="{{ asset('styles/about.css') }}">
+    {% endblock %}
+{% endblock %}
+
+{% block body %}
+    <!-- History -->
+    {% include 'partials/about/history.html.twig' %}
+    
+    <!-- Photogallery -->
+    {% include 'partials/about/photogallery.html.twig' with {'images': gallery_images} %}
+    
+    <!-- Contacts -->
+    {% include 'partials/about/contacts.html.twig' %}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% endblock %}

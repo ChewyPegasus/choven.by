@@ -1,0 +1,10 @@
+<div class="socials">
+    {% if settings.instagram %}
+        <a href="https://www.instagram.com/{{ settings.instagram }}/" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+    {% endif %}
+    {% if settings.telegram %}
+        <a href="https://t.me/{{ settings.telegram }}" target="_blank" rel="noopener" aria-label="Telegram"><i class="fa-brands fa-telegram"></i></a>
+    {% endif %}
+    <a href="https://wa.me/{{ settings.phoneLink|trim('+') }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+    <a href="viber://chat?number={{ settings.phoneLink|url_encode }}" aria-label="Viber"><i class="fa-brands fa-viber"></i></a>
+</div>

@@ -1,0 +1,84 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set is_new = order.id is null %}
+{% block title %}{{ is_new ? 'admin.orders.new'|trans : order.reference }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <div class="breadcrumbs"><a href="{{ path('app_admin_orders') }}">{{ 'admin.menu.orders'|trans }}</a> /</div>
+        <h1>{{ is_new ? 'admin.orders.new'|trans : 'admin.orders.edit'|trans({'%reference%': order.reference}) }}</h1>
+        {% if not is_new %}
+            <span class="badge badge-status-{{ order.status.value }}">{{ order.status|trans }}</span>
+        {% endif %}
+    </div>
+
+    {% if conflicts|default([]) is not empty %}
+        <div class="alert alert-warning mb-2">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <div>{{ 'admin.orders.capacity_warning'|trans }}
+                {% for day, free in conflicts %}{{ day|date('d.m') }} ({{ free == 'blocked' ? 'admin.orders.blocked_day'|trans : 'admin.orders.free_places'|trans({'%count%': free}) }}){{ not loop.last ? ', ' }}{% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {{ form_start(form) }}
+    <div class="admin-form-layout">
+        <div>
+            <div class="card">
+                {{ form_errors(form) }}
+                <h2 class="form-section-title">{{ 'booking.section.trip'|trans }}</h2>
+                <div class="form-row form-row-3">
+                    {{ form_row(form.startDate) }}
+                    {{ form_row(form.durationDays) }}
+                    {{ form_row(form.amountOfPeople) }}
+                </div>
+                <div class="form-row form-row-3">
+                    {{ form_row(form.river) }}
+                    {{ form_row(form.package) }}
+                    {{ form_row(form.tour) }}
+                </div>
+                <h2 class="form-section-title mt-2">{{ 'booking.section.contacts'|trans }}</h2>
+                <div class="form-row form-row-3">
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.phone) }}
+                    {{ form_row(form.email) }}
+                </div>
+                {{ form_row(form.description) }}
+            </div>
+        </div>
+
+        <aside>
+            <div class="card">
+                {{ form_row(form.status) }}
+                {{ form_row(form.estimatedPrice) }}
+                {{ form_row(form.adminNote) }}
+                {{ form_row(form.notifyCustomer) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-block"><i class="fa-solid fa-floppy-disk"></i> {{ 'admin.common.save'|trans }}</button>
+
+                {% if not is_new %}
+                    <hr style="border:0;border-top:1px solid var(--c-line);margin:18px 0">
+                    <dl class="dl text-small">
+                        <dt>{{ 'admin.orders.col.created'|trans }}</dt><dd>{{ order.createdAt|date('d.m.Y H:i') }}</dd>
+                        <dt>{{ 'admin.orders.updated'|trans }}</dt><dd>{{ order.updatedAt|date('d.m.Y H:i') }}</dd>
+                        <dt>{{ 'profile.form.locale'|trans }}</dt><dd>{{ order.locale|upper }}</dd>
+                        <dt>{{ 'admin.orders.account'|trans }}</dt><dd>{% if order.user %}<a href="{{ path('app_admin_user_edit', {id: order.user.id}) }}">{{ order.user.email }}</a>{% else %}{{ 'admin.orders.guest'|trans }}{% endif %}</dd>
+                    </dl>
+                    <div class="cluster mt-2">
+                        {% if order.phoneE164 %}<a class="btn btn-sm btn-outline" href="tel:{{ order.phoneE164 }}"><i class="fa-solid fa-phone"></i></a>{% endif %}
+                        <a class="btn btn-sm btn-outline" href="mailto:{{ order.email }}?subject={{ order.reference|url_encode }}"><i class="fa-solid fa-envelope"></i></a>
+                        <a class="btn btn-sm btn-outline" href="{{ path('app_order_show', {token: order.accessToken, _locale: order.locale}) }}" target="_blank" rel="noopener" title="{{ 'admin.orders.customer_page'|trans }}"><i class="fa-solid fa-eye"></i></a>
+                    </div>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+    {{ form_end(form) }}
+
+    {% if not is_new %}
+        <form method="post" action="{{ path('app_admin_order_delete', {id: order.id}) }}" class="mt-3" data-turbo-confirm="{{ 'admin.orders.delete_confirm'|trans }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete-order-' ~ order.id) }}">
+            <button type="submit" class="btn btn-sm btn-ghost text-danger"><i class="fa-solid fa-trash"></i> {{ 'admin.common.delete'|trans }}</button>
+        </form>
+    {% endif %}
+{% endblock %}

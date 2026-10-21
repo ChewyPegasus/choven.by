@@ -1,0 +1,92 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.dashboard'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.dashboard.title'|trans }}</h1>
+        <div class="cluster">
+            <a class="btn btn-sm" href="{{ path('app_admin_order_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.orders.new'|trans }}</a>
+            <a class="btn btn-sm btn-outline" href="{{ path('app_admin_calendar') }}"><i class="fa-solid fa-calendar-days"></i> {{ 'admin.menu.calendar'|trans }}</a>
+        </div>
+    </div>
+
+    <div class="stat-grid">
+        <a class="stat {{ by_status.new > 0 ? 'is-alert' }}" href="{{ path('app_admin_orders', {status: 'new'}) }}">
+            <div class="stat-label"><i class="fa-solid fa-bell"></i> {{ 'admin.dashboard.new_orders'|trans }}</div>
+            <div class="stat-value">{{ by_status.new }}</div>
+            <div class="stat-hint">{{ 'admin.dashboard.new_orders_hint'|trans }}</div>
+        </a>
+        <a class="stat" href="{{ path('app_admin_orders', {status: 'confirmed'}) }}">
+            <div class="stat-label"><i class="fa-solid fa-circle-check"></i> {{ 'order.status.confirmed'|trans }}</div>
+            <div class="stat-value">{{ by_status.confirmed }}</div>
+        </a>
+        <a class="stat" href="{{ path('app_admin_orders', {sort: 'created_desc'}) }}">
+            <div class="stat-label"><i class="fa-solid fa-chart-line"></i> {{ 'admin.dashboard.orders_30d'|trans }}</div>
+            <div class="stat-value">{{ orders_30d }}</div>
+            <div class="stat-hint">{{ 'admin.dashboard.total'|trans({'%count%': by_status|reduce((sum, n) => sum + n, 0)}) }}</div>
+        </a>
+        <a class="stat {{ requests_open > 0 ? 'is-alert' }}" href="{{ path('app_admin_contact_requests') }}">
+            <div class="stat-label"><i class="fa-solid fa-phone-volume"></i> {{ 'admin.dashboard.requests'|trans }}</div>
+            <div class="stat-value">{{ requests_open }}</div>
+        </a>
+        <a class="stat {{ reviews_pending > 0 ? 'is-alert' }}" href="{{ path('app_admin_reviews') }}">
+            <div class="stat-label"><i class="fa-solid fa-star"></i> {{ 'admin.dashboard.reviews'|trans }}</div>
+            <div class="stat-value">{{ reviews_pending }}</div>
+            <div class="stat-hint">{% if rating.count %}{{ 'admin.dashboard.rating'|trans({'%rating%': rating.average, '%count%': rating.count}) }}{% endif %}</div>
+        </a>
+        <a class="stat" href="{{ path('app_admin_users') }}">
+            <div class="stat-label"><i class="fa-solid fa-users"></i> {{ 'admin.dashboard.users'|trans }}</div>
+            <div class="stat-value">{{ users_total }}</div>
+            <div class="stat-hint">{{ 'admin.dashboard.users_30d'|trans({'%count%': users_30d}) }}</div>
+        </a>
+        {% if failed_emails > 0 %}
+            <a class="stat is-alert" href="{{ path('app_admin_failed_messages') }}">
+                <div class="stat-label"><i class="fa-solid fa-triangle-exclamation"></i> {{ 'admin.dashboard.failed_emails'|trans }}</div>
+                <div class="stat-value">{{ failed_emails }}</div>
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="grid" style="grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: start">
+        <div class="card">
+            <div class="cluster mb-2" style="justify-content: space-between">
+                <h2 class="card-title mb-0">{{ 'admin.dashboard.upcoming'|trans }}</h2>
+                <a class="text-small" href="{{ path('app_admin_orders', {from: 'now'|date('Y-m-d'), sort: 'start_asc'}) }}">{{ 'admin.common.all'|trans }} →</a>
+            </div>
+            {% if upcoming is empty %}
+                <div class="empty"><i class="fa-regular fa-calendar"></i>{{ 'admin.dashboard.no_upcoming'|trans }}</div>
+            {% else %}
+                <div class="table-wrap">
+                    <table class="table">
+                        <tbody>
+                            {% for order in upcoming %}
+                                <tr>
+                                    <td class="nowrap"><strong>{{ order.startDate|date('d.m') }}</strong><br><span class="text-small text-muted">{{ 'tour.days'|trans({'%count%': order.durationDays}) }}</span></td>
+                                    <td><a href="{{ path('app_admin_order_edit', {id: order.id}) }}">{{ order.name }}</a><br><span class="text-small text-muted">{{ order.river|trans }} · {{ order.package|trans }}</span></td>
+                                    <td class="num">{{ order.amountOfPeople }} <i class="fa-solid fa-user text-muted"></i></td>
+                                    <td class="num"><span class="badge badge-status-{{ order.status.value }}">{{ order.status|trans }}</span></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h2 class="card-title">{{ 'admin.dashboard.chart'|trans }}</h2>
+            <div class="bar-chart" role="img" aria-label="{{ 'admin.dashboard.chart'|trans }}">
+                {% for month, values in monthly %}
+                    {% set date = (month ~ '-01')|date_modify('+0 day') %}
+                    <div class="bar" title="{{ values.orders }} / {{ values.people }}">
+                        <span class="bar-value">{{ values.people ?: '' }}</span>
+                        <span class="bar-fill" style="height: {{ (values.people / monthly_max * 100)|round }}%"></span>
+                        <span class="bar-label">{{ date|format_date(pattern: 'LLL', locale: app.request.locale) }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+            <p class="text-small text-muted mt-2 mb-0">{{ 'admin.dashboard.chart_hint'|trans }}</p>
+        </div>
+    </div>
+{% endblock %}

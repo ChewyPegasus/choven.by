@@ -1,8 +1,13 @@
 <?php
 
-use App\Kernel;
+declare(strict_types=1);
 
-require dirname(__DIR__, 2) . '/vendor/autoload.php';
+use App\Kernel;
+use Symfony\Component\Dotenv\Dotenv;
+
+require dirname(__DIR__, 2).'/vendor/autoload.php';
+
+(new Dotenv())->bootEnv(dirname(__DIR__, 2).'/.env');
 
 $kernel = new Kernel('dev', true);
 $kernel->boot();

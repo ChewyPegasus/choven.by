@@ -1,89 +1,31 @@
-# This file is the entry point to configure your own services.
-# Files in the packages/ subdirectory configure your dependencies.
-
-# Put parameters here that don't need to change on each machine where the app is deployed
-# https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
+# Application services. Bundles are configured in config/packages/.
 parameters:
-    app.senderEmail: 'info@choven.by'
-    app.adminEmail: 'admin@choven.by'
-    app.supported_locales: 'ru|be|en'
-    app.default_locale: 'ru'
-    app.site_url: 'https://choven.by'
-    app.site_name: 'Choven.by'
+    app.locales: !php/const App\Model\Localized::LOCALES
+    app.locales_regex: 'ru|be|en'
 
-    kafka.topics:
-        order: '%kafka.order_topic%'
-        registration: '%kafka.registration_topic%'
+    # Defaults for App\Service\SiteSettings; administrators override them in Admin → Settings.
+    app.settings_defaults:
+        phone: '%env(CONTACT_PHONE)%'
+        email: '%env(CONTACT_EMAIL)%'
+        instagram: '%env(default::CONTACT_INSTAGRAM)%'
+        telegram: '%env(default::CONTACT_TELEGRAM)%'
+        notification_email: '%env(default::ADMIN_EMAIL)%'
+        daily_capacity: '%env(int:BOOKING_DAILY_CAPACITY)%'
+        booking_enabled: true
+        blocked_dates: []
+        announcement: []
+
 services:
-    # default configuration for services in *this* file
     _defaults:
-        autowire: true      # Automatically injects dependencies in your services.
-        autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        autowire: true
+        autoconfigure: true
 
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/Enum/'
+            - '../src/Message/'
+            - '../src/Model/'
             - '../src/Kernel.php'
-
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
-
-    App\Service\Sending\EmailSender:
-        arguments:
-            $senderEmail: '%app.senderEmail%'
-            $adminEmail: '%app.adminEmail%'
-
-    App\Service\Rendering\EmailRenderer:
-        arguments:
-            $senderEmail: '%app.senderEmail%'
-            $siteName: '%app.site_name%'
-            $siteUrl: '%app.site_url%'
-    
-    Redis:
-        class: Redis
-        calls:
-            - [connect, ['%env(REDIS_HOST)%', '%env(int:REDIS_PORT)%']]
-    
-    App\Command\KafkaConsumeCommand:
-        arguments:
-            $topics: '%kafka.topics%'
-
-    App\Service\Messaging\Producer\KafkaProducer:
-        arguments:
-            $bootstrapServers: '%kafka.bootstrap_servers%'
-    
-    App\Service\Messaging\Consumer\KafkaConsumer:
-        arguments:
-            $bootstrapServers: '%kafka.bootstrap_servers%'
-            $groupId: '%kafka.group_id%'
-            $autoOffsetReset: '%kafka.auto_offset_reset%'
-
-    App\Controller\OrderController:
-        arguments:
-            $orderTopic: '%kafka.order_topic%'
-
-    App\Service\Retry\EmailSendingService:
-        arguments:
-            $topicMap: '%kafka.topics%'
-
-    App\Service\MapService:
-        arguments:
-            $translator: '@translator'
-
-    App\Service\Registration\UserRegistrationService:
-        arguments:
-            $registrationTopic: '%kafka.registration_topic%'
-
-    App\Service\RouteService:
-        arguments:
-            $projectDir: '%kernel.project_dir%'
-
-    App\Repository\Interfaces\UserRepositoryInterface: '@App\Repository\UserRepository'
-    App\Repository\Interfaces\EmailQueueRepositoryInterface: '@App\Repository\EmailQueueRepository'
-    App\Repository\Interfaces\FailedEmailRepositoryInterface: '@App\Repository\FailedEmailRepository'
-    App\Repository\Interfaces\OrderRepositoryInterface: '@App\Repository\OrderRepository'
-    App\Repository\Interfaces\RouteRepositoryInterface: '@App\Repository\RouteRepository'

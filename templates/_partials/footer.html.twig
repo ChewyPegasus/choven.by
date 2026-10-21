@@ -1,0 +1,47 @@
+<footer class="site-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-brand">
+                <a class="logo" href="{{ path('app_main') }}">
+                    {% include '_partials/logo_mark.svg.twig' %}
+                    <span class="logo-text">Ч<span>ö</span>вен</span>
+                </a>
+                <p>{{ 'footer.tagline'|trans }}</p>
+                {% include '_partials/socials.html.twig' %}
+            </div>
+
+            <div>
+                <h4>{{ 'footer.site'|trans }}</h4>
+                <ul>
+                    <li><a href="{{ path('app_main') }}#tours">{{ 'nav.tours'|trans }}</a></li>
+                    <li><a href="{{ path('app_info') }}">{{ 'nav.info'|trans }}</a></li>
+                    <li><a href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a></li>
+                    <li><a href="{{ path('app_order_new') }}">{{ 'nav.book'|trans }}</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4>{{ 'footer.documents'|trans }}</h4>
+                <ul>
+                    <li><a href="{{ path('app_privacy') }}">{{ 'footer.privacy'|trans }}</a></li>
+                    <li><a href="{{ path('app_terms') }}">{{ 'footer.terms'|trans }}</a></li>
+                    <li><a href="{{ asset('files/' ~ ('files.checklist'|trans) ~ '.docx') }}" download>{{ 'footer.checklist'|trans }}</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-contacts">
+                <h4>{{ 'footer.contacts'|trans }}</h4>
+                <ul>
+                    <li><i class="fa-solid fa-phone"></i> <a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a></li>
+                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:{{ settings.email }}">{{ settings.email }}</a></li>
+                    <li><i class="fa-solid fa-location-dot"></i> {{ 'footer.region'|trans }}</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <span>&copy; {{ 'now'|date('Y') }} {{ site_name }}. {{ 'footer.rights'|trans }}</span>
+            <span>{{ 'footer.made_with'|trans }}</span>
+        </div>
+    </div>
+</footer>

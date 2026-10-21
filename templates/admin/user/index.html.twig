@@ -1,0 +1,63 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.users'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.users'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_user_new') }}"><i class="fa-solid fa-user-plus"></i> {{ 'admin.users.new'|trans }}</a>
+    </div>
+
+    <form method="get" class="filters card" data-controller="autosubmit" data-action="input->autosubmit#submit change->autosubmit#submit" data-turbo-action="replace">
+        <div class="form-group filter-query">
+            <label class="form-label" for="q">{{ 'admin.users.search'|trans }}</label>
+            <input type="search" id="q" name="q" value="{{ query }}" class="form-control" placeholder="{{ 'admin.users.search_placeholder'|trans }}">
+        </div>
+        <div class="form-group">
+            <label class="form-label" for="role">{{ 'admin.users.filter'|trans }}</label>
+            <select id="role" name="role" class="form-select">
+                <option value="">{{ 'admin.common.all'|trans }}</option>
+                <option value="admin" {{ role == 'admin' ? 'selected' }}>{{ 'admin.users.admins'|trans }}</option>
+                <option value="unverified" {{ role == 'unverified' ? 'selected' }}>{{ 'admin.users.unverified'|trans }}</option>
+            </select>
+        </div>
+    </form>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-solid fa-users-slash"></i>{{ 'admin.users.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'registration.form.email'|trans }}</th>
+                        <th>{{ 'registration.form.name'|trans }}</th>
+                        <th>{{ 'registration.form.phone'|trans }}</th>
+                        <th>{{ 'admin.users.col.status'|trans }}</th>
+                        <th>{{ 'admin.users.col.created'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in page.items %}
+                        <tr>
+                            <td data-label="{{ 'registration.form.email'|trans }}"><a href="{{ path('app_admin_user_edit', {id: user.id}) }}">{{ user.email }}</a></td>
+                            <td data-label="{{ 'registration.form.name'|trans }}">{{ user.name ?? '—' }}</td>
+                            <td data-label="{{ 'registration.form.phone'|trans }}" class="nowrap">{{ user.phoneFormatted ?? '—' }}</td>
+                            <td data-label="{{ 'admin.users.col.status'|trans }}">
+                                {% if user.admin %}<span class="badge badge-primary">{{ 'admin.users.role_admin'|trans }}</span>{% endif %}
+                                {% if user.verified %}<span class="badge badge-success">{{ 'admin.users.verified'|trans }}</span>{% else %}<span class="badge badge-warning">{{ 'admin.users.not_verified'|trans }}</span>{% endif %}
+                            </td>
+                            <td data-label="{{ 'admin.users.col.created'|trans }}" class="text-small text-muted nowrap">
+                                {{ user.createdAt|date('d.m.Y') }}
+                                {% if user.lastLoginAt %}<br>{{ 'admin.users.last_login'|trans }}: {{ user.lastLoginAt|date('d.m.Y') }}{% endif %}
+                            </td>
+                            <td><div class="table-actions"><a class="btn btn-sm btn-outline" href="{{ path('app_admin_user_edit', {id: user.id}) }}">{{ 'admin.common.edit'|trans }}</a></div></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% set code = status_code|default(500) %}
+{% set key = code in [403, 404, 429] ? code : (code >= 500 ? 500 : 'generic') %}
+
+{% block title %}{{ ('error.' ~ key ~ '.title')|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block body %}
+    <section class="error-page">
+        <div class="container container-narrow">
+            <div class="error-code">{{ code }}</div>
+            <h1>{{ ('error.' ~ key ~ '.title')|trans }}</h1>
+            <p>{{ ('error.' ~ key ~ '.text')|trans }}</p>
+            <div class="cluster" style="justify-content: center">
+                <a class="btn" href="{{ path('app_main') }}">{{ 'error.home'|trans }}</a>
+                <a class="btn btn-outline" href="{{ path('app_order_new') }}">{{ 'nav.book'|trans }}</a>
+            </div>
+            <p class="text-small mt-3">{{ 'error.contact'|trans }} <a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a></p>
+        </div>
+    </section>
+{% endblock %}

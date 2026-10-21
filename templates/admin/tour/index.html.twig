@@ -1,0 +1,60 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.tours'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.tours'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_tour_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.tours.new'|trans }}</a>
+    </div>
+    <p class="text-muted">{{ 'admin.tours.hint'|trans }}</p>
+
+    {% if tours is empty %}
+        <div class="empty"><i class="fa-solid fa-water"></i>{{ 'admin.tours.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{{ 'admin.tours.field.title'|trans }}</th>
+                        <th>{{ 'booking.form.package'|trans }}</th>
+                        <th class="num">{{ 'admin.tours.field.price_from'|trans }}</th>
+                        <th class="num">{{ 'admin.common.position'|trans }}</th>
+                        <th>{{ 'admin.tours.col.visible'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tour in tours %}
+                        {% set image = image_url(tour.image) %}
+                        <tr>
+                            <td>{% if image %}<img class="thumb" src="{{ image }}" alt="">{% else %}<div class="thumb img-placeholder"><i class="fa-solid fa-image"></i></div>{% endif %}</td>
+                            <td data-label="{{ 'admin.tours.field.title'|trans }}">
+                                <a href="{{ path('app_admin_tour_edit', {id: tour.id}) }}"><strong>{{ tour.title|localized }}</strong></a>
+                                <div class="text-small text-muted">/{{ tour.slug }}</div>
+                            </td>
+                            <td data-label="{{ 'booking.form.package'|trans }}">{{ tour.package|trans }}</td>
+                            <td data-label="{{ 'admin.tours.field.price_from'|trans }}" class="num">{{ tour.priceFrom ? tour.priceFrom|byn : '—' }}</td>
+                            <td data-label="{{ 'admin.common.position'|trans }}" class="num">{{ tour.position }}</td>
+                            <td data-label="{{ 'admin.tours.col.visible'|trans }}">
+                                <form method="post" action="{{ path('app_admin_tour_toggle', {id: tour.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle-tour-' ~ tour.id) }}">
+                                    <button type="submit" class="badge {{ tour.active ? 'badge-success' : '' }}" style="cursor:pointer">
+                                        <i class="fa-solid {{ tour.active ? 'fa-eye' : 'fa-eye-slash' }}"></i> {{ (tour.active ? 'admin.tours.visible' : 'admin.tours.hidden')|trans }}
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    {% if tour.active %}<a class="btn btn-sm btn-ghost" href="{{ path('app_tour_show', {slug: tour.slug}) }}" target="_blank" rel="noopener" title="{{ 'admin.common.view_on_site'|trans }}"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>{% endif %}
+                                    <a class="btn btn-sm btn-outline" href="{{ path('app_admin_tour_edit', {id: tour.id}) }}">{{ 'admin.common.edit'|trans }}</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

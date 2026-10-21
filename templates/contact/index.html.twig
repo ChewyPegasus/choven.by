@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'contact.form.title'|trans }}{% endblock %}
+
+{% block body %}
+    <section class="auth-page">
+        <div class="auth-card" style="max-width: 560px">
+            <div class="card">
+                <div class="auth-icon"><i class="fa-solid fa-phone-volume"></i></div>
+                <h1>{{ 'contact.form.title'|trans }}</h1>
+                <p class="lead">{{ 'main.contact.text'|trans }}</p>
+                {% include '_partials/contact_form.html.twig' %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

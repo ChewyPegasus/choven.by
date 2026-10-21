@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'booking.show.title'|trans({'%reference%': order.reference}) }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block body %}
+    {% set status = order.status.value %}
+    <section class="section">
+        <div class="container container-narrow">
+            {% if just_created %}
+                <div class="booking-hero">
+                    <div class="icon-circle"><i class="fa-solid fa-check"></i></div>
+                    <h1>{{ 'booking.show.thanks'|trans }}</h1>
+                    <p class="text-muted">{{ 'booking.show.thanks_text'|trans({'%email%': order.email}) }}</p>
+                </div>
+            {% else %}
+                <h1>{{ 'booking.show.heading'|trans }}</h1>
+            {% endif %}
+
+            <div class="card">
+                <div class="cluster" style="justify-content: space-between">
+                    <div>
+                        <div class="text-small text-muted">{{ 'booking.show.reference'|trans }}</div>
+                        <span class="booking-reference">
+                            {{ order.reference }}
+                            <button type="button" class="btn btn-ghost btn-sm" data-controller="clipboard"
+                                    data-clipboard-text-value="{{ order.reference }}" data-clipboard-done-value="{{ 'booking.show.copied'|trans }}"
+                                    data-action="clipboard#copy" aria-label="{{ 'booking.show.copy'|trans }}"><i class="fa-regular fa-copy"></i></button>
+                        </span>
+                    </div>
+                    <span class="badge badge-status-{{ status }}">{{ order.status|trans }}</span>
+                </div>
+
+                {% if status != 'cancelled' %}
+                    <ol class="status-track" aria-label="{{ 'booking.show.progress'|trans }}">
+                        <li class="is-done">{{ 'order.status.new'|trans }}</li>
+                        <li class="{{ status in ['confirmed', 'completed'] ? 'is-done' }}">{{ 'order.status.confirmed'|trans }}</li>
+                        <li class="{{ status == 'completed' ? 'is-done' }}">{{ 'order.status.completed'|trans }}</li>
+                    </ol>
+                    <p class="text-small text-muted mt-2">{{ ('booking.show.status_hint.' ~ status)|trans }}</p>
+                {% else %}
+                    <div class="alert alert-warning mt-2"><i class="fa-solid fa-ban"></i><div>{{ 'booking.show.cancelled'|trans({'%date%': order.cancelledAt ? order.cancelledAt|format_date('long', locale: app.request.locale) : ''}) }}</div></div>
+                {% endif %}
+
+                <hr style="border: 0; border-top: 1px solid var(--c-line); margin: 20px 0">
+
+                <dl class="dl">
+                    <dt>{{ 'booking.form.start_date'|trans }}</dt>
+                    <dd>
+                        {{ order.startDate|format_date('full', locale: app.request.locale) }}
+                        {% if order.durationDays > 1 %} — {{ order.endDate|format_date('long', locale: app.request.locale) }}{% endif %}
+                    </dd>
+                    <dt>{{ 'booking.form.duration'|trans }}</dt>
+                    <dd>{{ 'tour.days'|trans({'%count%': order.durationDays}) }}</dd>
+                    <dt>{{ 'booking.form.people'|trans }}</dt>
+                    <dd>{{ order.amountOfPeople }}</dd>
+                    {% if order.tour %}
+                        <dt>{{ 'booking.selected_tour'|trans }}</dt>
+                        <dd>{{ order.tour.title|localized }}</dd>
+                    {% endif %}
+                    <dt>{{ 'booking.form.river'|trans }}</dt>
+                    <dd>{{ order.river|trans }}</dd>
+                    <dt>{{ 'booking.form.package'|trans }}</dt>
+                    <dd>{{ order.package|trans }}</dd>
+                    {% if order.estimatedPrice %}
+                        <dt>{{ 'booking.estimate'|trans }}</dt>
+                        <dd>{{ order.estimatedPrice|byn }}</dd>
+                    {% endif %}
+                    <dt>{{ 'booking.form.name'|trans }}</dt>
+                    <dd>{{ order.name }}</dd>
+                    {% if order.phoneFormatted %}
+                        <dt>{{ 'booking.form.phone'|trans }}</dt>
+                        <dd>{{ order.phoneFormatted }}</dd>
+                    {% endif %}
+                    <dt>{{ 'booking.form.email'|trans }}</dt>
+                    <dd>{{ order.email }}</dd>
+                    {% if order.description %}
+                        <dt>{{ 'booking.form.comment'|trans }}</dt>
+                        <dd style="white-space: pre-line">{{ order.description }}</dd>
+                    {% endif %}
+                </dl>
+
+                <div class="form-actions mt-3">
+                    {% if status != 'cancelled' and order.upcoming %}
+                        <a class="btn btn-outline" href="{{ path('app_order_ics', {token: order.accessToken}) }}" data-turbo="false"><i class="fa-regular fa-calendar-plus"></i> {{ 'booking.show.add_to_calendar'|trans }}</a>
+                    {% endif %}
+                    {% if order.canBeCancelledByCustomer %}
+                        <form method="post" action="{{ path('app_order_cancel', {token: order.accessToken}) }}" data-turbo-confirm="{{ 'booking.show.cancel_confirm'|trans }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('cancel-order-' ~ order.id) }}">
+                            <button type="submit" class="btn btn-ghost text-danger"><i class="fa-solid fa-xmark"></i> {{ 'booking.show.cancel'|trans }}</button>
+                        </form>
+                    {% endif %}
+                    {% if status == 'completed' and review is null %}
+                        <a class="btn" href="{{ path('app_review_new', {token: order.accessToken}) }}"><i class="fa-regular fa-star"></i> {{ 'review.leave'|trans }}</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if review %}
+                <div class="card">
+                    <h2 class="card-title">{{ 'review.yours'|trans }}</h2>
+                    {% include '_partials/stars.html.twig' with {rating: review.rating} %}
+                    <p class="mt-1">{{ review.text|nl2br }}</p>
+                    <span class="badge badge-status-{{ review.status.value }}">{{ review.status|trans }}</span>
+                </div>
+            {% endif %}
+
+            <div class="card card-muted">
+                <p class="mb-1 fw-bold">{{ 'booking.show.questions'|trans }}</p>
+                <p class="mb-0">
+                    <i class="fa-solid fa-phone"></i> <a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a>
+                    &nbsp;·&nbsp; <i class="fa-solid fa-envelope"></i> <a href="mailto:{{ settings.email }}?subject={{ order.reference|url_encode }}">{{ settings.email }}</a>
+                </p>
+            </div>
+
+            <p class="text-center mt-3">
+                {% if app.user %}
+                    <a href="{{ path('app_profile_orders') }}">← {{ 'nav.my_bookings'|trans }}</a>
+                {% else %}
+                    <span class="text-small text-muted">{{ 'booking.show.bookmark'|trans }}</span>
+                {% endif %}
+            </p>
+        </div>
+    </section>
+{% endblock %}

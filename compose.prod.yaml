@@ -1,0 +1,105 @@
+# Production stack (self-contained images, no bind mounts, no published database ports).
+#
+#   cp .env.prod.example .env.prod.local   # and fill in the secrets
+#   docker compose -f compose.prod.yaml --env-file .env.prod.local up -d --build
+#
+# Put a TLS-terminating reverse proxy (Caddy, Traefik, nginx, Cloudflare) in front of port ${HTTP_PORT:-80}.
+
+x-php-env: &php-env
+    APP_ENV: prod
+    APP_DEBUG: 0
+    APP_SECRET: ${APP_SECRET:?Set APP_SECRET}
+    DATABASE_URL: postgresql://${POSTGRES_USER:-choven}:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@database:5432/${POSTGRES_DB:-choven}?serverVersion=16&charset=utf8
+    REDIS_URL: redis://redis:6379
+    SESSION_DSN: redis://redis:6379
+    LOCK_DSN: redis://redis:6379
+    MAILER_DSN: ${MAILER_DSN:?Set MAILER_DSN}
+    MAILER_FROM: ${MAILER_FROM:-Choven.by <info@choven.by>}
+    MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
+    DEFAULT_URI: ${DEFAULT_URI:?Set DEFAULT_URI, e.g. https://choven.by}
+    TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.1,REMOTE_ADDR}
+    CONTACT_PHONE: ${CONTACT_PHONE:-+375 29 706-75-85}
+    CONTACT_EMAIL: ${CONTACT_EMAIL:-info@choven.by}
+    CONTACT_INSTAGRAM: ${CONTACT_INSTAGRAM:-}
+    CONTACT_TELEGRAM: ${CONTACT_TELEGRAM:-}
+    ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+    BOOKING_DAILY_CAPACITY: ${BOOKING_DAILY_CAPACITY:-60}
+
+services:
+    php:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+            target: php_prod
+        image: choven-php:${IMAGE_TAG:-latest}
+        restart: always
+        environment: *php-env
+        volumes:
+            - uploads:/app/public/uploads
+            - logs:/app/var/log
+        depends_on:
+            database:
+                condition: service_healthy
+            redis:
+                condition: service_healthy
+
+    worker:
+        image: choven-php:${IMAGE_TAG:-latest}
+        restart: always
+        environment: *php-env
+        command: ["php", "bin/console", "messenger:consume", "async", "scheduler_default", "--time-limit=3600", "--memory-limit=192M"]
+        healthcheck:
+            disable: true
+        volumes:
+            - logs:/app/var/log
+        depends_on:
+            php:
+                condition: service_healthy
+
+    nginx:
+        build:
+            context: .
+            dockerfile: docker/php/Dockerfile
+            target: nginx_prod
+        image: choven-nginx:${IMAGE_TAG:-latest}
+        restart: always
+        ports:
+            - "${HTTP_PORT:-80}:80"
+        volumes:
+            - uploads:/app/public/uploads:ro
+        depends_on:
+            php:
+                condition: service_healthy
+
+    database:
+        image: postgres:16-alpine
+        restart: always
+        environment:
+            POSTGRES_DB: ${POSTGRES_DB:-choven}
+            POSTGRES_USER: ${POSTGRES_USER:-choven}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+        healthcheck:
+            test: ["CMD", "pg_isready", "-d", "${POSTGRES_DB:-choven}", "-U", "${POSTGRES_USER:-choven}"]
+            interval: 5s
+            timeout: 5s
+            retries: 10
+        volumes:
+            - database_data:/var/lib/postgresql/data
+
+    redis:
+        image: redis:7-alpine
+        restart: always
+        command: ["redis-server", "--save", "60", "1", "--loglevel", "warning", "--maxmemory", "256mb", "--maxmemory-policy", "volatile-lru"]
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 5s
+            timeout: 3s
+            retries: 10
+        volumes:
+            - redis_data:/data
+
+volumes:
+    database_data:
+    redis_data:
+    uploads:
+    logs:

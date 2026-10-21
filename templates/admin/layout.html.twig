@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title_suffix %} — {{ 'admin.title'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block stylesheets %}<link rel="stylesheet" href="{{ asset('styles/admin.css') }}">{% endblock %}
+{% block footer %}{% endblock %}
+
+{% block body %}
+    {% set current_route = app.request.attributes.get('_route') %}
+    {% set counters = admin_counters() %}
+    <div class="admin-shell">
+        <aside class="admin-sidebar">
+            <nav aria-label="{{ 'admin.title'|trans }}">
+                <h2>{{ 'admin.menu.work'|trans }}</h2>
+                {% for item in [
+                    {route: 'app_admin_dashboard', icon: 'fa-gauge-high', label: 'admin.menu.dashboard', match: 'app_admin_dashboard'},
+                    {route: 'app_admin_orders', icon: 'fa-calendar-check', label: 'admin.menu.orders', match: 'app_admin_order', counter: counters.orders},
+                    {route: 'app_admin_calendar', icon: 'fa-calendar-days', label: 'admin.menu.calendar', match: 'app_admin_calendar'},
+                    {route: 'app_admin_contact_requests', icon: 'fa-phone-volume', label: 'admin.menu.requests', match: 'app_admin_contact_request', counter: counters.requests},
+                    {route: 'app_admin_reviews', icon: 'fa-star', label: 'admin.menu.reviews', match: 'app_admin_review', counter: counters.reviews},
+                ] %}
+                    <a href="{{ path(item.route) }}" class="{{ current_route starts with item.match and not (item.match == 'app_admin_order' and current_route == 'app_admin_calendar') ? 'is-active' }}">
+                        <i class="fa-solid {{ item.icon }}"></i> {{ item.label|trans }}
+                        {% if item.counter|default(0) > 0 %}<span class="counter">{{ item.counter }}</span>{% endif %}
+                    </a>
+                {% endfor %}
+
+                <h2>{{ 'admin.menu.content'|trans }}</h2>
+                {% for item in [
+                    {route: 'app_admin_tours', icon: 'fa-water', label: 'admin.menu.tours', match: 'app_admin_tour'},
+                    {route: 'app_admin_routes', icon: 'fa-map-location-dot', label: 'admin.menu.routes', match: 'app_admin_route'},
+                ] %}
+                    <a href="{{ path(item.route) }}" class="{{ current_route starts with item.match ? 'is-active' }}"><i class="fa-solid {{ item.icon }}"></i> {{ item.label|trans }}</a>
+                {% endfor %}
+
+                <h2>{{ 'admin.menu.system'|trans }}</h2>
+                {% for item in [
+                    {route: 'app_admin_users', icon: 'fa-users', label: 'admin.menu.users', match: 'app_admin_user'},
+                    {route: 'app_admin_settings', icon: 'fa-sliders', label: 'admin.menu.settings', match: 'app_admin_settings'},
+                    {route: 'app_admin_failed_messages', icon: 'fa-envelope-circle-check', label: 'admin.menu.emails', match: 'app_admin_failed_message', counter: counters.emails},
+                    {route: 'app_admin_logs', icon: 'fa-file-lines', label: 'admin.menu.logs', match: 'app_admin_logs'},
+                ] %}
+                    <a href="{{ path(item.route) }}" class="{{ current_route starts with item.match ? 'is-active' }}">
+                        <i class="fa-solid {{ item.icon }}"></i> {{ item.label|trans }}
+                        {% if item.counter|default(0) > 0 %}<span class="counter">{{ item.counter }}</span>{% endif %}
+                    </a>
+                {% endfor %}
+                <a href="{{ path('app_main') }}"><i class="fa-solid fa-arrow-up-right-from-square"></i> {{ 'admin.menu.site'|trans }}</a>
+            </nav>
+        </aside>
+
+        <div class="admin-main">
+            {% block admin_body %}{% endblock %}
+        </div>
+    </div>
+{% endblock %}

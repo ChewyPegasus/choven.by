@@ -1,0 +1,25 @@
+{# Usage: include '_partials/pagination.html.twig' with {page: page, route: 'app_admin_orders', params: {…}} #}
+{% set params = params|default(app.request.query.all|filter((v, k) => k != 'page')) %}
+{% set route = route|default(app.request.attributes.get('_route')) %}
+{% if page.pages > 1 %}
+    <nav class="pagination" aria-label="{{ 'pagination.label'|trans }}">
+        {% if page.hasPrevious %}
+            <a href="{{ path(route, params|merge({page: page.page - 1})) }}" rel="prev" aria-label="{{ 'pagination.previous'|trans }}"><i class="fa-solid fa-chevron-left"></i></a>
+        {% endif %}
+        {% for number in page.pageRange %}
+            {% if number is null %}
+                <span class="is-gap">…</span>
+            {% elseif number == page.page %}
+                <span class="is-current" aria-current="page">{{ number }}</span>
+            {% else %}
+                <a href="{{ path(route, params|merge({page: number})) }}">{{ number }}</a>
+            {% endif %}
+        {% endfor %}
+        {% if page.hasNext %}
+            <a href="{{ path(route, params|merge({page: page.page + 1})) }}" rel="next" aria-label="{{ 'pagination.next'|trans }}"><i class="fa-solid fa-chevron-right"></i></a>
+        {% endif %}
+    </nav>
+{% endif %}
+{% if page.total > 0 %}
+    <p class="pagination-info">{{ 'pagination.info'|trans({'%from%': page.firstItemNumber, '%to%': page.lastItemNumber, '%total%': page.total}) }}</p>
+{% endif %}

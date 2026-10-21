@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'review.title'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+
+{% block body %}
+    <section class="auth-page">
+        <div class="auth-card" style="max-width: 600px">
+            <div class="card">
+                <div class="auth-icon"><i class="fa-regular fa-star"></i></div>
+                <h1>{{ 'review.title'|trans }}</h1>
+                <p class="lead">{{ 'review.subtitle'|trans({'%date%': order.startDate|format_date('long', locale: app.request.locale)}) }}</p>
+                {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                    {{ form_row(form.rating) }}
+                    {{ form_row(form.text) }}
+                    {{ form_row(form.authorName) }}
+                    {{ form_rest(form) }}
+                    <button type="submit" class="btn btn-block btn-lg">{{ 'review.submit'|trans }}</button>
+                {{ form_end(form) }}
+                <p class="form-footer text-small">{{ 'review.moderation'|trans }}</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

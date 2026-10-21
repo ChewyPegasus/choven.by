@@ -1,0 +1,12 @@
+{{ form_start(contact_form, {attr: {class: 'contact-form'}}) }}
+    {{ form_errors(contact_form) }}
+    <div class="form-row">
+        {{ form_row(contact_form.name) }}
+        {{ form_row(contact_form.phone) }}
+    </div>
+    {{ form_row(contact_form.email) }}
+    {{ form_row(contact_form.message) }}
+    {{ form_row(contact_form.agreeTerms, {label_translation_parameters: {'%privacy%': path('app_privacy'), '%terms%': path('app_terms')}}) }}
+    {{ form_rest(contact_form) }}
+    <button type="submit" class="btn btn-block"><i class="fa-solid fa-phone-volume"></i> {{ 'contact.form.submit'|trans }}</button>
+{{ form_end(contact_form) }}

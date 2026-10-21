@@ -1,0 +1,65 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.calendar'|trans }}{% endblock %}
+
+{% block admin_body %}
+    {% set prev = month|date_modify('-1 month') %}
+    {% set next = month|date_modify('+1 month') %}
+    {% set today = 'now'|date('Y-m-d') %}
+    <div class="admin-head">
+        <h1>{{ month|format_date(pattern: 'LLLL y', locale: app.request.locale)|capitalize }}</h1>
+        <div class="cluster">
+            <a class="btn btn-sm btn-outline" href="{{ path('app_admin_calendar', {month: prev|date('Y-m')}) }}" aria-label="{{ 'pagination.previous'|trans }}"><i class="fa-solid fa-chevron-left"></i></a>
+            <a class="btn btn-sm btn-ghost" href="{{ path('app_admin_calendar') }}">{{ 'admin.calendar.today'|trans }}</a>
+            <a class="btn btn-sm btn-outline" href="{{ path('app_admin_calendar', {month: next|date('Y-m')}) }}" aria-label="{{ 'pagination.next'|trans }}"><i class="fa-solid fa-chevron-right"></i></a>
+        </div>
+    </div>
+
+    {% if capacity > 0 %}
+        <p class="text-small text-muted">{{ 'admin.calendar.capacity'|trans({'%count%': capacity}) }}</p>
+    {% endif %}
+
+    <div class="calendar-wrap">
+        <table class="calendar">
+            <thead>
+                <tr>
+                    {% for i in 0..6 %}
+                        <th>{{ ('2024-01-01'|date_modify('+' ~ i ~ ' days'))|format_date(pattern: 'EEE', locale: app.request.locale) }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for week in weeks %}
+                    <tr>
+                        {% for day in week %}
+                            {% set key = day.date|date('Y-m-d') %}
+                            {% set load = capacity > 0 ? day.people / capacity : 0 %}
+                            <td class="{{ not day.in_month ? 'is-other' }} {{ key == today ? 'is-today' }} {{ day.blocked ? 'is-blocked' }}">
+                                <div class="day-head">
+                                    <span>{{ day.date|date('j') }}</span>
+                                    {% if key >= today %}<a href="{{ path('app_admin_order_new', {date: key}) }}" title="{{ 'admin.orders.new'|trans }}"><i class="fa-solid fa-plus"></i></a>{% endif %}
+                                </div>
+                                {% if day.people > 0 %}
+                                    {% if capacity > 0 %}
+                                        <div class="load {{ load >= 1 ? 'is-full' : (load >= 0.75 ? 'is-high') }}" title="{{ day.people }} / {{ capacity }}"><span style="width: {{ min(100, (load * 100)|round) }}%"></span></div>
+                                    {% endif %}
+                                    {% for order in day.orders|slice(0, 3) %}
+                                        <a class="cal-order {{ order.status.value == 'confirmed' ? 'is-confirmed' }}" href="{{ path('app_admin_order_edit', {id: order.id}) }}" title="{{ order.name }} · {{ order.amountOfPeople }}">{{ order.amountOfPeople }} · {{ order.name }}</a>
+                                    {% endfor %}
+                                    {% if day.orders|length > 3 %}
+                                        <a class="text-small" href="{{ path('app_admin_orders', {from: key, to: key}) }}">+{{ day.orders|length - 3 }}</a>
+                                    {% endif %}
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <p class="text-small text-muted mt-2">
+        <span class="badge badge-status-new">{{ 'order.status.new'|trans }}</span>
+        <span class="badge badge-status-confirmed">{{ 'order.status.confirmed'|trans }}</span>
+        {{ 'admin.calendar.legend'|trans }}
+    </p>
+{% endblock %}

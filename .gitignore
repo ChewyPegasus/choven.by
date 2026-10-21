@@ -1,45 +1,37 @@
-# Confidential data and environment
-/.env
+# Local environment overrides and secrets (.env itself is committed with safe defaults)
 /.env.local
-/.env.dev
 /.env.local.php
 /.env.*.local
-!/.env.example
-!/.env.test
-
-# Secrets
 /config/secrets/prod/prod.decrypt.private.php
-/config/secrets/dev/dev.decrypt.private.php
 
-# Temporary and cache files
+# Generated / installed files
 /var/
 /vendor/
 /public/bundles/
 /public/assets/
 /assets/vendor/
-.phpunit.result.cache
-/.platform/
-/.composer/
-/data/
+/public/uploads/*
+!/public/uploads/.gitkeep
+
+# Tests and tools
+/phpunit.xml
+/.phpunit.cache/
+/.phpunit.result.cache
+/.php-cs-fixer.php
+/.php-cs-fixer.cache
+/coverage/
 
 # Docker
 /compose.override.yaml
 /compose.override.yml
+/docker/data/
 
-# Automatically generated files
-/phpunit.xml
-
-# IDEs and editors
+# IDEs and OS files
 .idea/
 .vscode/
 *.sublime-project
 *.sublime-workspace
 *.swp
 *.swo
-
-# System files
 .DS_Store
 Thumbs.db
-
-# Images
-/assets/images/

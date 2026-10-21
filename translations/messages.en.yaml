@@ -1,689 +1,632 @@
-name: 'Choven'
+seo:
+    default_title: 'Kayaking trips on the rivers of Belarus'
+    default_description: 'Kayak and canoe trips on the Isloch, Svisloch and other rivers of Belarus: day trips and overnight adventures, all-inclusive packages, gear hire and corporate events. Book online.'
 
-menu:
-  home: 'Home'
-  about_rafting: 'About rafting'
-  about_us: 'About us'
-  book: 'Book'
-  login: 'Login'
-  register: 'Register'
-  logout: 'Logout'
-  profile: 'Profile'
-  auth: 'Authorization'
-  language: 'Language'
+locale:
+    ru: 'Русский'
+    be: 'Беларуская'
+    en: 'English'
+
+a11y:
+    skip_to_content: 'Skip to content'
+    close: 'Close'
+    previous: 'Previous'
+    next: 'Next'
+    show_password: 'Show password'
+    hide_password: 'Hide password'
+
+nav:
+    label: 'Main menu'
+    tours: 'Trips'
+    info: 'Trip guide'
+    about: 'About us'
+    contacts: 'Contacts'
+    book: 'Book now'
+    admin: 'Admin'
+    language: 'Language'
+    account: 'Account'
+    my_bookings: 'My bookings'
+    settings: 'Settings'
+    login: 'Log in'
+    register: 'Sign up'
+    logout: 'Log out'
+    menu: 'Menu'
 
 footer:
-  copyright: 'All rights reserved'
-  description: 'Water adventures in Belarus'
-  links: 'Links'
-  documents: 'Documents'
-  privacy_policy: 'Privacy policy'
-  terms_of_use: 'Terms of use'
-  contacts: 'Contacts'
+    tagline: 'Kayaking trips on the most scenic rivers of Belarus — for beginners, families and groups.'
+    site: 'Website'
+    documents: 'Documents'
+    privacy: 'Privacy policy'
+    terms: 'Terms of use'
+    checklist: 'Packing list'
+    contacts: 'Contacts'
+    region: 'Minsk and Minsk Region'
+    rights: 'All rights reserved.'
+    made_with: 'Made with love for rivers'
 
-about:
-  title: 'About us'
-  history:
-    title: 'Our history'
-    start: 'Everyhting started with just basic water tourism. The first explored rivers were Isloch, Viliya and Narochanka.'
-    love: 'Love to nature transformed into something greater.'
-    first_kayaks: 'In 2022 we bought our first kayaks which at first were used just with friends and acquaintances. After we noticed growing interest to active holidays on water, we decided to increase the amount of kayaks.'
-    growing: 'In 2023 we have been organizing regular rafting trips for everyone. So until 2024 our hobby turned into business - '
-    born: 'that''s how "Choven" was born'
-    today: 'Today we offer a wide variety of routes and services along with organizing basics - from one-day journeys to long-term trips with camping in the wild. Our team is always exploring new routes to show you the most attractive and breathtaking views of Belarusian nature'
-    no_change: 'Our main goal hasn''t changed a bit:'
-    first_goal: 'to share out love to water tourism'
-    second_goal: 'and create for you an unforgettable memories from communication with nature'
-  photogallery:
-    title: 'Photogallery'
-    no_images: 'There are no photos in photogallery yet'
-  contacts:
-    contact_us: 'Contact us'
-    phone_number: 'Phone number'
+files:
+    checklist: 'Checklist'
 
-info:
-  title: 'All about rafting'
-  safety_measures: 'Safety measures'
-  rules:
-    life_jacket:
-      title: 'Life jacket is a must'
-      text: 'No matter what is your experience and how good you are in swimming always put a life jacket on. Unforeseen circumstances may appear every time with every body)'
-    party:
-      title: 'Postpone a party until you arrive to finish'
-      text: 'If you are sober it''s easier to cope with difficulties on your way'
-    alone:
-      title: 'Don''t be alone'
-      text: 'On your way you should always see previous kayak. In case of emergency you can help each other or call for help'
-    oars:
-      title: 'Oars are for rowing'
-      text: 'Oars are not designed to use them for pushing from ground or bank. It''s more efficient to row. Oars are also quiet pricefull'
-    hugs:
-      title: 'It''s better to hug each other rather than a tree'
-      text: 'Most of the flips happen when rowers think it''s a good idea to grab onto a tree or a branch. River usually doesn''t want you to do this'
-    back:
-      title: 'Back straight'
-      text: 'The only thing that moves is your shoulder girdle. If you deviate during stroke, you are doing something wrong'
-  additional:
-    title: 'Additional recommendations'
-    recommendations:
-      germetic: 'It''s better to have a waterproof case for your mobile phone or other valuable things'
-      spare: 'Take some spare clothes in waterproof bag'
-      sun_protection: 'Use protection against the sun: SPF, headdress, sunglasses'
-      instructions: 'Follow all the instructions of the instructor and always be in the group'
-      joy: 'Enjoy the holiday and the silence of Belarusian nature'
-  process:
-    title: 'How is it going'
-    cards:
-      1st:
-        title: 'Meeting and briefing'
-        description: 'We meet at the appointed place, get acquainted and have a detailed briefing. You receive all the necessary equipment and gear for safe rafting.'
-        first: 'Training the technique'
-        second: 'Getting the equipment'
-        third: 'Safety briefing'
-      2nd:
-        title: 'Start on the water'
-        description: 'We launch the kayaks, get seated and start our adventure. It won''t be quick, but you''ll get there, you''ll see!'
-        first: 'Put kayaks on water'
-        second: 'Practicing the paddling technique'
-        third: 'First bushes behind the first turn'
-      3rd:
-        title: 'Active rafting'
-        description: 'We move along the river, enjoying the beauty of nature and silence. We take photos, socialise and relax, fully immersed in the atmosphere of the adventure.'
-        first: 'Overcoming difficulties'
-        second: 'Testing communication skills'
-        third: 'Full joy of silence and views'
-      4th:
-        title: 'Break and rest'
-        description: 'In the middle of the route we make a stop. Time for a snack and a rest.'
-        first: 'Rest on the bank of the river'
-        second: 'Snack and sharing the first impression'
-        third: 'Swimming in clear water'
-      5th:
-        title: 'Finish and return'
-        description: 'We arrive at the finish line. Relaxation, food, field sauna, games by the fire. Return home'
-        first: 'Arriving at the finish line'
-        second: 'The feeling of victory'
-        third: 'The songs flow, the wines flow'
-    promo:
-      question: 'Are you ready for the adventure?'
-      book: 'Book a trip now and receive unforgettable memories!'
-      button: 'Book now'
-    faq:
-      title: 'Frequently asked questions'
-      1st:
-        question: 'Do I need an experience to participate?'
-        answer: 'No, experience is not required. Our instructors will do a detailed briefing before start. You will learn everyhting what you need. Most of our routes are suitable for the begginers. The most important is to have a will and follow the instructions'
-      2nd:
-        question: 'What is included in the cost?'
-        answer: 'Base cost includes rent of the kayaks, oars, life jackets, waterproof bags. Additional services, such as food, tents, transfer, instructor services and other equipment for camping are provided depending of the chosen package of services. Please clarify the information while booking'
-      3rd:
-        question: 'Can I take children with me?'
-        answer: 'Yes, children can participate in rafting accompanied by adults. For children there are special size life jackets which we can provide you with. Some of the routes are more suitable for family holiday, please clarify the information while booking'
-      4th:
-        question: 'What do we do if it is raining?'
-        answer: 'Gentle rain is not an obstacle for rafting trip. It can even add some more vibe to your experience. We recommend to take raincoat or waterproof jacket. In case of heavy rain, thunder or storm warning we can reschedule our trip or suggest other alternative options'
-      5th:
-        question: 'What do I need to take with me?'
-        answer:
-          title: 'We recommend to take with you:'
-          1st: 'Spare pair of shoes and reserve clothes'
-          2nd: 'Headdress and sunglasses'
-          3rd: 'SPF and insect repellent'
-          4th: 'Drink water and snacks'
-          5th: 'Photocamera or smartphone in waterproof case'
-          file: 'Checklist'
-          download: 'Download full list'
-      6th:
-        question: 'Are corporate trips available?'
-        answer: 'Yes, we organise corporate rafting trips for groups of all sizes. We can design a tailor-made programme to suit your needs, including meals, entertainment, team building activities and even team building on the water. Contact us to discuss the details.'
-      7th:
-        question: 'How safe the trips are?'
-        answer: 'Safety is our priority. Before every trip detailed safety briefing is organised. Everybody is provided with life jackets. Instructors have experience and know the route. We mainly choose quiet rivers with no tough rapids. If you follow the rules and recommendations, trip will be safe and a pleasant adventure'
+pagination:
+    label: 'Pages'
+    previous: 'Previous page'
+    next: 'Next page'
+    info: 'Showing %from%–%to% of %total%'
 
-mailer:
-  header:
-    title: 'Confirmation of order'
-    greet: 'Hello!'
-    confirm: 'Thanks for booking a trip. Your order is successfully registered in our system: '
-  order:
-    title: 'Details of order'
-    river: 'River:'
-    type: 'Trip type:'
-    date: 'Start date:'
-    duration: 'Duration:'
-    days: 'd.'
-    number: 'Number of people:'
-    additional: 'Additional information:'
-  footer:
-    manager: 'Our manager will contact you soon to flush out the details'
-    questions: 'If you still have questions, please contact us via email or phone number'
-    regards: 'Best regards, Choven-team'
-    phone: 'Phone number'
-
-main:
-  title: 'Home page'
-  slider:
-    1st:
-      title: 'Explore water expanses'
-      text: 'Discover the wonderful world of kayaking'
-      button: 'Read more'
-    2nd:
-      title: 'Best routes'
-      text: 'We offer the most scenic routes for kayaking'
-      button: 'Learn more'
-    3rd:
-      title: 'Unforgettable memories'
-      text: 'Soulful and carefree'
-      button: 'Book now'
-  grid:
-    title: 'Our trips'
-    cards:
-      button: 'Book'
-      details: 'Read more'
-      1st:
-        preposition: 'from'
-        title: 'All-inclusive'
-        description: 'All-weekend rafting trip with a full-service package'
-      2nd:
-        preposition: 'from'
-        title: 'Rafting on the Isloch'
-        description: 'Overnight rafting along the picturesque Isloch'
-      3rd:
-        preposition: 'from'
-        title: 'Day rafting on the Svisloch'
-        description: 'Quick, convenient and beautiful. For those who want to escape the hustle and bustle of the city for a while'
-      4th:
-        preposition: 'from'
-        title: 'Corporate rafting'
-        description: 'Fully organise a rafting trip to suit all tastes'
-      5th:
-        preposition: ''
-        title: 'Self-organizing'
-        description: 'A good choice for experienced tourists who ready to organise their trip on their own'
-  maps:
-    title: 'Interactive route maps'
-    description: 'Explore our routes on an interactive map. Choose a suitable route and learn more details.'
-    routes:
-      title: 'Available routes'
-    show_route: 'Show on map'
-    show_all: 'All routes'
-    reset: 'Reset'
-    points: 'points'
-
-order:
-  title: 'Book a trip'
-  form:
-    email: 'Your email'
-    email_placeholder: 'Enter your email'
-    start_date: 'Rafting date'
-    duration: 'Duration (days)'
-    river: 'River'
-    people_count: 'Number of participants'
-    type: 'Rafting type'
-    description: 'Additional information'
-    description_placeholder: 'Specify additional wishes or questions'
-    submit: 'Submit request'
-    days: 'days'
-  success:
-    order_created: 'Your order has been successfully submitted.'
-    confirmation_sent: 'Your order has been successfully submitted. A confirmation email has been sent to your email address.'
-  warning:
-    email_failed: 'There were issues sending the confirmation email. We will contact you shortly.'
-  info:
-    email_queued: "We're experiencing technical difficulties with our email service. Your registration confirmation will be sent shortly."
-
-package:
-  all_inclusive:
-    title: 'All-inclusive'
-    description: 'A full-service package for maximum comfort. Includes transfer to and from the starting point, all necessary equipment, an experienced instructor, meals during the trip, and camping gear.'
-    features:
-      transfer: 'Transfer to and from the starting point'
-      equipment: 'All necessary equipment (kayaks, paddles, life jackets)'
-      instructor: 'Experienced instructor throughout the route'
-      food: 'Meals during the trip (breakfast, lunch, dinner)'
-      camping: 'Camping gear (tents, sleeping bags, mats)'
-  minimum:
-    title: 'Minimum services'
-    description: 'A basic package for active holiday enthusiasts. Includes equipment, instructor services, and basic insurance.'
-    features:
-      equipment: 'All necessary equipment (kayaks, paddles, life jackets)'
-      instructor: 'Instructor for briefing and guidance'
-  rent_only:
-    title: 'Rental only'
-    description: 'For experienced tourists who want to organize the trip themselves. Only necessary equipment is provided.'
-    features:
-      equipment: 'Rental of equipment (kayaks, paddles, life jackets)'
-  corporate:
-    title: 'Corporate rafting'
-    description: 'The perfect option for companies looking to spend time in nature, strengthen team spirit, and enjoy active recreation. We organize everything to make your corporate rafting trip unforgettable.'
-    features:
-      team_building: 'Team building on water and onshore'
-      equipment: 'Full set of equipment (kayaks, paddles, life jackets)'
-      instructor: 'Experienced instructor for guidance and briefing'
-      food: 'Meals during the route (breakfast, lunch, dinner)'
-      transport: 'Transfer to and from the starting point'
-      group_activities: 'Entertainment activities and team games'
-      networking_events: 'Events for networking and strengthening connections'
-  other:
-    title: 'Custom'
-    description: 'A tailor-made package of services based on your preferences.'
-    features:
-      custom: 'Custom set of services'
-  features:
-    included: 'Included in the price'
-  book_now: 'Book now'
+flash:
+    too_many_requests: 'Too many requests. Please try again a little later.'
+    invalid_csrf: 'Your session has expired. Please refresh the page and try again.'
 
 river:
-  svisloch: 'Svisloch'
-  isloch: 'Isloch'
-  berezina: 'Berezina'
-  neman: 'Neman'
-  narochanka: 'Narochanka'
-  stracha: 'Stracha'
-  saryanka: 'Saryanka'
-  sluch: 'Sluch'
-  viliya: 'Viliya'
-  sula: 'Sula'
-  usa: 'Usa'
-  smerd: 'Smerd'
-  other: 'Other'
+    svisloch: 'Svisloch'
+    isloch: 'Isloch'
+    berezina: 'Berezina'
+    neman: 'Neman'
+    narochanka: 'Narochanka'
+    stracha: 'Stracha'
+    saryanka: 'Saryanka'
+    sluch: 'Sluch'
+    viliya: 'Viliya'
+    sula: 'Sula'
+    usa: 'Usa'
+    smerd: 'Smerd'
+    other: 'Another river'
 
-email:
-  sender_name: 'Choven.by Team'
-  order_confirmation:
-    subject: 'Booking Confirmation'
-  password_reset:
-    subject: 'Password Recovery'
-  welcome:
-    subject: 'Welcome to Choven.by'
-  verification:
-    subject: "Registration Confirmation for Choven.by"
+package:
+    details: 'Learn more'
+    included: 'What’s included'
+    book: 'Book now'
+    all_inclusive:
+        title: 'All-inclusive'
+        description: 'The full package for maximum comfort: return transfer to the start, all the gear, an experienced instructor, meals on the route and camping kit for the night.'
+        features:
+            transfer: 'Return transfer to the starting point'
+            equipment: 'All the gear: kayaks, paddles, life jackets, dry bags'
+            instructor: 'An experienced instructor for the whole route'
+            food: 'Meals on the route (breakfast, lunch, dinner)'
+            camping: 'Camping kit: tents, sleeping bags, mats'
+    minimum:
+        title: 'Basic'
+        description: 'A basic package for outdoor lovers: the gear plus an instructor who gives a briefing and stays with you on the route.'
+        features:
+            equipment: 'All the gear: kayaks, paddles, life jackets'
+            instructor: 'An instructor for the briefing and the trip'
+    rent_only:
+        title: 'Hire only'
+        description: 'For experienced paddlers who plan their own route. We provide reliable, well-tested gear.'
+        features:
+            equipment: 'Kayak, paddle and life jacket hire'
+    corporate:
+        title: 'Corporate'
+        description: 'A river trip for companies: nature, team spirit and the outdoors. We handle everything, from transfers to the programme on shore.'
+        features:
+            team_building: 'Team building on the water and on shore'
+            equipment: 'A full set of gear'
+            instructor: 'Experienced instructors'
+            food: 'Meals on the route'
+            transport: 'Transfer for the whole group'
+            group_activities: 'Team games and entertainment'
+    other:
+        title: 'Custom'
+        description: 'A set of services tailored to your wishes.'
+        features:
+            custom: 'A tailor-made set of services'
+
+order:
+    status:
+        new: 'New'
+        confirmed: 'Confirmed'
+        completed: 'Completed'
+        cancelled: 'Cancelled'
+
+route:
+    difficulty:
+        easy: 'Easy'
+        medium: 'Moderate'
+        hard: 'Challenging'
+
+review:
+    status:
+        pending: 'Awaiting moderation'
+        approved: 'Published'
+        rejected: 'Rejected'
+    rating_label: 'Rating: %rating% out of 5'
+    leave: 'Leave a review'
+    yours: 'Your review'
+    title: 'How was your trip?'
+    subtitle: 'Tell us about your trip on %date% — it helps other travellers and us.'
+    submit: 'Submit review'
+    moderation: 'Your review will appear on the site once a moderator has checked it.'
+    form:
+        name: 'Your name'
+        name_help: 'This is how it will appear next to your review.'
+        rating: 'Rating'
+        text: 'Review'
+    flash:
+        thanks: 'Thank you for your review! It will appear on the site after moderation.'
+        already_sent: 'You’ve already reviewed this trip.'
+        after_trip: 'You can leave a review after the trip.'
+
+tour:
+    price_from: 'from'
+    price_unit:
+        person: 'person'
+        group: 'group'
+    price_unit_long:
+        person: 'per person'
+        group: 'per group'
+    days: '%count% day|%count% days'
+    details: 'Learn more'
+    book: 'Book now'
+    all_tours: 'All trips'
+    route: 'Route map'
+    other: 'Other trips'
+    no_prepayment: 'No prepayment online: we’ll call you back to arrange the details.'
+    questions: 'Any questions? Give us a call:'
+
+map:
+    km: '%km% km'
+    points: '%count% point|%count% points'
+    loading: 'Loading map…'
+    show_all: 'All routes'
+
+main:
+    title: 'Chöven — kayaking trips on the rivers of Belarus'
+    meta_description: 'Kayaking trips on the Isloch and Svisloch: day routes and overnight trips, all-inclusive packages, gear hire and corporate events. Book online in a minute.'
+    hero:
+        label: 'Main banner'
+        eyebrow: 'River trips in Belarus'
+        book: 'Book now'
+        slide1:
+            title: 'Explore the rivers of Belarus by kayak'
+            text: 'Peace and quiet, scenic riverbanks and a real adventure — just an hour from Minsk.'
+            button: 'Choose a trip'
+        slide2:
+            title: 'The best routes for beginners and experienced paddlers'
+            text: 'Day trips through the city and overnight journeys along forest rivers.'
+            button: 'View the map'
+        slide3:
+            title: 'Campfires, songs and unforgettable memories'
+            text: 'Warm and carefree: we take care of the organisation, you just relax.'
+            button: 'How it works'
+    benefits:
+        label: 'Why choose us'
+        safety:
+            title: 'Safe'
+            text: 'Safety briefing, life jackets and experienced instructors'
+        beginners:
+            title: 'No experience needed'
+            text: 'We’ll teach you to paddle in 15 minutes'
+        transfer:
+            title: 'Transfer'
+            text: 'We’ll take you to the start and pick you up at the finish'
+        equipment:
+            title: 'All the gear'
+            text: 'Kayaks, paddles, dry bags, tents'
+    tours:
+        eyebrow: 'Choose your adventure'
+        title: 'Our trips'
+        subtitle: 'Ready-made programmes for a day, a weekend or a company outing. Want something different? Drop us a line.'
+        empty: 'New routes are coming soon.'
+    packages:
+        eyebrow: 'Formats'
+        title: 'Packages'
+        subtitle: 'From gear hire to a fully organised trip with meals and an overnight stay.'
+    steps:
+        eyebrow: 'Simple and clear'
+        title: 'How to book a trip'
+        more: 'More about how a trip works'
+        1:
+            title: 'Choose a trip'
+            text: 'A ready-made programme or your own route, a date and the number of people.'
+        2:
+            title: 'Send a request'
+            text: 'Online in a minute, no prepayment. You’ll get an email with the details straight away.'
+        3:
+            title: 'We call you back'
+            text: 'We’ll go over the details, answer your questions and confirm your booking.'
+        4:
+            title: 'Enjoy!'
+            text: 'We meet you, give a safety briefing and set off.'
+    map:
+        eyebrow: 'Routes'
+        title: 'Route map'
+        subtitle: 'Choose a route to see the start, stops and finish.'
+    reviews:
+        eyebrow: 'Reviews'
+        title: 'What our guests say'
+        count: '%count% review|%count% reviews'
+    faq:
+        more: 'All questions and answers'
+    contact:
+        eyebrow: 'Any questions?'
+        title: 'We’ll help you choose a trip'
+        text: 'Leave your number and we’ll call you back within one working day to find the right route and date.'
+
+contact:
+    form:
+        title: 'Call me back'
+        name: 'Name'
+        phone: 'Phone'
+        email: 'Email (optional)'
+        message: 'Question or requests'
+        submit: 'Request a call'
+    flash:
+        sent: 'Thank you! We’ll call you back shortly.'
+
+info:
+    title: 'Trip guide'
+    eyebrow: 'Before you go'
+    subtitle: 'Safety rules, what a day on the water looks like and answers to common questions.'
+    meta_description: 'Safety on the river, how a kayaking trip works and answers to common questions: what to bring, whether kids can come, what to do if it rains.'
+    safety:
+        title: 'Safety rules'
+        life_jacket:
+            title: 'Life jacket — always!'
+            text: 'Whatever your experience or swimming skills, always wear a life jacket. Unexpected flips happen to everyone.'
+        sober:
+            title: 'Celebrate once you’re back on shore'
+            text: 'It’s much easier to handle challenges on the way and reach the finish when you’re sober.'
+        not_alone:
+            title: 'Never paddle alone'
+            text: 'Keep the boat ahead of you in sight: if something unexpected happens, you can help each other or call for help.'
+        oars:
+            title: 'Paddles are for paddling'
+            text: 'Pushing off the riverbed and banks with your paddle is almost useless — paddling is far more effective. Besides, paddles cost money.'
+        trees:
+            title: 'Hug a friend, not a tree'
+            text: 'Most capsizes happen when paddlers grab at branches and the river disagrees.'
+        posture:
+            title: 'Keep your back straight'
+            text: 'Your shoulders do the work. If you lean to the side with every stroke, something’s not right.'
+    tips:
+        title: 'More tips'
+        dry_bag: 'Bring a waterproof case for your phone and documents'
+        spare_clothes: 'Pack a change of clothes in a dry bag'
+        sun: 'Protect yourself from the sun: sunscreen, a hat and sunglasses'
+        instructor: 'Follow your instructor’s directions and stay with the group'
+        enjoy: 'Enjoy the peace and beauty of Belarusian nature'
+    process:
+        title: 'How a trip works'
+        step: 'Step %number%'
+        1:
+            title: 'Meeting and briefing'
+            text: 'We meet at the agreed spot, get to know each other and give a thorough briefing. You receive all the gear you need for a safe trip.'
+            points:
+                1: 'Paddling technique lesson'
+                2: 'Gear handout'
+                3: 'Safety briefing'
+        2:
+            title: 'Launch'
+            text: 'We put the kayaks in the water, take our seats and the adventure begins. It may take a moment, but you’ll get the hang of it — you’ll see!'
+            points:
+                1: 'Launching the kayaks'
+                2: 'Practising paddling technique'
+                3: 'The first bushes round the first bend'
+        3:
+            title: 'On the river'
+            text: 'We make our way down the river, enjoying nature and the quiet. We take photos, chat and relax, fully immersed in the adventure.'
+            points:
+                1: 'Tackling obstacles'
+                2: 'Teamwork in the boat'
+                3: 'Silence and views worth the journey'
+        4:
+            title: 'Break and rest'
+            text: 'Halfway along the route we stop for a snack and a rest.'
+            points:
+                1: 'Relaxing on the bank'
+                2: 'A snack and first impressions'
+                3: 'A swim in a clean river'
+        5:
+            title: 'Finish and return'
+            text: 'We reach the finish. Rest, food, a sauna and campfire games — on overnight programmes.'
+            points:
+                1: 'Arrival at the finish point'
+                2: 'A sense of achievement'
+                3: 'Songs around the campfire'
+    promo:
+        title: 'Ready for an adventure?'
+        text: 'Book your trip now — no prepayment, we’ll call you back and sort everything out.'
+    faq:
+        title: 'FAQ'
+        1:
+            question: 'Do I need any experience?'
+            answer: 'No. Our instructors give a thorough briefing before the start and teach you everything you need. Most routes are suitable for beginners — all you need is enthusiasm and to follow the instructions.'
+        2:
+            question: 'What does the price include?'
+            answer: 'The base price includes the hire of a kayak, paddles, life jackets and dry bags. Meals, tents, transfers, an instructor and camping kit depend on the package you choose — please check when booking.'
+        3:
+            question: 'Can I bring children?'
+            answer: 'Yes, children can take part when accompanied by adults. We provide life jackets in the right sizes and can suggest the routes best suited to a family day out.'
+        4:
+            question: 'What if it rains?'
+            answer: 'Light rain is no problem and even adds some charm to the adventure — just bring a raincoat. In heavy rain, a thunderstorm or a storm warning, we’ll move the trip to another date.'
+        5:
+            question: 'What should I bring?'
+            answer: 'We recommend bringing:'
+            list:
+                1: 'A change of clothes and shoes'
+                2: 'A hat and sunglasses'
+                3: 'Sunscreen and insect repellent'
+                4: 'Drinking water and snacks'
+                5: 'Your phone in a waterproof case'
+            download: 'Download the full list'
+        6:
+            question: 'Do you organise corporate trips?'
+            answer: 'Yes, for groups of any size. We’ll put together a programme to suit you: meals, entertainment, team games and team building on the water. Get in touch to discuss the details.'
+        7:
+            question: 'How safe is it?'
+            answer: 'Safety is our priority. Every trip starts with a briefing, everyone gets a life jacket, and our instructors know the route. We choose calm rivers without difficult rapids.'
+
+about:
+    title: 'About us'
+    eyebrow: 'Chöven'
+    meta_description: 'The story of the Chöven team: how a passion for paddling became river trips on the most beautiful rivers of Belarus. Photos and contacts.'
+    history:
+        title: 'Our story'
+        p1: 'It all started with a simple love of paddling. Our first rivers were the Isloch, the Viliya and the Narochanka. Our love for the river and the nature around it gradually grew into something more.'
+        p2: 'In 2022 we bought our first kayaks and spent the whole season taking friends and acquaintances out on the water. Seeing the growing interest in active holidays on the water, we decided to expand our small fleet.'
+        p3: 'By 2023 we were regularly running trips for anyone who wanted to join, and in 2024 our hobby became a proper business — and so Chöven was born.'
+        quote: 'Our main goal hasn’t changed — to share our love of paddling and give you unforgettable experiences in nature.'
+        p4: 'Today we offer a range of routes and formats — from short day trips to multi-day expeditions with nights on the riverbank.'
+        p5: 'Our team is always exploring new rivers to show you the most beautiful and exciting corners of Belarusian nature.'
+    gallery:
+        title: 'Photo gallery'
+        empty: 'Photos coming soon.'
+        photo: 'Photo %number%'
+    contacts:
+        title: 'Get in touch'
+        phone: 'Phone'
+        messengers: 'Messengers'
+
+legal:
+    effective: 'Effective from %date%, last updated %updated%'
+    download_pdf: 'Download PDF'
+    privacy:
+        title: 'Privacy policy'
+        description: 'How Chöven processes and protects the personal data of website users.'
+    terms:
+        title: 'Terms of use'
+        description: 'Rules for using the Chöven website and for booking and cancelling trips.'
+
+booking:
+    title: 'Book a trip'
+    subtitle: 'Fill in the form — we’ll call you back, arrange the details and confirm your booking. No prepayment needed.'
+    meta_description: 'Book a kayaking trip on the rivers of Belarus online. No prepayment: we’ll call you back to arrange the details.'
+    section:
+        trip: 'Trip'
+        contacts: 'Contact details'
+    form:
+        name: 'Full name'
+        phone: 'Phone'
+        phone_help: 'We’ll call to confirm your booking.'
+        email: 'Email'
+        start_date: 'Start date'
+        duration: 'Duration, days'
+        people: 'People'
+        river: 'River'
+        package: 'Package'
+        choose: '— select —'
+        comment: 'Requests'
+        comment_placeholder: 'For example: we need a tent, we’re bringing kids aged 8 and 10, we’d like a transfer from Minsk'
+        agree: 'I agree to the <a href="%terms%" target="_blank">terms</a> and the <a href="%privacy%" target="_blank">privacy policy</a>'
+    submit: 'Send request'
+    no_prepayment: 'No prepayment'
+    selected_tour: 'Selected trip'
+    estimate: 'Estimated price'
+    estimate_hint: 'We’ll confirm the final price by phone.'
+    prefer_phone: 'Prefer to call?'
+    login_hint: 'Have an account? <a href="%login%">Log in</a> to see your bookings in your account, or <a href="%register%">sign up</a>.'
+    how:
+        title: 'How it works'
+        1: 'You send a request — an email with the details arrives straight away.'
+        2: 'We call you back, go over the details and confirm your booking.'
+        3: 'On the day, we meet and head out onto the water!'
+    availability:
+        available: 'Places available on these dates'
+        few: 'Only a few places left: %count%'
+        not_enough: 'Only %count% places available — reduce your group or choose another date'
+        sold_out: 'No places left on this date — please choose another'
+        blocked: 'No trips run on this day'
+    closed:
+        title: 'Online booking is temporarily closed'
+        text: 'The season is over or all dates are taken. Give us a call or request a call back — we’ll find an option for you.'
+    flash:
+        cancelled: 'Your booking has been cancelled. We’ve been notified.'
+        cannot_cancel: 'This booking can no longer be cancelled online. Please give us a call.'
+    show:
+        title: 'Booking %reference%'
+        heading: 'Your booking'
+        thanks: 'Request received!'
+        thanks_text: 'We’ve sent a confirmation to %email% and will call you soon to arrange the details.'
+        reference: 'Booking number'
+        copy: 'Copy number'
+        copied: 'Copied'
+        progress: 'Booking status'
+        status_hint:
+            new: 'We’ll call you within one working day to confirm your booking.'
+            confirmed: 'Your booking is confirmed. See you on the water!'
+            completed: 'Thanks for joining us! We’d love to see you again.'
+        cancelled: 'Booking cancelled on %date%.'
+        add_to_calendar: 'Add to calendar'
+        cancel: 'Cancel booking'
+        cancel_confirm: 'Cancel this booking? This can’t be undone.'
+        questions: 'Questions about your booking?'
+        bookmark: 'Save this page or the email — you can use the link to check or cancel your booking at any time.'
 
 login:
-  title: 'Login to your account'
-  form:
-    email: 'Email'
+    title: 'Log in'
+    subtitle: 'Log in to manage your bookings.'
+    identifier: 'Email or phone'
+    identifier_help: 'You can enter your phone number in any format, e.g. 8 029 123-45-67.'
     password: 'Password'
     remember_me: 'Remember me'
-    sign_in: 'Sign in'
-    no_account: "Don't have an account yet?"
-    register: 'Register'
-    identifier: 'Email or phone'
-    identifier_placeholder: 'Enter email or phone number'
+    forgot: 'Forgot your password?'
+    submit: 'Log in'
+    no_account: 'Don’t have an account?'
+    register: 'Sign up'
+    resend_verification: 'Resend email'
 
 registration:
-  email:
-    already_used: 'This email is already in use'
-    failed: "There is a failure in our system. We will fix it as soon as possible"
-    already_exists: 'Email already regitered'
-  phone:
-    already_used: 'This phone number is already in use'
-    already_exists: 'Phone is already regitered'
-  title: 'Registration'
-  success: 'Registration was successful! Check your email to confirm your account.'
-  form:
-    email: 'Email'
-    password: 'Password'
-    repeat_password: 'Repeat password'
-    agree_terms: 'I agree to the terms of use'
-    register: 'Register'
-    already_registered: 'Already registered?'
-    sign_in: 'Sign in'
-    phone: 'Telephone number'
-    phone_placeholder: '+375XXXXXXXXX'
-    email_placeholder: 'example@email.com'
-    error:
-      email_required: 'Please enter your email'
-      password_required: 'Please enter your password'
-      password_too_short: 'Password must be at least %limit% characters long'
-      agree_terms: 'You must accept the terms of use'
-      phone_required: 'Please enter your phone number'
-      phone_invalid: 'Enter a valid phone number in the format +375XXXXXXXXX'
+    title: 'Sign up'
+    subtitle: 'Your account: all your bookings in one place, faster booking and reviews.'
+    submit: 'Create account'
+    have_account: 'Already have an account?'
+    login: 'Log in'
+    form:
+        name: 'Name'
+        email: 'Email'
+        phone: 'Phone'
+        phone_help: 'Optional. You can use it to log in instead of your email.'
+        password: 'Password'
+        password_help: 'At least 8 characters.'
+        repeat_password: 'Repeat password'
+        agree: 'I agree to the <a href="%terms%" target="_blank">terms</a> and the <a href="%privacy%" target="_blank">privacy policy</a>'
+        marketing: 'I’d like to receive news about new routes and special offers (no more than once a month)'
+    check_email:
+        title: 'Check your inbox'
+        text: 'We’ve sent an email with a confirmation link to %email%. Follow the link to activate your account.'
+        spam: 'Not received it? Check your spam folder or request another email in a couple of minutes.'
+        resend: 'Resend email'
+    resend:
+        title: 'Email confirmation'
+        text: 'Enter the email you signed up with and we’ll send you a new link.'
+        submit: 'Send link'
 
 verification:
-  success: 'Your email has been successfully verified! You can now log in.'
-  invalid_link: 'Invalid verification link.'
-  email_confirm: "To confirm your email address, please click the link below:"
-  button: "Confirm Email"
-  link_alternative: "If the button doesn't work, copy and paste the following link into your browser's address bar:"
-  ignore: "If you didn't register on our website, please ignore this email."
+    flash:
+        success: 'Email confirmed! You can now log in.'
+        already: 'Your email is already confirmed — just log in.'
+        invalid: 'This link is invalid. Please request a new one.'
+
+reset_password:
+    title: 'Reset password'
+    text: 'Enter your account email and we’ll send you a link to reset your password.'
+    submit: 'Send link'
+    form:
+        email: 'Email'
+        new_password: 'New password'
+    check_email:
+        title: 'Check your inbox'
+        text: 'If an account with this email exists, we’ve sent a password reset link. The link is valid for %expires%.'
+        retry: 'Request again'
+    reset:
+        title: 'New password'
+        submit: 'Save password'
+    flash:
+        success: 'Your password has been changed. Log in with your new password.'
 
 profile:
-  orders:
-    title: 'My Orders'
+    nav: 'Account sections'
+    hello: 'Hello, %name%!'
+    orders_subtitle: 'All your bookings are here. Upcoming ones can be cancelled in one click.'
+    new_booking: 'New booking'
     upcoming: 'Upcoming'
     past: 'Past'
-    no_upcoming: 'You have no upcoming rafting trips.'
-    no_past: 'You have no past rafting trips.'
-    days: 'days'
-    people: 'people'
-    details: 'View Details'
-
-routes:
-  difficulty:
-    easy: 'Easy'
-    medium: 'Medium'
-    high: 'High'
-  isloch:
-    description: 'Scenic route along one of the most beautiful rivers in Belarus'
-    duration: 'from 1 to 11 h'
-    distance: 'to 40 km'
-    points:
-      borov:
-        name: 'Borovikovshchina village'
-        description: 'Convenient water entry. Next section: Borovikovshchina-Goluby - 4.5h'
-      golubi:
-        name: 'Goluby village'
-        description: 'Equipped campsite with all amenities. Next section: Goluby-Yatskovo - 0.5h'
-      yatskovo:
-        name: 'Yatskovo-Zamostnye village'
-        description: 'Convenient water entry. Next section: Yatskovo-Belokorets - 3h'
-      belokorec:
-        name: 'Belokorets eco-trail'
-        description: 'Equipped campsite with all amenities. Next section: Belokorets-Dorogun - 2.5h'
-      dorogun:
-        name: 'Dorogun village'
-        description: 'Equipped campsite with all amenities. Next section: Dorogun-bridge - 0.5h'
-      most:
-        name: 'Bridge'
-        description: 'Convenient water entry. Further pickup only at the border'
-  svisloch:
-    description: 'Short urban route, ideal for beginners'
-    duration: '2 hours'
-    distance: '7 km'
-    points:
-      start:
-        name: 'Denisovskaya Street'
-        description: 'Convenient starting point with public transport stop'
-      park:
-        name: 'Loshitsky Park'
-        description: 'Beautiful park embankment is pleasing to the eye'
-      ruins:
-        name: 'Mill ruins'
-        description: 'Historic landmark perfectly visible from the river'
-      end:
-        name: 'Dvorishchi'
-        description: 'Finish just before Chizhovka reservoir with convenient car access'
-  berezina:
-    description: 'Long route along the legendary river with overnight camping'
-    duration: '3-4 days'
-    distance: '65 km'
-    points:
-      start:
-        name: 'Borisov'
-        description: 'Historic city - starting point of a big adventure'
-      berezino:
-        name: 'Berezino'
-        description: 'District center with shops and fuel station'
-      camping:
-        name: 'Camping spot'
-        description: 'Equipped campsite by the river'
-      rapids:
-        name: 'Berezina rapids'
-        description: 'The most exciting part of the route'
-      end:
-        name: 'Berezina base'
-        description: 'Finish with shower, restaurant, and transfer'
-
-facilities:
-  parking: 'Parking'
-  cafe: 'Cafe'
-  equipment_rental: 'Equipment rental'
-  rest_area: 'Rest area'
-  shop: 'Shop'
-  historical_site: 'Historical site'
-  restaurant: 'Restaurant'
-  museum: 'Museum'
-  camping: 'Camping'
-  bonfire_area: 'Bonfire area'
-  shower: 'Shower'
-  sauna: 'Sauna'
-  metro_station: 'Metro station'
-  park: 'Park'
-  playground: 'Playground'
-  scenic_view: 'Scenic view'
-  photo_spot: 'Photo spot'
-  public_transport: 'Public transport'
-  guide_briefing: 'Guide briefing'
-  fuel_station: 'Fuel station'
-  fishing: 'Fishing'
-  overnight: 'Overnight'
-  adventure_spot: 'Adventure spot'
-  transport: 'Transfer'
-
-admin:
-  failed_emails:
-    title: "Failed emails"
-    no_emails: "No failed emails found"
-    back_to_list: "Back to list"
-    view_details: "Details"
-    default_locale: "default"
-    attempts_count: "attempts"
-    table:
-      id: "ID"
-      type: "Email type"
-      attempts: "Attempts"
-      created_at: "Created at"
-      last_attempt: "Last attempt"
-      locale: "Locale"
-      actions: "Actions"
-    types:
-      confirmation: "Confirmation"
-      password_reset: "Password reset"
-      order_confirmation: "Order confirmation"
-      notification: "Notification"
-    details:
-      title: "Email details #%id%"
-      basic_info: "Basic information"
-      error_message: "Error message"
-      context: "Email context"
-  dashboard:
-    title: "Admin Dashboard"
-    subtitle: "Site and content management"
-    statistics: "Statistics"
-    management_menu: "Management menu"
-  stats:
-    total_users: "Total users"
-    confirmed_users: "Confirmed"
-    total_orders: "Total orders"
-    failed_emails: "Failed emails"
-  menu:
-    orders:
-      title: "Orders"
-      description: "View and manage rafting orders"
-    users:
-      title: "Users"
-      description: "Manage registered users"
-    failed_emails:
-      title: "Failed emails"
-      description: "View emails that failed to send"
-    logs:
-      title: "Logs"
-      description: "View system logs and errors"
-    make_admin:
-      title: "Make admin"
-      description: "Grant administrator rights to user"
-    routes:
-      title: "Routes"
-      description: "Manage rafting routes and add new ones"
-  back_to_dashboard: "Back to dashboard"
-  pagination:
-    previous: "Previous"
-    next: "Next"
-  orders:
-    title: "Orders"
-    manage_orders: 'Manage orders'
-    no_orders: "No orders yet"
-    days: "days"
-    people: "people"
-    order: "Order"
-    description: "Description"
-    no_description: "No description provided"
-    registered_user: "Registered"
-    guest: "Guest"
-    modal:
-      create:
-        title: 'New order'
-      edit:
-        title: 'View/Edit order'
-    add_new: 'New order'
-    delete: 'Delete'
-    view: 'View'
-    table:
-      id: "ID"
-      email: "Email"
-      river: "River"
-      package: "Services package"
-      people_count: "Participants"
-      duration: "Duration"
-      date: "Rafting date"
-      user: "User type"
-      actions: 'Actions'
-    actions:
-      confirm_delete: "Are you sure you want to delete this order?"
-      error_loading: "Error loading order"
-      error_deleting: "Error deleting order"
-      error_saving: "Error saving order"
-      success_deleted: "Order successfully deleted"
-      success_saved: "Order successfully saved"
-  users:
-    title: "User management"
-    no_users: "No users yet"
-    user: "User"
-    confirmed: "Confirmed"
-    not_confirmed: "Not confirmed"
-    no_phone: "Not specified"
-    email_confirmed: "Email confirmed"
-    orders_count: "Orders"
-    orders: "orders"
-    manage_users: "User management"
-    add_new: "Add user"
-    create_user: "Create user"
-    edit_user: "Edit user"
-    table:
-      id: "ID"
-      email: "Email"
-      phone: "Phone"
-      name: "Name"
-      confirmation: "Confirmation code"
-      roles: "Roles"
-      created_at: "Registration"
-      status: "Status"
-      orders: "Orders"
-      actions: "Actions"
+    no_upcoming: 'You have no upcoming trips yet.'
+    no_past: 'Your past trips will appear here.'
+    details: 'Details'
+    people: '%count% person|%count% people'
     form:
-      email: "Email"
-      email_placeholder: "user@example.com"
-      phone: "Phone"
-      phone_placeholder: "+375291234567"
-      password: "Password"
-      password_placeholder: "Enter password"
-      new_password: "New password"
-      leave_empty: "Leave empty to keep unchanged"
-      confirmed: "Confirmed"
-      admin: "Administrator"
-    edit: "Edit"
-    delete: "Delete"
-    save: "Save"
-    create: "Create"
-    cancel: "Cancel"
-    creating: "Creating..."
-    saving: "Saving..."
-    confirm_delete: "Are you sure you want to delete this user?"
-    error_required_fields: "Fill in the required fields"
-    error_email_required: "Email is required"
-    error_loading: "Error loading user"
-    error_creating: "Error creating user"
-    error_updating: "Error updating user"
-    error_deleting: "Error deleting user"
-    success_created: "User successfully created"
-    success_updated: "User successfully updated"
-    success_deleted: "User successfully deleted"
-  logs:
-    title: "System logs"
-    system_logs: "System logs"
-    lines_count: "Lines count"
-    refresh: "Refresh"
-    showing_last_lines: "Showing last %count% lines"
-    last_updated: "Updated"
-    copy_to_clipboard: "Copy"
-    copied: "Copied!"
-    copy_failed: "Failed to copy"
-    file_not_found: "Log file not found"
-  make_admin:
-    title: "Administrator management"
-    current_admins: "Current administrators"
-    regular_users: "Regular users"
-    administrator: "Administrator"
-    make_admin: "Make admin"
-    already_admin: "Already admin"
-    remove_admin: "Remove rights"
-    no_admins: "No administrators"
-    no_regular_users: "All users are already administrators"
-    console_alternative: "Alternative method via console"
-    description: "To assign a user as administrator, use the console command:"
-    promoting: "Promoting..."
-    removing: "Removing..."
-    confirm_remove: "Are you sure you want to remove administrator rights from this user?"
-    error_occurred: "An error occurred. Please try again."
-    instructions:
-      title: "Instructions:"
-      step: "Using Docker:"
-    warning:
-      title: "Warning!"
-      text: "Administrator rights provide full access to site management. Grant them only to trusted users."
-  routes:
-    title: "Route management"
-    manage_routes: "Route management"
-    add_new: "Add new"
-    no_routes: "No routes found"
-    total_routes: "Total routes"
-    total_size: "Total size"
-    confirm_delete: "Are you sure you want to delete this route?"
-    table:
-      id: "ID"
-      filename: "Filename"
-      size: "Size"
-      modified: "Modified"
-      actions: "Actions"
-    view: "View"
-    edit: "Edit"
-    delete: "Delete"
-    view_route: "View route"
-    edit_route: "Edit route"
-    create_route: "Create route"
-    close: "Close"
-    copy: "Copy"
-    cancel: "Cancel"
-    save: "Save"
-    create: "Create"
-    saving: "Saving..."
-    creating: "Creating..."
-    form:
-      route_id: "Route ID"
-      route_data: "Route data (JSON)"
-      enter_json: "Enter route JSON data"
-      enter_route_id: "Enter unique route ID"
-    template:
-      name: "New route"
-      description: "Description of new route"
-      difficulty: "easy"
-      duration: "2-3 hours"
-      distance: "5 km"
-      start_point: "Start point"
-      start_description: "Route start"
-    error_loading: "Error loading route"
-    error_empty_data: "Route data cannot be empty"
-    error_empty_id: "Route ID cannot be empty"
-    error_invalid_json: "Invalid JSON format"
-    error_saving: "Error saving route"
-    error_creating: "Error creating route"
-    error_deleting: "Error deleting route"
-    error_copying: "Error copying"
-    success_saved: "Route successfully saved"
-    success_created: "Route successfully created"
-    success_deleted: "Route successfully deleted"
-    success_copied: "Content copied to clipboard"
+        title: 'Personal details'
+        name: 'Name'
+        phone: 'Phone'
+        locale: 'Email language'
+        locale_help: 'Booking emails will be sent in this language.'
+        save: 'Save'
+    password:
+        title: 'Change password'
+        current: 'Current password'
+        submit: 'Change password'
+    delete:
+        title: 'Delete account'
+        text: 'Your account and personal data will be deleted. We’ll keep your bookings only to fulfil orders.'
+        confirm: 'Delete your account permanently?'
+        submit: 'Delete account'
+    flash:
+        saved: 'Changes saved.'
+        password_changed: 'Password changed.'
+        deleted: 'Your account has been deleted. We’d love to see you again!'
+        last_admin: 'The last administrator can’t be deleted.'
 
-navigation:
-  admin: "Admin"
+error:
+    home: 'Go to homepage'
+    contact: 'Need help? Call us:'
+    404:
+        title: 'Page not found'
+        text: 'The link may be out of date or there’s a typo in the address. The rivers are still here, though!'
+    403:
+        title: 'Access denied'
+        text: 'You don’t have permission to view this page.'
+    429:
+        title: 'Too many requests'
+        text: 'Please wait a moment and try again.'
+    500:
+        title: 'Something went wrong'
+        text: 'We’re aware of the problem and are fixing it. Try refreshing the page in a couple of minutes.'
+    generic:
+        title: 'Error'
+        text: 'The request could not be completed.'
+
+ics:
+    summary: 'Chöven river trip — %river%'
+    description: 'Booking %reference%, people: %people%. Phone: %phone%'
+
+email:
+    sender_name: 'Chöven'
+    tagline: 'river trips in Belarus'
+    link_fallback: 'If the button doesn’t work, copy this link into your browser:'
+    footer:
+        questions: 'Questions? Get in touch:'
+    order_confirmation:
+        subject: 'Your trip request has been received — %reference%'
+        title: '%name%, thank you for your request!'
+        intro: 'We’ve received your booking and will call you soon to confirm the details. No prepayment needed.'
+        button: 'View booking'
+        calendar: 'A calendar event is attached to this email — add the trip so you don’t forget.'
+        cancel: 'Change of plans? You can cancel your booking using the button above.'
+        checklist: 'Get ready for your trip:'
+        checklist_link: 'what to bring'
+    order_status:
+        subject: 'Booking %reference% status updated'
+        new:
+            title: 'Booking %reference% is active again'
+            text: '%name%, we’ll call you to go over the details.'
+        confirmed:
+            title: 'Booking %reference% confirmed'
+            text: '%name%, everything’s ready! We look forward to seeing you on the day. If your plans change, please let us know.'
+        completed:
+            title: 'Thank you for the trip!'
+            text: '%name%, we hope you enjoyed it.'
+        cancelled:
+            title: 'Booking %reference% cancelled'
+            text: '%name%, your booking has been cancelled. If this is a mistake, just give us a call.'
+            rebook: 'Would you like to choose another date?'
+    review_invitation:
+        subject: 'How was your trip? Leave a review'
+        title: '%name%, thank you for joining us!'
+        text: 'We hope your trip on %date% left you with great memories. Share them with us — it only takes a minute and helps us a lot.'
+        button: 'Leave a review'
+        footer: 'We’d love to see you again — new routes are waiting!'
+    verification:
+        subject: 'Confirm your email for Chöven'
+        title: 'Hello, %name%!'
+        text: 'Thanks for signing up. Please confirm your email address to activate your account.'
+        button: 'Confirm email'
+        expires: 'The link is valid for %hours% h.'
+        ignore: 'If you didn’t sign up on our website, simply ignore this email.'
+    password_reset:
+        subject: 'Password reset'
+        title: 'Change your password'
+        text: 'We received a request to change the password for your account.'
+        button: 'Set a new password'
+        expires: 'The link is valid until %time%.'
+        ignore: 'If you didn’t request a password change, there’s nothing you need to do — your password will stay the same.'
+    admin_new_order:
+        subject: 'New booking %reference% for %date%'
+    admin_order_cancelled:
+        subject: 'Booking %reference% cancelled'
+    admin_contact_request:
+        subject: 'Call back: %name%'
+    admin_new_review:
+        subject: 'New review (%rating%/5) awaiting moderation'

@@ -1,0 +1,63 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.requests'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.requests'|trans }}</h1>
+    </div>
+
+    <div class="chip-filter">
+        {% for value in ['open', 'done', 'all'] %}
+            <a href="{{ path('app_admin_contact_requests', {show: value}) }}" class="{{ show == value ? 'is-active' }}">{{ ('admin.requests.filter.' ~ value)|trans }}</a>
+        {% endfor %}
+    </div>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-solid fa-phone-slash"></i>{{ 'admin.requests.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.requests.col.date'|trans }}</th>
+                        <th>{{ 'contact.form.name'|trans }}</th>
+                        <th>{{ 'contact.form.phone'|trans }}</th>
+                        <th>{{ 'contact.form.message'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for request in page.items %}
+                        <tr style="{{ request.processed ? 'opacity:.6' }}">
+                            <td data-label="{{ 'admin.requests.col.date'|trans }}" class="nowrap text-small">{{ request.createdAt|date('d.m.Y H:i') }}</td>
+                            <td data-label="{{ 'contact.form.name'|trans }}">
+                                <strong>{{ request.name }}</strong>
+                                {% if request.email %}<br><a class="text-small" href="mailto:{{ request.email }}">{{ request.email }}</a>{% endif %}
+                            </td>
+                            <td data-label="{{ 'contact.form.phone'|trans }}" class="nowrap"><a href="tel:{{ request.phoneE164 }}">{{ request.phoneFormatted }}</a></td>
+                            <td data-label="{{ 'contact.form.message'|trans }}" style="white-space: pre-line; max-width: 380px">{{ request.message ?? '—' }}</td>
+                            <td>
+                                <div class="table-actions">
+                                    <form method="post" action="{{ path('app_admin_contact_request_toggle', {id: request.id}) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('contact-' ~ request.id) }}">
+                                        <input type="hidden" name="back" value="{{ show }}">
+                                        <button type="submit" class="btn btn-sm {{ request.processed ? 'btn-outline' : 'btn-success' }}">
+                                            {{ (request.processed ? 'admin.requests.reopen' : 'admin.requests.done')|trans }}
+                                        </button>
+                                    </form>
+                                    <form method="post" action="{{ path('app_admin_contact_request_delete', {id: request.id}) }}" data-turbo-confirm="{{ 'admin.requests.delete_confirm'|trans }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('contact-' ~ request.id) }}">
+                                        <input type="hidden" name="back" value="{{ show }}">
+                                        <button type="submit" class="btn btn-sm btn-ghost text-danger" aria-label="{{ 'admin.common.delete'|trans }}"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

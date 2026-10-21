@@ -1,15 +1,15 @@
-locale_controller:
-    resource: '../src/Controller/LocaleController.php'
-    type: attribute
-
-controllers:
+# Every page of the site lives under a language prefix: /ru/…, /be/…, /en/…
+localized:
     resource:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
     prefix: /{_locale}
     requirements:
-        _locale: ru|be|en
-    defaults:
-        _locale: ru
-    exclude: '../src/Controller/LocaleController.php'
+        _locale: '%app.locales_regex%'
+    exclude: '../src/Controller/RootController.php'
+
+# "/", robots.txt, sitemap.xml and the health check have no language prefix.
+root:
+    resource: App\Controller\RootController
+    type: attribute

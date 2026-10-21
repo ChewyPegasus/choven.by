@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'nav.settings'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex">{% endblock %}
+
+{% block body %}
+    <section class="page-head">
+        <div class="container">
+            <h1>{{ 'nav.settings'|trans }}</h1>
+            <p>{{ app.user.email }}</p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0">
+        <div class="container container-narrow">
+            {% include 'profile/_nav.html.twig' %}
+
+            <div class="card">
+                <h2 class="card-title">{{ 'profile.form.title'|trans }}</h2>
+                {{ form_start(profile_form) }}
+                    {{ form_errors(profile_form) }}
+                    <div class="form-row">
+                        {{ form_row(profile_form.name) }}
+                        {{ form_row(profile_form.phone) }}
+                    </div>
+                    {{ form_row(profile_form.locale) }}
+                    {{ form_row(profile_form.marketingConsent) }}
+                    {{ form_rest(profile_form) }}
+                    <button type="submit" class="btn">{{ 'profile.form.save'|trans }}</button>
+                {{ form_end(profile_form) }}
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">{{ 'profile.password.title'|trans }}</h2>
+                {{ form_start(password_form) }}
+                    {{ form_errors(password_form) }}
+                    {{ form_row(password_form.currentPassword) }}
+                    <div class="form-row">
+                        {{ form_row(password_form.plainPassword.first) }}
+                        {{ form_row(password_form.plainPassword.second) }}
+                    </div>
+                    {{ form_errors(password_form.plainPassword) }}
+                    {{ form_rest(password_form) }}
+                    <button type="submit" class="btn btn-dark">{{ 'profile.password.submit'|trans }}</button>
+                {{ form_end(password_form) }}
+            </div>
+
+            <div class="card" style="border-color: #f6c6c6">
+                <h2 class="card-title text-danger">{{ 'profile.delete.title'|trans }}</h2>
+                <p class="text-muted">{{ 'profile.delete.text'|trans }}</p>
+                <form method="post" action="{{ path('app_profile_delete') }}" data-turbo-confirm="{{ 'profile.delete.confirm'|trans }}">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete-account') }}">
+                    <button type="submit" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i> {{ 'profile.delete.submit'|trans }}</button>
+                </form>
+            </div>
+        </div>
+    </section>
+{% endblock %}

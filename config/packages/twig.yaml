@@ -1,5 +1,12 @@
 twig:
     file_name_pattern: '*.twig'
+    form_themes: ['form/theme.html.twig']
+    globals:
+        settings: '@App\Service\SiteSettings'
+        site_name: 'Choven.by'
+    date:
+        format: 'd.m.Y H:i'
+        timezone: 'Europe/Minsk'
 
 when@test:
     twig:

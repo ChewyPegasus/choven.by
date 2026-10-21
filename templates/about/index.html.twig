@@ -1,26 +1,81 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ 'about.title'|trans }}{% endblock %}
-
-{% block head %}
-    {% block stylesheets %}
-        {{ parent() }}
-        <link rel="stylesheet" href="{{ asset('styles/about.css') }}">
-    {% endblock %}
-{% endblock %}
+{% block meta_description %}{{ 'about.meta_description'|trans }}{% endblock %}
 
 {% block body %}
-    <!-- History -->
-    {% include 'partials/about/history.html.twig' %}
-    
-    <!-- Photogallery -->
-    {% include 'partials/about/photogallery.html.twig' with {'images': gallery_images} %}
-    
-    <!-- Contacts -->
-    {% include 'partials/about/contacts.html.twig' %}
-{% endblock %}
+    <section class="page-head">
+        <div class="container">
+            <span class="eyebrow">{{ 'about.eyebrow'|trans }}</span>
+            <h1>{{ 'about.title'|trans }}</h1>
+        </div>
+    </section>
 
-{% block javascripts %}
-    {{ parent() }}
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <section class="section" style="padding-top: 0">
+        <div class="container">
+            <div class="prose">
+                <h2>{{ 'about.history.title'|trans }}</h2>
+                <p>{{ 'about.history.p1'|trans }}</p>
+                <p>{{ 'about.history.p2'|trans }}</p>
+                <p>{{ 'about.history.p3'|trans }}</p>
+                <blockquote>{{ 'about.history.quote'|trans }}</blockquote>
+                <p>{{ 'about.history.p4'|trans }}</p>
+                <p>{{ 'about.history.p5'|trans }}</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section section-soft" id="gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">{{ 'about.gallery.title'|trans }}</h2>
+            </div>
+            {% if gallery_images is not empty %}
+                <div data-controller="lightbox">
+                    <div class="gallery">
+                        {% for image in gallery_images %}
+                            <a href="{{ asset(image) }}" data-lightbox-target="link" data-action="lightbox#open">
+                                <img src="{{ asset(image) }}" alt="{{ 'about.gallery.photo'|trans({'%number%': loop.index}) }}" loading="lazy" decoding="async">
+                            </a>
+                        {% endfor %}
+                    </div>
+                    <dialog class="lightbox" data-lightbox-target="dialog" data-action="keydown->lightbox#keydown touchstart->lightbox#touchstart touchend->lightbox#touchend">
+                        <img src="" alt="" data-lightbox-target="image">
+                        {% if gallery_images|length > 1 %}
+                            <button type="button" class="lightbox-nav lightbox-prev" data-action="lightbox#previous" aria-label="{{ 'a11y.previous'|trans }}"><i class="fa-solid fa-chevron-left"></i></button>
+                            <button type="button" class="lightbox-nav lightbox-next" data-action="lightbox#next" aria-label="{{ 'a11y.next'|trans }}"><i class="fa-solid fa-chevron-right"></i></button>
+                        {% endif %}
+                        <button type="button" class="lightbox-nav lightbox-close" data-action="lightbox#close" aria-label="{{ 'a11y.close'|trans }}"><i class="fa-solid fa-xmark"></i></button>
+                    </dialog>
+                </div>
+            {% else %}
+                <div class="empty"><i class="fa-regular fa-images"></i>{{ 'about.gallery.empty'|trans }}</div>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="section" id="contacts">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">{{ 'about.contacts.title'|trans }}</h2>
+            </div>
+            <div class="grid grid-3 contact-cards">
+                <div class="card">
+                    <span class="benefit-icon"><i class="fa-solid fa-phone"></i></span>
+                    <h3 class="card-title">{{ 'about.contacts.phone'|trans }}</h3>
+                    <a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a>
+                </div>
+                <div class="card">
+                    <span class="benefit-icon"><i class="fa-solid fa-envelope"></i></span>
+                    <h3 class="card-title">Email</h3>
+                    <a href="mailto:{{ settings.email }}">{{ settings.email }}</a>
+                </div>
+                <div class="card">
+                    <span class="benefit-icon"><i class="fa-solid fa-comments"></i></span>
+                    <h3 class="card-title">{{ 'about.contacts.messengers'|trans }}</h3>
+                    {% include '_partials/socials.html.twig' %}
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}

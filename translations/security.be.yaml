@@ -1,0 +1,4 @@
+security:
+    account_not_verified: 'Пацвердзіце email: мы адправілі спасылку пры рэгістрацыі.'
+'Invalid credentials.': 'Няправільны email/тэлефон або пароль.'
+'Bad credentials.': 'Няправільны email/тэлефон або пароль.'

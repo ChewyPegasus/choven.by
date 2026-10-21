@@ -1,0 +1,29 @@
+<article class="card order-card">
+    <div class="order-date">
+        <strong>{{ order.startDate|date('d') }}</strong>
+        <span>{{ order.startDate|format_date(pattern: 'LLL', locale: app.request.locale) }}</span>
+        <div class="text-small">{{ order.startDate|date('Y') }}</div>
+    </div>
+    <div>
+        <div class="cluster mb-1" style="gap: 8px">
+            <span class="badge badge-status-{{ order.status.value }}">{{ order.status|trans }}</span>
+            <span class="text-small text-muted">{{ order.reference }}</span>
+        </div>
+        <h3>{{ order.tour ? order.tour.title|localized : order.river|trans }}</h3>
+        <div class="cluster">
+            <span><i class="fa-regular fa-clock"></i> {{ 'tour.days'|trans({'%count%': order.durationDays}) }}</span>
+            <span><i class="fa-solid fa-users"></i> {{ 'profile.people'|trans({'%count%': order.amountOfPeople}) }}</span>
+            <span><i class="fa-solid fa-box-open"></i> {{ order.package|trans }}</span>
+            {% if order.estimatedPrice %}<span><i class="fa-solid fa-coins"></i> {{ order.estimatedPrice|byn }}</span>{% endif %}
+        </div>
+    </div>
+    <div class="order-card-actions">
+        <a class="btn btn-sm btn-outline" href="{{ path('app_order_show', {token: order.accessToken}) }}">{{ 'profile.details'|trans }}</a>
+        {% if order.canBeCancelledByCustomer %}
+            <form method="post" action="{{ path('app_profile_order_cancel', {reference: order.reference}) }}" data-turbo-confirm="{{ 'booking.show.cancel_confirm'|trans }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('cancel-order-' ~ order.id) }}">
+                <button type="submit" class="btn btn-sm btn-ghost text-danger w-100">{{ 'booking.show.cancel'|trans }}</button>
+            </form>
+        {% endif %}
+    </div>
+</article>

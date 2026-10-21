@@ -1,5 +1,5 @@
 import { startStimulusApp } from '@symfony/stimulus-bundle';
+import './controllers/csrf_protection_controller.js';
 
-const app = startStimulusApp();
-// register any custom, 3rd party controllers here
-// app.register('some_controller_name', SomeImportedController);
+// Controllers in assets/controllers/ are registered automatically (lazy ones are loaded on first use).
+startStimulusApp();

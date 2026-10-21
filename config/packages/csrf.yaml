@@ -1,10 +1,12 @@
-# Enable stateless CSRF protection for forms and logins/logouts
+# Stateless CSRF protection for forms, login and logout: public pages with forms do not need a session.
+# assets/controllers/csrf_protection_controller.js adds the double-submit cookie / header.
 framework:
     form:
         csrf_protection:
             token_id: submit
 
     csrf_protection:
+        check_header: true
         stateless_token_ids:
             - submit
             - authenticate

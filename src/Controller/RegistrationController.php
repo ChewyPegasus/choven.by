@@ -4,148 +4,125 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Form\RegistrationForm;
-use App\Service\Registration\EmailVerificationService;
-use App\Service\Registration\UserRegistrationService;
+use App\Entity\User;
+use App\Form\RegistrationType;
+use App\Form\ResetPasswordRequestType;
+use App\Repository\UserRepository;
+use App\Service\EmailVerifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Translation\TranslatableMessage;
+use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
-/**
- * Controller for handling user registration and email verification.
- *
- * This controller provides endpoints for new user sign-up and
- * for confirming email addresses via a verification link.
- */
 final class RegistrationController extends AbstractController
 {
-    /**
-     * Constructs a new RegistrationController instance.
-     *
-     * @param UserRegistrationService $registrationService The service for user registration logic.
-     * @param EmailVerificationService $verificationService The service for email verification logic.
-     */
     public function __construct(
-        private readonly UserRegistrationService $registrationService,
-        private readonly EmailVerificationService $verificationService,
+        private readonly EmailVerifier $emailVerifier,
+        private readonly UserRepository $users,
     ) {
     }
 
-    /**
-     * Handles new user registration.
-     *
-     * Displays the registration form. Upon valid submission, it attempts to
-     * register the user, validate uniqueness, and send a verification email.
-     * If email sending fails, it queues the email for retry.
-     *
-     * @param Request $request The current HTTP request.
-     * @param TranslatorInterface $translator The translator service for internationalization.
-     * @return Response The HTTP response for the registration form or a redirect.
-     */
-    #[Route('/register', name: 'app_register')]
+    #[Route('/register', name: 'app_register', methods: ['GET', 'POST'])]
     public function register(
         Request $request,
-        TranslatorInterface $translator,
+        UserPasswordHasherInterface $hasher,
+        RateLimiterFactoryInterface $registrationLimiter,
     ): Response {
-        // Redirect authenticated users away from the registration page
-        if ($this->getUser()) {
-            return $this->redirectToRoute('app_main');
+        if (null !== $this->getUser()) {
+            return $this->redirectToRoute('app_profile_orders');
         }
-        
-        // Create a new user entity and the registration form
-        $user = $this->registrationService->createUser();
-        $form = $this->createForm(RegistrationForm::class, $user);
+
+        $user = new User();
+        $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Validate user uniqueness (e.g., email already exists)
-            $validationError = $this->registrationService->validateUserUniqueness($user);
-            if ($validationError) {
-                $this->addFlash('error', $translator->trans($validationError));
+            if (!$registrationLimiter->create($request->getClientIp())->consume()->isAccepted()) {
+                $this->addFlash('error', 'flash.too_many_requests');
 
                 return $this->redirectToRoute('app_register');
             }
 
-            // Register the user (persist to database, hash password)
-            $this->registrationService->registerUser(
-                $user, 
-                $form->get('plainPassword')->getData() // Get plain password from form
-            );
+            $user->setPassword($hasher->hashPassword($user, (string) $form->get('plainPassword')->getData()));
+            $user->setLocale($request->getLocale());
+            $this->users->save($user);
 
-            // Generate the absolute URL for email verification
-            $confirmUrl = $this->generateUrl(
-                'app_verify_email',
-                ['code' => $user->getConfirmationCode()],
-                UrlGeneratorInterface::ABSOLUTE_URL
-            );
+            $this->emailVerifier->sendConfirmation($user);
+            $request->getSession()->set('registration_email', $user->getEmail());
 
-            // Attempt to send the verification email
-            $emailSent = $this->registrationService->sendVerificationEmail(
-                $user, 
-                $confirmUrl, 
-                $request->getLocale()
-            );
-
-            if ($emailSent) {
-                $this->addFlash('success', $translator->trans('registration.success'));
-            } else {
-                // If email sending fails, queue it for retry
-                $this->registrationService->queueVerificationEmail(
-                    $user, 
-                    $confirmUrl, 
-                    $request->getLocale()
-                );
-                $this->addFlash('info', $translator->trans('registration.info.email_queued'));
-            }
-
-            return $this->redirectToRoute('app_main'); // Redirect after successful registration
+            return $this->redirectToRoute('app_register_check_email');
         }
 
-        // Render the registration form for initial display or if validation fails
-        return $this->render('registration/register.html.twig', [
-            'registrationForm' => $form->createView(),
+        return $this->render('registration/register.html.twig', ['form' => $form]);
+    }
+
+    #[Route('/register/check-email', name: 'app_register_check_email', methods: ['GET'])]
+    public function checkEmail(Request $request): Response
+    {
+        return $this->render('registration/check_email.html.twig', [
+            'email' => $request->getSession()->get('registration_email'),
         ]);
     }
 
     /**
-     * Verifies a user's email address using a confirmation code.
-     *
-     * This method is accessed via a link sent in the verification email.
-     * It finds the user by the provided code, confirms their account,
-     * and provides feedback via flash messages.
-     *
-     * @param string $code The unique confirmation code for email verification.
-     * @param TranslatorInterface $translator The translator service for internationalization.
-     * @return Response A RedirectResponse to the main page or login page.
+     * Target of the signed link from the confirmation email. Works without being signed in.
      */
-    #[Route('/verify/{code}', name: 'app_verify_email')]
-    public function verifyUserEmail(
-        string $code, 
-        TranslatorInterface $translator,
-    ): Response {
-        // Find user by the confirmation code
-        $user = $this->verificationService->findUserByConfirmationCode($code);
-        
-        if (!$user) {
-            $this->addFlash('error', $translator->trans('verification.invalid_link'));
-            
-            return $this->redirectToRoute('app_main');
+    #[Route('/verify', name: 'app_verify_email', methods: ['GET'])]
+    public function verify(Request $request): Response
+    {
+        $user = $this->users->find($request->query->getInt('id'));
+        if (null === $user) {
+            $this->addFlash('error', 'verification.flash.invalid');
+
+            return $this->redirectToRoute('app_verify_resend');
         }
 
-        // Check if the user is already confirmed
-        if ($user->isConfirmed()) {
-            $this->addFlash('info', $translator->trans('verification.already_confirmed'));
-            
+        if ($user->isVerified()) {
+            $this->addFlash('info', 'verification.flash.already');
+
             return $this->redirectToRoute('app_login');
         }
 
-        // Confirm the user's email
-        $this->verificationService->confirmUser($user);
-        $this->addFlash('success', $translator->trans('verification.success'));
+        try {
+            $this->emailVerifier->confirm($request, $user);
+        } catch (VerifyEmailExceptionInterface $e) {
+            $this->addFlash('error', new TranslatableMessage($e->getReason(), [], 'VerifyEmailBundle'));
 
-        return $this->redirectToRoute('app_login'); // Redirect to login after successful verification
+            return $this->redirectToRoute('app_verify_resend');
+        }
+
+        $this->addFlash('success', 'verification.flash.success');
+
+        return $this->redirectToRoute('app_login');
+    }
+
+    /**
+     * Sends a fresh confirmation link. The answer is the same whether the email exists or not.
+     */
+    #[Route('/verify/resend', name: 'app_verify_resend', methods: ['GET', 'POST'])]
+    public function resend(Request $request, RateLimiterFactoryInterface $verificationLimiter): Response
+    {
+        $form = $this->createForm(ResetPasswordRequestType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $email = (string) $form->get('email')->getData();
+            $limit = $verificationLimiter->create(mb_strtolower($email).'|'.$request->getClientIp())->consume();
+
+            $user = $this->users->findOneByEmail($email);
+            if ($limit->isAccepted() && null !== $user && !$user->isVerified()) {
+                $this->emailVerifier->sendConfirmation($user);
+            }
+
+            $request->getSession()->set('registration_email', $email);
+
+            return $this->redirectToRoute('app_register_check_email');
+        }
+
+        return $this->render('registration/resend.html.twig', ['form' => $form]);
     }
 }

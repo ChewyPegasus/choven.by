@@ -6,181 +6,306 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use App\Entity\User;
-use App\Exception\OrderNotFoundException;
-use App\Factory\ExceptionFactory;
-use App\Repository\Interfaces\OrderRepositoryInterface;
+use App\Enum\OrderStatus;
+use App\Model\OrderFilter;
+use App\Model\Page;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Types;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Psr\Clock\ClockInterface;
-use Doctrine\DBAL\LockMode; // Import LockMode for type hinting
 
 /**
- * Repository for managing Order entities.
- *
- * This class provides data access methods for `Order` entities,
- * including finding upcoming and past orders for a user, and standard
- * persistence operations.
- *
  * @extends ServiceEntityRepository<Order>
  */
-class OrderRepository extends ServiceEntityRepository implements OrderRepositoryInterface
+class OrderRepository extends ServiceEntityRepository
 {
-    /**
-     * Constructs a new OrderRepository.
-     *
-     * @param ManagerRegistry $registry The Doctrine ManagerRegistry.
-     * @param ClockInterface $clock The PSR-20 ClockInterface for obtaining the current time.
-     */
     public function __construct(
-        private readonly ManagerRegistry $registry,
+        ManagerRegistry $registry,
         private readonly ClockInterface $clock,
-        private readonly ExceptionFactory $exceptionFactory,
     ) {
         parent::__construct($registry, Order::class);
     }
 
-    /**
-     * Finds all upcoming orders for a given user.
-     *
-     * An "upcoming" order is defined as an order whose `startDate` is
-     * on or after the current date (midnight of today).
-     *
-     * @param User $user The user for whom to find upcoming orders.
-     * @return Order[] An array of upcoming Order entities, ordered by start date ascending.
-     */
-    public function findUpcomingOrdersByUser(User $user): array
+    public function findOneByAccessToken(string $token): ?Order
     {
-        // Get the current date at midnight to compare against order start dates
-        $today = $this->clock->now()->setTime(0, 0, 0);
-        
-        return $this->createQueryBuilder('o')
-            ->where('o.user = :user')
-            ->andWhere('o.startDate >= :today')
-            ->setParameter('user', $user)
-            ->setParameter('today', $today)
-            ->orderBy('o.startDate', 'ASC')
-            ->getQuery()
-            ->getResult();
+        return $this->findOneBy(['accessToken' => $token]);
+    }
+
+    public function findOneByReference(string $reference): ?Order
+    {
+        return $this->findOneBy(['reference' => mb_strtoupper(trim($reference))]);
     }
 
     /**
-     * Finds all past orders for a given user.
-     *
-     * A "past" order is defined as an order whose `startDate` is
-     * before the current date (midnight of today).
-     *
-     * @param User $user The user for whom to find past orders.
-     * @return Order[] An array of past Order entities, ordered by start date descending.
+     * @return Page<Order>
      */
-    public function findPastOrdersByUser(User $user): array
+    public function findByFilter(OrderFilter $filter, int $page, int $perPage = 25): Page
     {
-        // Get the current date at midnight to compare against order start dates
-        $today = $this->clock->now()->setTime(0, 0, 0);
-        
-        return $this->createQueryBuilder('o')
-            ->where('o.user = :user')
-            ->andWhere('o.startDate < :today')
-            ->setParameter('user', $user)
-            ->setParameter('today', $today)
-            ->orderBy('o.startDate', 'DESC')
-            ->getQuery()
-            ->getResult();
+        /* @var Page<Order> */
+        return Page::fromQueryBuilder($this->createFilterQueryBuilder($filter), $page, $perPage);
     }
 
     /**
-     * Persists an Order entity to the database.
+     * Same as findByFilter but without pagination, as a generator — used by the CSV export.
      *
-     * @param Order $order The Order entity to save.
+     * @return iterable<Order>
      */
-    public function save(Order $order): void
+    public function iterateByFilter(OrderFilter $filter): iterable
     {
-        $this->getEntityManager()->persist($order);
-        $this->getEntityManager()->flush();
+        /* @var iterable<Order> */
+        return $this->createFilterQueryBuilder($filter)->getQuery()->toIterable();
     }
 
-    /**
-     * Removes an Order entity from the database.
-     *
-     * @param Order $order The Order entity to remove.
-     */
-    public function remove(Order $order): void
+    private function createFilterQueryBuilder(OrderFilter $filter): QueryBuilder
     {
-        $this->getEntityManager()->remove($order);
-        $this->getEntityManager()->flush();
-    }
+        $qb = $this->createQueryBuilder('o')
+            ->leftJoin('o.tour', 't')->addSelect('t')
+            ->leftJoin('o.user', 'u')->addSelect('u');
 
-    /**
-     * Flushes all pending changes to the database.
-     *
-     * This method commits all changes tracked by the Entity Manager to the database.
-     */
-    public function flush(): void
-    {
-        $this->getEntityManager()->flush();
-    }
-
-    /**
-     * Counts the number of Order entities matching the given criteria.
-     *
-     * @param array<string, mixed> $criteria An array of key-value pairs to match.
-     * @return int The number of entities matching the criteria.
-     */
-    public function count(array $criteria = []): int
-    {
-        return parent::count($criteria);
-    }
-
-    /**
-     * Finds Order entities by a set of criteria.
-     *
-     * @param array<string, mixed> $criteria An array of key-value pairs to match.
-     * @param array<string, string>|null $orderBy An array of order by clauses.
-     * @param int|null $limit The maximum number of results to retrieve.
-     * @param int|null $offset The offset from the beginning of the result set.
-     * @return Order[] An array of Order entities.
-     */
-    public function findBy(array $criteria, ?array $orderBy = null, ?int $limit = null, ?int $offset = null): array
-    {
-        return parent::findBy($criteria, $orderBy, $limit, $offset);
-    }
-
-    /**
-     * Finds an entity by its primary key / identifier.
-     *
-     * @param mixed $id The identifier.
-     * @param LockMode|int|null $lockMode The lock mode to apply to the entity.
-     * @param int|null $lockVersion The entity's version.
-     * @return object|null The entity found or null if not found.
-     */
-    public function find(mixed $id, LockMode|int|null $lockMode = null, ?int $lockVersion = null): ?object
-    {
-        return parent::find($id, $lockMode, $lockVersion);
-    }
-
-    /**
-     * @throws OrderNotFoundException If no order with the given ID exists.
-     */
-    public function getById(int $id): Order
-    {
-        $order = $this->find($id);
-
-        if (!$order) {
-            throw $this->exceptionFactory->createOrderNotFoundException($id);
+        if (null !== $filter->query && '' !== trim($filter->query)) {
+            $q = mb_strtolower(trim($filter->query));
+            $digits = preg_replace('/\D+/', '', $q) ?? '';
+            $or = 'LOWER(o.reference) LIKE :q OR LOWER(o.name) LIKE :q OR LOWER(o.email) LIKE :q';
+            if (\strlen($digits) >= 3) {
+                $or .= ' OR o.phone LIKE :digits';
+                $qb->setParameter('digits', '%'.$digits.'%');
+            }
+            $qb->andWhere($or)->setParameter('q', '%'.$q.'%');
+        }
+        if (null !== $filter->status) {
+            $qb->andWhere('o.status = :status')->setParameter('status', $filter->status);
+        }
+        if (null !== $filter->river) {
+            $qb->andWhere('o.river = :river')->setParameter('river', $filter->river);
+        }
+        if (null !== $filter->package) {
+            $qb->andWhere('o.package = :package')->setParameter('package', $filter->package);
+        }
+        if (null !== $filter->from) {
+            $qb->andWhere('o.startDate >= :from')->setParameter('from', $filter->from->setTime(0, 0), Types::DATE_IMMUTABLE);
+        }
+        if (null !== $filter->to) {
+            $qb->andWhere('o.startDate <= :to')->setParameter('to', $filter->to->setTime(0, 0), Types::DATE_IMMUTABLE);
         }
 
-        return $order;
+        match ($filter->sort) {
+            'start_asc' => $qb->orderBy('o.startDate', \SortDirection::Ascending),
+            'created_desc' => $qb->orderBy('o.createdAt', \SortDirection::Descending),
+            'created_asc' => $qb->orderBy('o.createdAt', \SortDirection::Ascending),
+            default => $qb->orderBy('o.startDate', \SortDirection::Descending),
+        };
+        $qb->addOrderBy('o.id', \SortDirection::Descending);
+
+        return $qb;
     }
 
     /**
-     * Finds orders with pagination support, ordered by start date descending.
+     * @return list<Order>
      */
-    public function findWithPagination(int $limit, int $offset): array
+    public function findUpcomingForUser(User $user): array
     {
-        return $this->findBy(
-            [],
-            ['startDate' => 'DESC'],
-            $limit,
-            $offset
-        );
+        /* @var list<Order> */
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.user = :user')
+            ->andWhere('o.startDate >= :today')
+            ->setParameter('user', $user)
+            ->setParameter('today', $this->today(), Types::DATE_IMMUTABLE)
+            ->orderBy('o.startDate', \SortDirection::Ascending)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @return list<Order>
+     */
+    public function findPastForUser(User $user): array
+    {
+        /* @var list<Order> */
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.user = :user')
+            ->andWhere('o.startDate < :today')
+            ->setParameter('user', $user)
+            ->setParameter('today', $this->today(), Types::DATE_IMMUTABLE)
+            ->orderBy('o.startDate', \SortDirection::Descending)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Guest bookings made with the same email before the account was created.
+     */
+    public function attachGuestOrdersToUser(User $user): int
+    {
+        return $this->createQueryBuilder('o')
+            ->update()
+            ->set('o.user', ':user')
+            ->andWhere('o.user IS NULL')
+            ->andWhere('o.email = :email')
+            ->setParameter('user', $user)
+            ->setParameter('email', $user->getEmail())
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return list<Order>
+     */
+    public function findUpcoming(int $limit = 10): array
+    {
+        /* @var list<Order> */
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.startDate >= :today')
+            ->andWhere('o.status IN (:active)')
+            ->setParameter('today', $this->today(), Types::DATE_IMMUTABLE)
+            ->setParameter('active', OrderStatus::active())
+            ->orderBy('o.startDate', \SortDirection::Ascending)
+            ->addOrderBy('o.id', \SortDirection::Ascending)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Active bookings that touch the [from, to] period (a trip can span several days).
+     *
+     * @return list<Order>
+     */
+    public function findActiveInPeriod(\DateTimeImmutable $from, \DateTimeImmutable $to, ?Order $exclude = null): array
+    {
+        $qb = $this->createQueryBuilder('o')
+            ->andWhere('o.status IN (:active)')
+            ->andWhere('o.startDate >= :earliest')
+            ->andWhere('o.startDate <= :to')
+            ->setParameter('active', OrderStatus::active())
+            // Trips last at most MAX_DAYS, so anything that started earlier has already ended.
+            ->setParameter('earliest', $from->setTime(0, 0)->modify(\sprintf('-%d days', Order::MAX_DAYS - 1)), Types::DATE_IMMUTABLE)
+            ->setParameter('to', $to->setTime(0, 0), Types::DATE_IMMUTABLE)
+            ->orderBy('o.startDate', \SortDirection::Ascending);
+
+        if (null !== $exclude?->getId()) {
+            $qb->andWhere('o.id != :exclude')->setParameter('exclude', $exclude->getId());
+        }
+
+        /** @var list<Order> $orders */
+        $orders = $qb->getQuery()->getResult();
+        $from = $from->setTime(0, 0);
+
+        return array_values(array_filter($orders, static fn (Order $o): bool => $o->getEndDate() >= $from));
+    }
+
+    /**
+     * Number of booked people per day ("Y-m-d" => people) for the capacity check and the calendar.
+     *
+     * @return array<string, int>
+     */
+    public function getBookedPeopleByDay(\DateTimeImmutable $from, \DateTimeImmutable $to, ?Order $exclude = null): array
+    {
+        $from = $from->setTime(0, 0);
+        $to = $to->setTime(0, 0);
+        $result = [];
+
+        foreach ($this->findActiveInPeriod($from, $to, $exclude) as $order) {
+            $day = $order->getStartDate();
+            $end = $order->getEndDate();
+            while (null !== $day && $day <= $end) {
+                if ($day >= $from && $day <= $to) {
+                    $key = $day->format('Y-m-d');
+                    $result[$key] = ($result[$key] ?? 0) + (int) $order->getAmountOfPeople();
+                }
+                $day = $day->modify('+1 day');
+            }
+        }
+
+        ksort($result);
+
+        return $result;
+    }
+
+    /**
+     * @return array<string, int> status value => count
+     */
+    public function countByStatus(): array
+    {
+        $rows = $this->createQueryBuilder('o')
+            ->select('o.status AS status, COUNT(o.id) AS total')
+            ->groupBy('o.status')
+            ->getQuery()
+            ->getArrayResult();
+
+        $result = array_fill_keys(array_map(static fn (OrderStatus $s): string => $s->value, OrderStatus::cases()), 0);
+        foreach ($rows as $row) {
+            $status = $row['status'] instanceof OrderStatus ? $row['status']->value : (string) $row['status'];
+            $result[$status] = (int) $row['total'];
+        }
+
+        return $result;
+    }
+
+    public function countSince(\DateTimeImmutable $since): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->andWhere('o.createdAt >= :since')
+            ->setParameter('since', $since)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Bookings and people per month of the trip start date for the last $months months.
+     *
+     * @return array<string, array{orders: int, people: int}> "Y-m" => totals, oldest first
+     */
+    public function getMonthlyStats(int $months = 12): array
+    {
+        $start = $this->today()->modify('first day of this month')->modify(\sprintf('-%d months', $months - 1));
+        $end = $this->today()->modify('last day of this month');
+
+        $result = [];
+        for ($month = $start; $month <= $end; $month = $month->modify('+1 month')) {
+            $result[$month->format('Y-m')] = ['orders' => 0, 'people' => 0];
+        }
+
+        $rows = $this->createQueryBuilder('o')
+            ->select('o.startDate AS startDate, o.amountOfPeople AS people')
+            ->andWhere('o.startDate BETWEEN :start AND :end')
+            ->andWhere('o.status != :cancelled')
+            ->setParameter('start', $start, Types::DATE_IMMUTABLE)
+            ->setParameter('end', $end, Types::DATE_IMMUTABLE)
+            ->setParameter('cancelled', OrderStatus::CANCELLED)
+            ->getQuery()
+            ->getArrayResult();
+
+        foreach ($rows as $row) {
+            $key = $row['startDate']->format('Y-m');
+            if (isset($result[$key])) {
+                ++$result[$key]['orders'];
+                $result[$key]['people'] += (int) $row['people'];
+            }
+        }
+
+        return $result;
+    }
+
+    public function save(Order $order, bool $flush = true): void
+    {
+        $this->getEntityManager()->persist($order);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    public function remove(Order $order, bool $flush = true): void
+    {
+        $this->getEntityManager()->remove($order);
+        if ($flush) {
+            $this->getEntityManager()->flush();
+        }
+    }
+
+    private function today(): \DateTimeImmutable
+    {
+        return $this->clock->now()->setTime(0, 0);
     }
 }
