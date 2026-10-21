@@ -19,7 +19,7 @@
 <p>Marketing emails are sent only with your separate consent, which you can withdraw in your profile settings.</p>
 
 <h2>3. Cookies</h2>
-<p>The Site uses essential cookies only: the sign-in session, the “Remember me” feature and protection of forms against request forgery. We do not use third-party advertising or analytics cookies.</p>
+<p>The Site uses essential cookies: the sign-in session, the “Remember me” feature and protection of forms against request forgery.{% if settings.hasAnalytics %} To measure traffic we use web analytics ({{ [settings.yandexMetrikaId ? 'Yandex Metrica', settings.googleAnalyticsId ? 'Google Analytics']|filter(v => v)|join(', ') }}), which set their own cookies; you can block them in your browser settings.{% else %} We do not use third-party advertising or analytics cookies.{% endif %}</p>
 
 <h2>4. Sharing</h2>
 <p>We do not sell or share your data with third parties. Data is stored on servers of our hosting provider and emails are delivered through an email service; these companies process data only on our behalf. The route map is loaded from OpenStreetMap servers, which receive your IP address.</p>

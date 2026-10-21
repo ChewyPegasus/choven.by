@@ -30,7 +30,7 @@ final class TranslationCoverageTest extends WebTestCase
             '/login', '/register', '/register/check-email', '/reset-password', '/verify/resend',
             '/booking/'.$order->getAccessToken(), '/booking/'.$past->getAccessToken(), '/booking/'.$past->getAccessToken().'/review'];
         $private = ['/profile/orders', '/profile/settings', '/admin', '/admin/orders', '/admin/orders/new', '/admin/orders/'.$order->getId().'/edit',
-            '/admin/orders/calendar', '/admin/users', '/admin/users/new', '/admin/users/'.$admin->getId().'/edit', '/admin/tours', '/admin/tours/new',
+            '/admin/orders/calendar', '/admin/orders/day/'.$order->getStartDate()?->format('Y-m-d'), '/admin/users', '/admin/users/new', '/admin/users/'.$admin->getId().'/edit', '/admin/tours', '/admin/tours/new',
             '/admin/tours/1/edit', '/admin/routes', '/admin/routes/new', '/admin/routes/1/edit', '/admin/reviews?status=all', '/admin/requests',
             '/admin/settings', '/admin/emails', '/admin/logs'];
 
@@ -66,6 +66,9 @@ final class TranslationCoverageTest extends WebTestCase
         // Visible text plus the attributes people can see (placeholders, titles, labels).
         $text = $crawler->filter('body')->text('', true);
         foreach ($crawler->filter('[placeholder], [title], [aria-label], [data-turbo-confirm], option') as $node) {
+            if (!$node instanceof \DOMElement) {
+                continue;
+            }
             foreach (['placeholder', 'title', 'aria-label', 'data-turbo-confirm'] as $attribute) {
                 $text .= ' '.$node->getAttribute($attribute);
             }

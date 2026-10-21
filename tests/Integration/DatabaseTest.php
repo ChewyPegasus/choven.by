@@ -6,7 +6,9 @@ namespace App\Tests\Integration;
 
 use App\Enum\OrderStatus;
 use App\Message\CompletePastOrders;
+use App\Message\SendTripReminders;
 use App\MessageHandler\CompletePastOrdersHandler;
+use App\MessageHandler\SendTripRemindersHandler;
 use App\Model\OrderFilter;
 use App\Repository\OrderRepository;
 use App\Repository\RaftingRouteRepository;
@@ -63,6 +65,21 @@ final class DatabaseTest extends KernelTestCase
             $filter->query = $query;
             self::assertSame([$order->getId()], array_map(static fn ($o) => $o->getId(), $repository->findByFilter($filter, 1)->items), $query);
         }
+    }
+
+    public function testTripRemindersAreSentOnceForConfirmedTripsInTwoDays(): void
+    {
+        $soon = $this->factory->order('+2 days', status: OrderStatus::CONFIRMED);
+        $this->factory->order('+2 days');                                   // not confirmed yet
+        $this->factory->order('+10 days', status: OrderStatus::CONFIRMED);  // too early
+        $handler = self::getContainer()->get(SendTripRemindersHandler::class);
+
+        self::assertSame(1, $handler(new SendTripReminders()));
+        self::assertEmailCount(1);
+        self::assertEmailAddressContains(self::getMailerMessage() ?? throw new \LogicException(), 'To', $soon->getEmail());
+
+        // Running the job again does not send a second reminder.
+        self::assertSame(0, $handler(new SendTripReminders()));
     }
 
     public function testCompletingPastTrips(): void

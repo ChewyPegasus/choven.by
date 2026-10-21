@@ -39,7 +39,11 @@ framework:
             interval: '1 hour'
 
 when@test:
+    services:
+        App\Tests\Support\RecordingHttpClient: ~
     framework:
         test: true
+        http_client:
+            mock_response_factory: App\Tests\Support\RecordingHttpClient
         session:
             storage_factory_id: session.storage.factory.mock_file

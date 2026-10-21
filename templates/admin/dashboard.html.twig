@@ -62,7 +62,7 @@
                         <tbody>
                             {% for order in upcoming %}
                                 <tr>
-                                    <td class="nowrap"><strong>{{ order.startDate|date('d.m') }}</strong><br><span class="text-small text-muted">{{ 'tour.days'|trans({'%count%': order.durationDays}) }}</span></td>
+                                    <td class="nowrap"><a href="{{ path('app_admin_order_day', {date: order.startDate|date('Y-m-d')}) }}" title="{{ 'admin.day.title'|trans }}"><strong>{{ order.startDate|date('d.m') }}</strong></a><br><span class="text-small text-muted">{{ 'tour.days'|trans({'%count%': order.durationDays}) }}</span></td>
                                     <td><a href="{{ path('app_admin_order_edit', {id: order.id}) }}">{{ order.name }}</a><br><span class="text-small text-muted">{{ order.river|trans }} · {{ order.package|trans }}</span></td>
                                     <td class="num">{{ order.amountOfPeople }} <i class="fa-solid fa-user text-muted"></i></td>
                                     <td class="num"><span class="badge badge-status-{{ order.status.value }}">{{ order.status|trans }}</span></td>

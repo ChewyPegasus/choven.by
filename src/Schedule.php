@@ -6,6 +6,7 @@ namespace App;
 
 use App\Message\CompletePastOrders;
 use App\Message\PurgeExpiredData;
+use App\Message\SendTripReminders;
 use Symfony\Component\Scheduler\Attribute\AsSchedule;
 use Symfony\Component\Scheduler\RecurringMessage;
 use Symfony\Component\Scheduler\Schedule as SymfonySchedule;
@@ -30,6 +31,7 @@ final class Schedule implements ScheduleProviderInterface
             ->add(
                 RecurringMessage::cron('0 10 * * *', new CompletePastOrders(), $timezone),
                 RecurringMessage::cron('30 3 * * *', new PurgeExpiredData(), $timezone),
+                RecurringMessage::cron('0 18 * * *', new SendTripReminders(), $timezone),
             )
             // Remember the last run, so jobs missed during a restart are caught up and not run twice.
             ->stateful($this->cache)

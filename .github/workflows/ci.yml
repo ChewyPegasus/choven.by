@@ -1,0 +1,80 @@
+name: CI
+
+on:
+    push:
+        branches: [main, master]
+    pull_request:
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    quality:
+        runs-on: ubuntu-latest
+        services:
+            database:
+                image: postgres:16-alpine
+                env:
+                    POSTGRES_DB: choven
+                    POSTGRES_USER: choven
+                    POSTGRES_PASSWORD: choven
+                ports: ['5432:5432']
+                options: >-
+                    --health-cmd "pg_isready -U choven"
+                    --health-interval 5s --health-timeout 5s --health-retries 10
+        env:
+            DATABASE_URL: postgresql://choven:choven@127.0.0.1:5432/choven?serverVersion=16&charset=utf8
+        steps:
+            - uses: actions/checkout@v4
+
+            - uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '8.3'
+                  extensions: intl, pdo_pgsql, gd, zip
+                  coverage: none
+                  tools: composer:v2
+
+            - name: Cache Composer packages
+              uses: actions/cache@v4
+              with:
+                  path: ~/.composer/cache
+                  key: composer-${{ hashFiles('composer.lock') }}
+
+            - run: composer install --no-interaction --no-progress --prefer-dist
+            - run: php bin/console importmap:install
+
+            - name: Lint
+              run: |
+                  php bin/console lint:container
+                  php bin/console lint:twig templates
+                  php bin/console lint:yaml config translations --parse-tags
+                  php bin/console doctrine:schema:validate --skip-sync
+                  composer validate --strict
+                  composer audit
+
+            - name: Coding style
+              run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+            - name: Static analysis
+              run: |
+                  php bin/console cache:warmup
+                  vendor/bin/phpstan analyse --memory-limit=1G --no-progress
+
+            - name: Tests
+              run: vendor/bin/phpunit
+
+            - name: Production build
+              run: |
+                  APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear
+                  APP_ENV=prod php bin/console asset-map:compile
+
+    docker:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: docker/setup-buildx-action@v3
+            - name: Build production images
+              run: |
+                  docker build -f docker/php/Dockerfile --target php_prod -t choven-php:ci .
+                  docker build -f docker/php/Dockerfile --target nginx_prod -t choven-nginx:ci .

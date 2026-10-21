@@ -99,3 +99,15 @@ a.stat:hover { border-color: var(--c-primary); box-shadow: var(--shadow); color:
 .bar-chart .bar.is-future .bar-fill { background: repeating-linear-gradient(45deg, #ffb37a, #ffb37a 6px, #ffd2b0 6px, #ffd2b0 12px); }
 .bar-chart .bar.is-current .bar-label { color: var(--c-ink); font-weight: 800; }
 .calendar .cal-order.is-completed { background: var(--c-info-soft); color: var(--c-info); }
+
+/* Printing (day sheet) */
+.print-only { display: none; }
+@media print {
+    .site-header, .admin-sidebar, .no-print, .flash-stack, .announcement, .sf-toolbar { display: none !important; }
+    .admin-shell { display: block; background: #fff; }
+    .admin-main { padding: 0; }
+    .table-wrap { border: 0; overflow: visible; }
+    .table th, .table td { padding: 6px 8px; border-bottom: 1px solid #999; }
+    .print-only { display: table-cell; }
+    a { color: inherit; text-decoration: none; }
+}

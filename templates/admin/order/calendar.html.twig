@@ -36,7 +36,11 @@
                             {% set load = capacity > 0 ? day.people / capacity : 0 %}
                             <td class="{{ not day.in_month ? 'is-other' }} {{ key == today ? 'is-today' }} {{ day.blocked ? 'is-blocked' }}">
                                 <div class="day-head">
-                                    <span>{{ day.date|date('j') }}</span>
+                                    {% if day.people > 0 %}
+                                        <a href="{{ path('app_admin_order_day', {date: key}) }}" style="opacity:1;color:inherit;font-size:inherit" title="{{ 'admin.day.title'|trans }}">{{ day.date|date('j') }}</a>
+                                    {% else %}
+                                        <span>{{ day.date|date('j') }}</span>
+                                    {% endif %}
                                     {% if key >= today %}<a href="{{ path('app_admin_order_new', {date: key}) }}" title="{{ 'admin.orders.new'|trans }}"><i class="fa-solid fa-plus"></i></a>{% endif %}
                                 </div>
                                 {% if day.people > 0 %}

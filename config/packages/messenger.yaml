@@ -16,4 +16,5 @@ framework:
 
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async
+            App\Message\SendTelegramMessage: async
 

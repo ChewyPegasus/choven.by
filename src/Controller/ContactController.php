@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Entity\ContactRequest;
 use App\Form\ContactRequestType;
-use App\Mailer\AppMailer;
 use App\Repository\ContactRequestRepository;
+use App\Service\TeamNotifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +20,7 @@ final class ContactController extends AbstractController
     public function contact(
         Request $request,
         ContactRequestRepository $repository,
-        AppMailer $mailer,
+        TeamNotifier $teamNotifier,
         RateLimiterFactoryInterface $contactLimiter,
     ): Response {
         $contactRequest = new ContactRequest();
@@ -36,7 +36,7 @@ final class ContactController extends AbstractController
 
             $contactRequest->setLocale($request->getLocale());
             $repository->save($contactRequest);
-            $mailer->sendContactRequestNotification($contactRequest);
+            $teamNotifier->contactRequest($contactRequest);
 
             $this->addFlash('success', 'contact.flash.sent');
 

@@ -27,6 +27,8 @@ class SiteSettings
     public const BOOKING_ENABLED = 'booking_enabled';
     public const BLOCKED_DATES = 'blocked_dates';
     public const ANNOUNCEMENT = 'announcement';
+    public const YANDEX_METRIKA = 'yandex_metrika_id';
+    public const GOOGLE_ANALYTICS = 'google_analytics_id';
 
     /** @var array<string, mixed>|null */
     private ?array $values = null;
@@ -146,6 +148,21 @@ class SiteSettings
         $text = Localized::pick($this->getAnnouncements(), $locale);
 
         return '' === $text ? null : $text;
+    }
+
+    public function getYandexMetrikaId(): ?string
+    {
+        return $this->nullableString(self::YANDEX_METRIKA);
+    }
+
+    public function getGoogleAnalyticsId(): ?string
+    {
+        return $this->nullableString(self::GOOGLE_ANALYTICS);
+    }
+
+    public function hasAnalytics(): bool
+    {
+        return null !== $this->getYandexMetrikaId() || null !== $this->getGoogleAnalyticsId();
     }
 
     private function nullableString(string $key): ?string

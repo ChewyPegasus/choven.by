@@ -1,130 +1,138 @@
-# Choven - Water Adventures in Belarus
+# Чöвен (choven.by)
 
-![Choven](https://via.placeholder.com/800x200?text=Choven.by)
+Сайт и система бронирования сплавов на байдарках по рекам Беларуси: лендинг на трёх языках, онлайн-бронирование с проверкой загрузки дней, личный кабинет клиента и админка для команды.
 
-## Project Description
-
-**Choven.by** - a web platform for organizing kayaking trips and water adventures on Belarusian rivers. The project is built with Symfony and features a multilingual interface (Russian, Belarusian, English).
+**Стек:** PHP 8.3 · Symfony 7.4 LTS · Doctrine ORM 3 / PostgreSQL 16 · Redis · Symfony Messenger · AssetMapper + Stimulus + Turbo · Docker.
 
 ---
 
-## Requirements
+## Возможности
 
-- **PHP** 8.1+
-- **Composer**
-- **Symfony CLI**
-- **Docker** and **Docker Compose**
-- **PostgreSQL**
-- **Make**
+**Для клиентов**
+- Лендинг: слайдер, карточки сплавов, пакеты услуг, интерактивная карта маршрутов (Leaflet/OpenStreetMap), отзывы с рейтингом, FAQ, форма «Перезвоните мне».
+- Отдельная страница каждого сплава с ценой, составом пакета и маршрутом на карте.
+- Бронирование без регистрации и предоплаты: живой расчёт стоимости, проверка свободных мест на выбранные даты, понятные ошибки.
+- Письмо-подтверждение с номером брони (`CH-XXXXXX`), ссылкой на бронь и файлом `.ics` для календаря.
+- Страница брони по секретной ссылке: статус, добавление в календарь, отмена в один клик, отзыв после поездки.
+- Аккаунт: вход по email **или телефону**, подтверждение email, восстановление пароля, «запомнить меня», история броней (гостевые брони с тем же email подтягиваются автоматически), смена данных и пароля, язык писем, удаление аккаунта.
+- Русский, белорусский и английский интерфейс и письма; язык определяется по браузеру.
+- SEO: `hreflang`, canonical, `sitemap.xml`, `robots.txt`, Open Graph, schema.org (TravelAgency с рейтингом, TouristTrip, FAQPage).
+- Адаптивная вёрстка, доступность (ARIA, клавиатура, `prefers-reduced-motion`).
+
+**Для команды (админка `/ru/admin`)**
+- Обзор: новые брони, звонки, отзывы, загрузка по месяцам, ближайшие сплавы.
+- Брони: фильтры и поиск (номер, имя, телефон, email), CSV-экспорт для Excel, создание брони по телефону, смена статуса с письмом клиенту, заметки команды, предупреждение о перегрузе дня.
+- Календарь загрузки по дням с вместимостью и закрытыми датами.
+- Каталог сплавов (тексты на 3 языках, цены, фото с автосжатием в WebP, порядок, скрытие).
+- Редактор маршрутов карты: точки кликом по карте, перетаскивание маркеров.
+- Модерация отзывов, заявки на звонок, пользователи и роли.
+- Настройки без программиста: контакты, мессенджеры, email для уведомлений, вместимость в день, закрытые даты, приём заявок вкл/выкл, баннер-объявление.
+- Недоставленные письма с повторной отправкой, журнал ошибок.
+
+**Автоматика:** все письма уходят в фоне через очередь с повторными попытками; раз в сутки прошедшие подтверждённые сплавы закрываются и клиенту приходит приглашение оставить отзыв.
+
+**Защита:** ограничение частоты входа и форм, honeypot от ботов, CSRF, подписанные ссылки подтверждения, хэширование паролей, никакого перебора броней по id, заголовки безопасности в nginx.
 
 ---
 
-## Installation and Setup
+## Быстрый старт (Docker)
 
-### 1. Clone the repository
+Нужны Docker Desktop (или Docker Engine + Compose v2) и `make`.
 
 ```bash
-git clone https://github.com/ChewyPegasus/choven.by.git
+git clone https://github.com/ChewyPegasus/choven.by.git && cd choven.by
+make init
 ```
 
-### 2. Install dependencies and initialize the project
+| Что | Адрес |
+|---|---|
+| Сайт | http://localhost:8080 |
+| Письма (Mailpit) | http://localhost:8025 |
+| Админка | http://localhost:8080/ru/admin — `admin@choven.local` / `admin12345` |
+| Клиент | `user@choven.local` / `user12345` |
 
-Run the following command:
+`make init` поднимает контейнеры (PHP-FPM, nginx, воркер очереди, PostgreSQL, Redis, Mailpit), ставит зависимости, применяет миграции и загружает демо-данные. Команды: `make help`.
+
+### Без Docker (например, Windows)
+
+Нужны PHP 8.2+ с расширениями `intl`, `pdo_pgsql`, `gd`, `mbstring`, Composer и PostgreSQL (можно поднять только базу: `docker compose up -d database mailer`).
 
 ```bash
-make install
+composer install
+php bin/console doctrine:migrations:migrate -n
+php bin/console doctrine:fixtures:load --append -n
+php -S 127.0.0.1:8000 -t public public/index.php      # сайт
+php bin/console messenger:consume async scheduler_default -vv   # письма (в отдельном окне)
 ```
 
-This command performs the following steps:
+Настройки по умолчанию лежат в `.env`; свои значения — в `.env.local` (не коммитится). Чтобы письма отправлялись сразу без воркера, задайте `MESSENGER_TRANSPORT_DSN=sync://`.
 
-- Composer dependencies installation
-- Environment setup
-- Docker containers launch
-- Database creation and migrations
+---
 
-### 3. Start the development server
+## Продакшен
+
+1. `cp .env.prod.example .env.prod.local` и заполните секреты (`APP_SECRET`, пароль БД, `MAILER_DSN`, `DEFAULT_URI`).
+2. `make prod-build prod-up` — собираются самодостаточные образы (код, зависимости и скомпилированные ассеты внутри, OPcache с preload), миграции применяются при старте.
+3. Поставьте перед стеком прокси с TLS (Caddy, Traefik, nginx или Cloudflare) и укажите его IP в `TRUSTED_PROXIES`.
+4. Создайте администратора: `docker compose -f compose.prod.yaml exec php bin/console app:user:create you@example.com --admin`.
+5. Резервная копия базы: `make backup PROD_MODE=1` (кладите в cron); восстановление — `make restore file=…`.
+
+Проверка здоровья: `GET /health` (200 — всё в порядке, 503 — нет связи с базой).
+
+**Масштабирование:** сессии, кэш и блокировки в Redis, поэтому PHP-контейнеров может быть несколько. Загруженные фото лежат в томе `uploads`.
+
+---
+
+## Контент и фотографии
+
+- Сплавы, маршруты, тексты карточек и цены редактируются в админке.
+- Фото сплавов загружаются в админке (сжимаются до 1600 px и конвертируются в WebP).
+- Статичные фото сайта кладите в `assets/images/` (папка теперь в git):
+  - `slider/kayaks.png`, `slider/view.jpg`, `slider/campfire.jpg` — слайды на главной;
+  - `cards/*.jpg|jpeg` — обложки сплавов, созданных миграцией (`all-inclusive.jpeg`, `isloch-2day.jpg`, `svisloch.jpeg`, `isloch.jpg`, `svisloch.jpg`);
+  - `gallery/*` — фотогалерея на странице «О нас» (выводится автоматически);
+  - `og-image.jpg` (1200×630) — картинка для соцсетей.
+  Пока файла нет, вместо него показывается аккуратная заглушка.
+- Документы для скачивания: `assets/files/`.
+- Тексты интерфейса: `translations/*.yaml` (ru/be/en), юридические тексты: `templates/legal/`.
+
+---
+
+## Разработка
 
 ```bash
-make run
+make test        # все тесты (unit, integration, functional) на реальном PostgreSQL
+make phpstan     # статический анализ, уровень 8
+make cs-fix      # код-стайл (@Symfony)
+make quality     # всё, что гоняет CI
 ```
 
-The application will be available at: [http://localhost:8000](http://localhost:8000)
+Тестовая база пересоздаётся миграциями при каждом запуске (`SKIP_DB_RESET=1` — пропустить), каждый тест изолирован транзакцией. Отдельный тест рендерит все страницы на трёх языках и падает, если где-то остался непереведённый ключ.
+
+### Структура
+
+```
+src/
+  Controller/          публичные страницы, бронирование, аккаунт; Admin/ и Profile/
+  Entity/ Enum/        модель: User, Order, Tour, RaftingRoute, Review, ContactRequest, Setting
+  Form/                формы (Admin/ — для админки, Type/ — телефон, многоязычный текст, honeypot)
+  Service/             BookingService, AvailabilityChecker, SiteSettings, EmailVerifier, ImageUploader, …
+  Mailer/AppMailer     все письма (рендер в языке получателя, отправка через очередь)
+  Security/            вход по email/телефону, проверка подтверждения email, voter для броней
+  MessageHandler/      фоновые задачи; Schedule.php — расписание
+  Validator/ Twig/ Repository/ Model/
+templates/             Twig; emails/ — письма; admin/ — админка
+assets/                controllers/ (Stimulus), styles/
+translations/          messages, validators, security (+ admin/)
+migrations/            миграции, включая перенос данных со старой схемы
+docker/                Dockerfile (dev/prod), nginx, php.ini
+legacy/                код до переработки — для сверки, удалите после ревью
+```
+
+### Почему без Kafka
+
+Раньше письма шли через собственный продюсер/консьюмер Kafka, таблицы ретраев и cron. Для объёма небольшого сервиса это лишние Zookeeper и Kafka в проде и обязательное расширение `rdkafka`. Теперь письма и фоновые задачи обрабатывает Symfony Messenger поверх PostgreSQL: повторные попытки с экспоненциальной задержкой, очередь неудачных сообщений с просмотром в админке. Если нагрузка вырастет, транспорт меняется одной переменной `MESSENGER_TRANSPORT_DSN` (Redis, RabbitMQ, SQS).
 
 ---
 
-## Development Commands
-
-All common operations are available through `make` commands:
-
-### Database operations
-
-- **Create a new migration after entity changes**:
-    ```bash
-    make migration
-    ```
-
-- **Apply migrations**:
-    ```bash
-    make migrate
-    ```
-
-- **Reset database (drops and recreates)**:
-    ```bash
-    make db-reset
-    ```
-
-### Cache operations
-
-- **Clear cache**:
-    ```bash
-    make cache-clear
-    ```
-
-### Translation operations
-
-- **Extract all translation strings**:
-    ```bash
-    make translations-extract
-    ```
-
-- **Debug translations for a specific locale**:
-    ```bash
-    make translations-debug locale=be
-    ```
-
-Translation files are located in the `translations/` directory:
-
-- `messages.ru.yaml` - Russian
-- `messages.be.yaml` - Belarusian
-- `messages.en.yaml` - English
-
-### Quality checks
-
-- **Run code style checks**:
-    ```bash
-    make lint
-    ```
-
-- **Run tests**:
-    ```bash
-    make test
-    ```
-
----
-
-## Project Structure
-
-- `src/Controller/` - application controllers
-- `src/Entity/` - Doctrine entities
-- `src/Enum/` - enumerations (rafting types, rivers, etc.)
-- `src/Form/` - forms
-- `src/Service/` - services
-- `templates/` - Twig templates
-- `translations/` - translation files
-- `assets/` - CSS, JavaScript, images
-
----
-
-## License
-
-© 2025 Choven.by. All rights reserved.
+© 2025–2026 Choven.by. Все права защищены.

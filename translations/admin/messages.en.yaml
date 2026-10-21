@@ -1,34 +1,34 @@
 admin:
-    title: 'Admin'
+    title: Admin
     common:
-        all: 'All'
+        all: All
         none: '— none —'
-        save: 'Save'
-        edit: 'Edit'
-        delete: 'Delete'
-        open: 'Open'
-        reset: 'Reset'
-        position: 'Order'
+        save: Save
+        edit: Edit
+        delete: Delete
+        open: Open
+        reset: Reset
+        position: Order
         position_help: 'The lower the number, the higher it appears in the list.'
         view_on_site: 'View on site'
     menu:
-        work: 'Work'
-        content: 'Content'
-        system: 'System'
-        dashboard: 'Dashboard'
-        orders: 'Bookings'
-        calendar: 'Calendar'
+        work: Work
+        content: Content
+        system: System
+        dashboard: Dashboard
+        orders: Bookings
+        calendar: Calendar
         requests: 'Call requests'
-        reviews: 'Reviews'
-        tours: 'Trips'
+        reviews: Reviews
+        tours: Trips
         routes: 'Route map'
-        users: 'Users'
-        settings: 'Settings'
+        users: Users
+        settings: Settings
         emails: 'Undelivered emails'
-        logs: 'Log'
+        logs: Log
         site: 'Go to site'
     dashboard:
-        title: 'Dashboard'
+        title: Dashboard
         new_orders: 'New bookings'
         new_orders_hint: 'Awaiting a call and confirmation'
         orders_30d: 'Requests in 30 days'
@@ -36,7 +36,7 @@ admin:
         requests: 'Call-back requests'
         reviews: 'Reviews awaiting moderation'
         rating: 'Rating %rating% (%count%)'
-        users: 'Users'
+        users: Users
         users_30d: '+%count% in 30 days'
         failed_emails: 'Undelivered emails'
         upcoming: 'Upcoming trips'
@@ -48,22 +48,22 @@ admin:
         edit: 'Booking %reference%'
         empty: 'No bookings found.'
         export: 'Export CSV'
-        updated: 'Updated'
-        account: 'Account'
-        guest: 'guest'
+        updated: Updated
+        account: Account
+        guest: guest
         customer_page: 'Customer page'
         capacity_warning: 'Warning: capacity exceeded or the day is closed —'
-        blocked_day: 'closed'
+        blocked_day: closed
         free_places: '%count% free'
         delete_confirm: 'Delete this booking permanently? It’s better to set its status to “Cancelled”.'
         col:
-            date: 'Date'
-            customer: 'Customer'
-            trip: 'Trip'
-            people: 'People'
-            created: 'Created'
+            date: Date
+            customer: Customer
+            trip: Trip
+            people: People
+            created: Created
         field:
-            status: 'Status'
+            status: Status
             tour: 'Trip from catalogue'
             price: 'Price, BYN'
             customer_comment: 'Customer comment'
@@ -72,10 +72,10 @@ admin:
             notify_customer: 'Email the customer about the status change'
             send_confirmation: 'Send the customer a confirmation email'
         filter:
-            query: 'Search'
+            query: Search
             query_placeholder: 'Number, name, email or phone'
-            from: 'From'
-            to: 'To'
+            from: From
+            to: To
             sort: 'Sort by'
         sort:
             start_desc: 'Trip date ↓'
@@ -87,30 +87,30 @@ admin:
             saved: 'Booking saved.'
             deleted: 'Booking deleted.'
     calendar:
-        today: 'Today'
+        today: Today
         capacity: 'Capacity: %count% people per day.'
         legend: '— booking statuses; the bar shows how full the day is.'
     users:
         new: 'New user'
-        search: 'Search'
+        search: Search
         search_placeholder: 'Email, name or phone'
-        filter: 'Show'
-        admins: 'Administrators'
+        filter: Show
+        admins: Administrators
         unverified: 'Email not confirmed'
         empty: 'No users found.'
-        role_admin: 'Admin'
+        role_admin: Admin
         verified: 'Email confirmed'
         not_verified: 'Not confirmed'
         last_login: 'Last login'
-        bookings: 'Bookings'
+        bookings: Bookings
         resend: 'Resend confirmation email'
         delete_confirm: 'Delete this user? Their bookings will be kept.'
         col:
-            status: 'Status'
+            status: Status
             created: 'Signed up'
         field:
             verified: 'Email confirmed'
-            admin: 'Administrator'
+            admin: Administrator
             admin_self_help: 'You can’t remove your own admin rights.'
             new_password: 'New password'
             new_password_help: 'Leave blank to keep the current one.'
@@ -121,17 +121,19 @@ admin:
             last_admin: 'The last administrator can’t be removed.'
             cannot_delete_self: 'You can’t delete yourself.'
             verification_sent: 'Email sent.'
+        subscribers: 'Subscribers (CSV)'
+        subscribers_help: 'Users who agreed to receive news — for importing into a newsletter service.'
     tours:
         new: 'New trip'
         hint: 'Trip cards on the homepage. The order is set by the “Order” field.'
         empty: 'No trips yet.'
-        visible: 'Visible'
-        hidden: 'Hidden'
+        visible: Visible
+        hidden: Hidden
         delete_confirm: 'Delete this trip? Bookings will remain but will no longer be linked to it.'
         col:
             visible: 'On site'
         field:
-            title: 'Title'
+            title: Title
             slug: 'Page URL'
             slug_help: 'Latin letters, digits and hyphens, e.g. isloch-weekend.'
             summary: 'Short description (for the card)'
@@ -141,7 +143,7 @@ admin:
             price_from: 'Price from, BYN'
             price_help: 'Leave blank if the price is on request.'
             price_unit: 'Price is'
-            image: 'Photo'
+            image: Photo
             image_help: 'JPG, PNG or WebP up to 8 MB. Compressed automatically.'
             active: 'Show on site'
         error:
@@ -158,60 +160,60 @@ admin:
         points_hint: 'Click the map to add a point, or drag a marker. The first point is the start, the last is the finish.'
         delete_confirm: 'Delete this route?'
         field:
-            name: 'Name'
-            description: 'Description'
-            duration: 'Duration'
+            name: Name
+            description: Description
+            duration: Duration
             duration_help: 'For example: “4–6 hours” or “2 days”.'
             distance: 'Length, km'
-            difficulty: 'Difficulty'
+            difficulty: Difficulty
             color: 'Line colour'
             points: 'Route points'
             active: 'Show on map'
         point:
-            title: 'Point'
-            lat: 'Latitude'
-            lng: 'Longitude'
-            type: 'Type'
-            name: 'Name'
-            description: 'Description'
+            title: Point
+            lat: Latitude
+            lng: Longitude
+            type: Type
+            name: Name
+            description: Description
         point_type:
-            start: 'Start'
-            point: 'Waypoint'
-            end: 'Finish'
+            start: Start
+            point: Waypoint
+            end: Finish
         flash:
             created: 'Route created.'
             saved: 'Route saved.'
             deleted: 'Route deleted.'
     reviews:
         empty: 'No reviews.'
-        approved: 'Publish'
-        rejected: 'Reject'
+        approved: Publish
+        rejected: Reject
         delete_confirm: 'Delete this review?'
         flash:
             updated: 'Review status updated.'
             deleted: 'Review deleted.'
     requests:
         empty: 'No requests.'
-        done: 'Done'
-        reopen: 'Reopen'
+        done: Done
+        reopen: Reopen
         delete_confirm: 'Delete this request?'
         filter:
-            open: 'New'
-            done: 'Done'
-            all: 'All'
+            open: New
+            done: Done
+            all: All
         col:
-            date: 'Date'
+            date: Date
         flash:
             deleted: 'Request deleted.'
     settings:
-        contacts: 'Contacts'
-        booking: 'Booking'
+        contacts: Contacts
+        booking: Booking
         announcement: 'Site announcement'
         field:
-            phone: 'Phone'
+            phone: Phone
             email: 'Customer email'
-            instagram: 'Instagram'
-            telegram: 'Telegram'
+            instagram: Instagram
+            telegram: Telegram
             handle_help: 'Account name only, without @ or a link.'
             notification_email: 'Notification email'
             notification_email_help: 'New bookings, call requests and reviews are sent here. If empty, the customer email is used.'
@@ -222,10 +224,14 @@ admin:
             blocked_dates_help: 'One per line, YYYY-MM-DD or DD.MM.YYYY. Booking is unavailable on these days.'
             announcement: 'Announcement text'
             announcement_help: 'A bar above the site header, e.g. “Season 2026 is open!”. Leave empty to hide it.'
+            yandex_metrika: 'Yandex Metrica counter ID'
+            google_analytics: 'Google Analytics (Measurement ID)'
+            analytics_help: 'Counters are added on the live site only and do not track administrators. The privacy policy is updated automatically.'
         error:
             handle: 'Enter only the account name (Latin letters, digits, dots, underscores).'
         flash:
             saved: 'Settings saved.'
+        analytics: 'Web analytics'
     emails:
         hint: 'Emails that could not be sent after all retries. Check the mail settings (MAILER_DSN) and send them again.'
         empty: 'All emails have been delivered.'
@@ -233,17 +239,25 @@ admin:
         retries: 'attempts: %count%'
         delete_confirm: 'Remove this email from the queue?'
         col:
-            subject: 'Subject'
-            to: 'To'
-            error: 'Error'
-            failed_at: 'Time'
+            subject: Subject
+            to: To
+            error: Error
+            failed_at: Time
         flash:
             retried: 'Email queued again.'
             deleted: 'Email deleted.'
     logs:
-        level: 'Level'
-        lines: 'Lines'
+        level: Level
+        lines: Lines
         all_levels: 'All levels'
         last_lines: 'last %count%'
         no_file: 'The log file hasn’t been created yet.'
         empty: 'No entries.'
+    day:
+        title: 'Day sheet'
+        print: Print
+        summary: 'Groups: %groups%, participants: %people%'
+        empty: 'No trips on this day.'
+        days: Dates
+        notes: 'Wishes and notes'
+        continues: continues

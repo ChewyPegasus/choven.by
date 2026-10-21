@@ -42,6 +42,11 @@
     {% block stylesheets %}{% endblock %}
     {% block importmap %}{{ importmap('app') }}{% endblock %}
     {% block structured_data %}{% endblock %}
+    {% block analytics %}
+        {% if settings.hasAnalytics and not is_granted('ROLE_ADMIN') and app.environment == 'prod' %}
+            {% include '_partials/analytics.html.twig' %}
+        {% endif %}
+    {% endblock %}
 </head>
 <body class="{% block body_class %}{% endblock %}">
     <a class="skip-link" href="#main">{{ 'a11y.skip_to_content'|trans }}</a>

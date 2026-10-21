@@ -19,6 +19,18 @@
     </div>
     <div class="order-card-actions">
         <a class="btn btn-sm btn-outline" href="{{ path('app_order_show', {token: order.accessToken}) }}">{{ 'profile.details'|trans }}</a>
+        {% if not order.upcoming %}
+            <a class="btn btn-sm" href="{{ path('app_order_new', {
+                tour: order.tour ? order.tour.slug : null,
+                river: order.river.value,
+                package: order.package.value,
+                duration: order.durationDays,
+                people: order.amountOfPeople,
+            }|filter(v => v is not null)) }}"><i class="fa-solid fa-rotate-right"></i> {{ 'profile.book_again'|trans }}</a>
+            {% if order.status.value == 'completed' %}
+                <a class="btn btn-sm btn-ghost" href="{{ path('app_review_new', {token: order.accessToken}) }}"><i class="fa-regular fa-star"></i> {{ 'review.leave'|trans }}</a>
+            {% endif %}
+        {% endif %}
         {% if order.canBeCancelledByCustomer %}
             <form method="post" action="{{ path('app_profile_order_cancel', {reference: order.reference}) }}" data-turbo-confirm="{{ 'booking.show.cancel_confirm'|trans }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('cancel-order-' ~ order.id) }}">

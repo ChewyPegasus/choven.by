@@ -1,0 +1,56 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.day.title'|trans }} {{ day|date('d.m.Y') }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <div class="breadcrumbs"><a href="{{ path('app_admin_calendar', {month: day|date('Y-m')}) }}">{{ 'admin.menu.calendar'|trans }}</a> /</div>
+        <h1>{{ 'admin.day.title'|trans }}: {{ day|format_date('full', locale: app.request.locale) }}</h1>
+        <div class="cluster no-print">
+            <a class="btn btn-sm btn-outline" href="{{ path('app_admin_order_day', {date: day|date_modify('-1 day')|date('Y-m-d')}) }}"><i class="fa-solid fa-chevron-left"></i></a>
+            <a class="btn btn-sm btn-outline" href="{{ path('app_admin_order_day', {date: day|date_modify('+1 day')|date('Y-m-d')}) }}"><i class="fa-solid fa-chevron-right"></i></a>
+            <button type="button" class="btn btn-sm" onclick="window.print()"><i class="fa-solid fa-print"></i> {{ 'admin.day.print'|trans }}</button>
+        </div>
+    </div>
+
+    <p><strong>{{ 'admin.day.summary'|trans({'%groups%': orders|length, '%people%': people}) }}</strong>{% if capacity > 0 %} · {{ 'admin.calendar.capacity'|trans({'%count%': capacity}) }}{% endif %}</p>
+
+    {% if orders is empty %}
+        <div class="empty"><i class="fa-regular fa-calendar"></i>{{ 'admin.day.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{{ 'admin.orders.col.customer'|trans }}</th>
+                        <th>{{ 'admin.orders.col.trip'|trans }}</th>
+                        <th class="num">{{ 'admin.orders.col.people'|trans }}</th>
+                        <th>{{ 'admin.day.days'|trans }}</th>
+                        <th>{{ 'admin.day.notes'|trans }}</th>
+                        <th class="print-only">✓</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td class="nowrap">{{ loop.index }}<br><span class="text-small text-muted">{{ order.reference }}</span></td>
+                            <td>
+                                <strong>{{ order.name }}</strong><br>
+                                {% if order.phoneE164 %}<a href="tel:{{ order.phoneE164 }}">{{ order.phoneFormatted }}</a>{% endif %}
+                            </td>
+                            <td>{{ order.river|trans }}<br><span class="text-small text-muted">{{ order.package|trans }}{{ order.tour ? ' · ' ~ order.tour.title|localized }}</span></td>
+                            <td class="num"><strong>{{ order.amountOfPeople }}</strong></td>
+                            <td class="nowrap text-small">
+                                {{ order.startDate|date('d.m') }}{% if order.durationDays > 1 %}–{{ order.endDate|date('d.m') }}{% endif %}
+                                {% if order.startDate|date('Y-m-d') != day|date('Y-m-d') %}<br><span class="badge">{{ 'admin.day.continues'|trans }}</span>{% endif %}
+                            </td>
+                            <td class="text-small" style="white-space: pre-line; max-width: 320px">{{ order.description }}{% if order.adminNote %}{{ order.description ? "\n" }}<strong>{{ order.adminNote }}</strong>{% endif %}</td>
+                            <td class="print-only" style="width: 40px"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

@@ -12,7 +12,6 @@ use App\Enum\Package;
 use App\Enum\River;
 use App\Form\BookingType;
 use App\Form\ReviewType;
-use App\Mailer\AppMailer;
 use App\Repository\OrderRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\TourRepository;
@@ -20,6 +19,7 @@ use App\Service\AvailabilityChecker;
 use App\Service\BookingService;
 use App\Service\IcsGenerator;
 use App\Service\SiteSettings;
+use App\Service\TeamNotifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -143,7 +143,7 @@ final class BookingController extends AbstractController
     }
 
     #[Route('/{token}/review', name: 'app_review_new', requirements: ['token' => self::TOKEN], methods: ['GET', 'POST'])]
-    public function review(string $token, Request $request, ReviewRepository $reviews, AppMailer $mailer): Response
+    public function review(string $token, Request $request, ReviewRepository $reviews, TeamNotifier $teamNotifier): Response
     {
         $order = $this->findOrder($token);
 
@@ -170,7 +170,7 @@ final class BookingController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $reviews->save($review);
-            $mailer->sendNewReviewNotification($review);
+            $teamNotifier->newReview($review);
             $this->addFlash('success', 'review.flash.thanks');
 
             return $this->redirectToRoute('app_order_show', ['token' => $token]);

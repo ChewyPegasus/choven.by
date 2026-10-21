@@ -95,6 +95,21 @@ class AppMailer
         );
     }
 
+    /**
+     * "Your trip is in two days": date, meeting details, what to bring.
+     */
+    public function sendTripReminder(Order $order): void
+    {
+        $this->send(
+            to: new Address($order->getEmail(), $order->getName()),
+            subjectKey: 'email.trip_reminder.subject',
+            subjectParams: ['%date%' => $order->getStartDate()?->format('d.m') ?? ''],
+            template: 'emails/trip_reminder.html.twig',
+            context: ['order' => $order, 'order_url' => $this->orderUrl($order)],
+            locale: $order->getLocale(),
+        );
+    }
+
     public function sendNewOrderNotification(Order $order): void
     {
         $this->send(

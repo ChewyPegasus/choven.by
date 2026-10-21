@@ -73,6 +73,19 @@ final class SettingsType extends AbstractType
                 'required' => false,
                 'attr' => ['rows' => 4, 'placeholder' => '2026-07-15'],
             ])
+            ->add(SiteSettings::YANDEX_METRIKA, TextType::class, [
+                'label' => 'admin.settings.field.yandex_metrika',
+                'help' => 'admin.settings.field.analytics_help',
+                'required' => false,
+                'constraints' => [new Regex(pattern: '/^\d{5,12}$/', message: 'admin.settings.error.metrika')],
+            ])
+            ->add(SiteSettings::GOOGLE_ANALYTICS, TextType::class, [
+                'label' => 'admin.settings.field.google_analytics',
+                'help' => 'admin.settings.field.analytics_help',
+                'required' => false,
+                'attr' => ['placeholder' => 'G-XXXXXXXXXX'],
+                'constraints' => [new Regex(pattern: '/^G-[A-Z0-9]{4,15}$/', message: 'admin.settings.error.ga')],
+            ])
             ->add(SiteSettings::ANNOUNCEMENT, LocalizedTextType::class, [
                 'label' => 'admin.settings.field.announcement',
                 'help' => 'admin.settings.field.announcement_help',

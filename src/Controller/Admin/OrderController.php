@@ -133,6 +133,28 @@ final class OrderController extends AbstractController
         ]);
     }
 
+    /**
+     * Printable list of everybody on the water on a given day (for instructors and drivers).
+     */
+    #[Route('/day/{date}', name: 'app_admin_order_day', requirements: ['date' => '\d{4}-\d{2}-\d{2}'], methods: ['GET'])]
+    public function day(string $date, SiteSettings $settings): Response
+    {
+        $day = \DateTimeImmutable::createFromFormat('!Y-m-d', $date);
+        if (false === $day) {
+            throw $this->createNotFoundException();
+        }
+
+        $orders = $this->orders->findActiveInPeriod($day, $day);
+        usort($orders, static fn (Order $a, Order $b): int => [$a->getRiver()?->value, $a->getStartDate()] <=> [$b->getRiver()?->value, $b->getStartDate()]);
+
+        return $this->render('admin/order/day.html.twig', [
+            'day' => $day,
+            'orders' => $orders,
+            'people' => array_sum(array_map(static fn (Order $o): int => (int) $o->getAmountOfPeople(), $orders)),
+            'capacity' => $settings->getDailyCapacity(),
+        ]);
+    }
+
     #[Route('/new', name: 'app_admin_order_new', methods: ['GET', 'POST'])]
     public function new(Request $request): Response
     {

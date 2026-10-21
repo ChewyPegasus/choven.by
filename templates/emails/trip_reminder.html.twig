@@ -1,0 +1,16 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block content %}
+    <h1 style="margin:0 0 12px;font-size:22px;color:#1b2a3a;">{{ 'email.trip_reminder.title'|trans({'%name%': order.name}) }}</h1>
+    <p>{{ 'email.trip_reminder.text'|trans({'%date%': order.startDate|format_date('full', locale: order.locale)}) }}</p>
+    {% include 'emails/_order_details.html.twig' %}
+    <h2 style="font-size:17px;color:#1b2a3a;margin:22px 0 8px;">{{ 'email.trip_reminder.bring'|trans }}</h2>
+    <ul style="padding-left:20px;margin:0;">
+        {% for i in 1..5 %}
+            <li style="margin-bottom:4px;">{{ ('info.faq.5.list.' ~ i)|trans }}</li>
+        {% endfor %}
+    </ul>
+    <p style="margin-top:16px;">{{ 'email.trip_reminder.weather'|trans }}</p>
+    {% include 'emails/_button.html.twig' with {href: order_url, label: 'email.order_confirmation.button'|trans} %}
+    <p style="font-size:14px;color:#64748b;">{{ 'email.trip_reminder.contact'|trans({'%phone%': settings.phone}) }}</p>
+{% endblock %}

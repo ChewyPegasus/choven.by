@@ -525,6 +525,7 @@ profile:
     past: 'Past'
     no_upcoming: 'You have no upcoming trips yet.'
     no_past: 'Your past trips will appear here.'
+    book_again: 'Book again'
     details: 'Details'
     people: '%count% person|%count% people'
     form:
@@ -608,6 +609,13 @@ email:
         text: 'We hope your trip on %date% left you with great memories. Share them with us — it only takes a minute and helps us a lot.'
         button: 'Leave a review'
         footer: 'We’d love to see you again — new routes are waiting!'
+    trip_reminder:
+        subject: 'Your trip is on %date% — reminder'
+        title: '%name%, your trip is almost here!'
+        text: 'A quick reminder: your trip is on %date%. All booking details are below.'
+        bring: 'What to bring'
+        weather: 'Check the forecast: a raincoat and spare shoes come in handy if it rains. If the weather turns really bad, we will offer to reschedule.'
+        contact: 'Running late or plans changed? Call us: %phone%.'
     verification:
         subject: 'Confirm your email for Chöven'
         title: 'Hello, %name%!'

@@ -14,6 +14,8 @@ parameters:
         booking_enabled: true
         blocked_dates: []
         announcement: []
+        yandex_metrika_id: ~
+        google_analytics_id: ~
 
 services:
     _defaults:

@@ -21,7 +21,7 @@ final class AdminTest extends WebTestCase
      */
     public static function adminPages(): iterable
     {
-        foreach (['', '/orders', '/orders/new', '/orders/calendar', '/users', '/users/new', '/tours', '/tours/new', '/routes', '/routes/new', '/reviews', '/requests', '/settings', '/emails', '/logs'] as $path) {
+        foreach (['', '/orders', '/orders/new', '/orders/calendar', '/orders/day/'.date('Y-m-d', strtotime('+2 days')), '/users', '/users/new', '/tours', '/tours/new', '/routes', '/routes/new', '/reviews', '/requests', '/settings', '/emails', '/logs'] as $path) {
             yield $path ?: 'dashboard' => ['/ru/admin'.$path];
         }
     }
@@ -36,6 +36,25 @@ final class AdminTest extends WebTestCase
 
         self::assertResponseIsSuccessful();
         self::assertSelectorExists('.admin-sidebar');
+    }
+
+    public function testDaySheetAndSubscribersExport(): void
+    {
+        $order = $this->factory->order('+3 days', people: 7);
+        $this->factory->user('news@example.com')->setMarketingConsent(true);
+        $this->factory->user('quiet@example.com');
+        $this->em->flush();
+        $this->client->loginUser($this->factory->admin());
+
+        $this->client->request('GET', '/ru/admin/orders/day/'.$order->getStartDate()?->format('Y-m-d'));
+        self::assertResponseIsSuccessful();
+        self::assertSelectorTextContains('table', $order->getReference());
+        self::assertSelectorTextContains('.admin-main', 'участников: 7');
+
+        $this->client->request('GET', '/ru/admin/users/subscribers.csv');
+        $csv = (string) $this->client->getInternalResponse()->getContent();
+        self::assertStringContainsString('news@example.com', $csv);
+        self::assertStringNotContainsString('quiet@example.com', $csv);
     }
 
     public function testRegularUsersAreDenied(): void

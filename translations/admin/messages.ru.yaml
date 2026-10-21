@@ -1,34 +1,34 @@
 admin:
-    title: 'Админка'
+    title: Админка
     common:
-        all: 'Все'
+        all: Все
         none: '— нет —'
-        save: 'Сохранить'
-        edit: 'Изменить'
-        delete: 'Удалить'
-        open: 'Открыть'
-        reset: 'Сбросить'
-        position: 'Порядок'
+        save: Сохранить
+        edit: Изменить
+        delete: Удалить
+        open: Открыть
+        reset: Сбросить
+        position: Порядок
         position_help: 'Чем меньше число, тем выше в списке.'
         view_on_site: 'Открыть на сайте'
     menu:
-        work: 'Работа'
-        content: 'Контент'
-        system: 'Система'
-        dashboard: 'Обзор'
-        orders: 'Бронирования'
-        calendar: 'Календарь'
-        requests: 'Звонки'
-        reviews: 'Отзывы'
-        tours: 'Сплавы'
+        work: Работа
+        content: Контент
+        system: Система
+        dashboard: Обзор
+        orders: Бронирования
+        calendar: Календарь
+        requests: Звонки
+        reviews: Отзывы
+        tours: Сплавы
         routes: 'Карта маршрутов'
-        users: 'Пользователи'
-        settings: 'Настройки'
+        users: Пользователи
+        settings: Настройки
         emails: 'Недоставленные письма'
-        logs: 'Журнал'
+        logs: Журнал
         site: 'Перейти на сайт'
     dashboard:
-        title: 'Обзор'
+        title: Обзор
         new_orders: 'Новые брони'
         new_orders_hint: 'Ждут звонка и подтверждения'
         orders_30d: 'Заявок за 30 дней'
@@ -36,7 +36,7 @@ admin:
         requests: 'Просьбы перезвонить'
         reviews: 'Отзывы на модерации'
         rating: 'Рейтинг %rating% (%count%)'
-        users: 'Пользователи'
+        users: Пользователи
         users_30d: '+%count% за 30 дней'
         failed_emails: 'Недоставленные письма'
         upcoming: 'Ближайшие сплавы'
@@ -48,22 +48,22 @@ admin:
         edit: 'Бронь %reference%'
         empty: 'Броней не найдено.'
         export: 'Экспорт CSV'
-        updated: 'Изменена'
-        account: 'Аккаунт'
-        guest: 'гость'
+        updated: Изменена
+        account: Аккаунт
+        guest: гость
         customer_page: 'Страница клиента'
         capacity_warning: 'Внимание: превышена вместимость или закрыт день —'
-        blocked_day: 'закрыт'
+        blocked_day: закрыт
         free_places: 'свободно %count%'
         delete_confirm: 'Удалить бронь навсегда? Лучше переведите её в статус «Отменена».'
         col:
-            date: 'Дата'
-            customer: 'Клиент'
-            trip: 'Сплав'
-            people: 'Чел.'
-            created: 'Создана'
+            date: Дата
+            customer: Клиент
+            trip: Сплав
+            people: Чел.
+            created: Создана
         field:
-            status: 'Статус'
+            status: Статус
             tour: 'Сплав из каталога'
             price: 'Стоимость, BYN'
             customer_comment: 'Комментарий клиента'
@@ -72,11 +72,11 @@ admin:
             notify_customer: 'Сообщить клиенту об изменении статуса по email'
             send_confirmation: 'Отправить клиенту письмо с подтверждением'
         filter:
-            query: 'Поиск'
+            query: Поиск
             query_placeholder: 'Номер, имя, email или телефон'
             from: 'С даты'
             to: 'По дату'
-            sort: 'Сортировка'
+            sort: Сортировка
         sort:
             start_desc: 'Дата сплава ↓'
             start_asc: 'Дата сплава ↑'
@@ -87,30 +87,30 @@ admin:
             saved: 'Бронь сохранена.'
             deleted: 'Бронь удалена.'
     calendar:
-        today: 'Сегодня'
+        today: Сегодня
         capacity: 'Вместимость: %count% человек в день.'
         legend: '— статусы броней; полоса показывает загрузку дня.'
     users:
         new: 'Новый пользователь'
-        search: 'Поиск'
+        search: Поиск
         search_placeholder: 'Email, имя или телефон'
-        filter: 'Показать'
-        admins: 'Администраторы'
+        filter: Показать
+        admins: Администраторы
         unverified: 'Не подтвердили email'
         empty: 'Пользователи не найдены.'
-        role_admin: 'Админ'
+        role_admin: Админ
         verified: 'Email подтверждён'
         not_verified: 'Не подтверждён'
-        last_login: 'Вход'
-        bookings: 'Брони'
+        last_login: Вход
+        bookings: Брони
         resend: 'Отправить письмо подтверждения'
         delete_confirm: 'Удалить пользователя? Его брони сохранятся.'
         col:
-            status: 'Статус'
-            created: 'Регистрация'
+            status: Статус
+            created: Регистрация
         field:
             verified: 'Email подтверждён'
-            admin: 'Администратор'
+            admin: Администратор
             admin_self_help: 'Нельзя снять права с самого себя.'
             new_password: 'Новый пароль'
             new_password_help: 'Оставьте пустым, чтобы не менять.'
@@ -121,17 +121,19 @@ admin:
             last_admin: 'Нельзя убрать последнего администратора.'
             cannot_delete_self: 'Нельзя удалить самого себя.'
             verification_sent: 'Письмо отправлено.'
+        subscribers: 'Подписчики (CSV)'
+        subscribers_help: 'Пользователи, согласившиеся получать новости — для импорта в сервис рассылок.'
     tours:
         new: 'Новый сплав'
         hint: 'Карточки сплавов на главной странице. Порядок задаётся полем «Порядок».'
         empty: 'Сплавов пока нет.'
-        visible: 'Показан'
-        hidden: 'Скрыт'
+        visible: Показан
+        hidden: Скрыт
         delete_confirm: 'Удалить сплав? Брони останутся, но потеряют связь с ним.'
         col:
             visible: 'На сайте'
         field:
-            title: 'Название'
+            title: Название
             slug: 'Адрес страницы'
             slug_help: 'Латиница, цифры и дефис, например isloch-weekend.'
             summary: 'Короткое описание (для карточки)'
@@ -141,7 +143,7 @@ admin:
             price_from: 'Цена от, BYN'
             price_help: 'Оставьте пустым, если цена по запросу.'
             price_unit: 'Цена указана'
-            image: 'Фото'
+            image: Фото
             image_help: 'JPG, PNG или WebP до 8 МБ. Автоматически сжимается.'
             active: 'Показывать на сайте'
         error:
@@ -158,60 +160,60 @@ admin:
         points_hint: 'Кликните по карте, чтобы добавить точку, или перетащите маркер. Первая точка — старт, последняя — финиш.'
         delete_confirm: 'Удалить маршрут?'
         field:
-            name: 'Название'
-            description: 'Описание'
-            duration: 'Продолжительность'
+            name: Название
+            description: Описание
+            duration: Продолжительность
             duration_help: 'Например: «4–6 часов» или «2 дня».'
             distance: 'Длина, км'
-            difficulty: 'Сложность'
+            difficulty: Сложность
             color: 'Цвет линии'
             points: 'Точки маршрута'
             active: 'Показывать на карте'
         point:
-            title: 'Точка'
-            lat: 'Широта'
-            lng: 'Долгота'
-            type: 'Тип'
-            name: 'Название'
-            description: 'Описание'
+            title: Точка
+            lat: Широта
+            lng: Долгота
+            type: Тип
+            name: Название
+            description: Описание
         point_type:
-            start: 'Старт'
-            point: 'Промежуточная'
-            end: 'Финиш'
+            start: Старт
+            point: Промежуточная
+            end: Финиш
         flash:
             created: 'Маршрут создан.'
             saved: 'Маршрут сохранён.'
             deleted: 'Маршрут удалён.'
     reviews:
         empty: 'Отзывов нет.'
-        approved: 'Опубликовать'
-        rejected: 'Отклонить'
+        approved: Опубликовать
+        rejected: Отклонить
         delete_confirm: 'Удалить отзыв?'
         flash:
             updated: 'Статус отзыва изменён.'
             deleted: 'Отзыв удалён.'
     requests:
         empty: 'Заявок нет.'
-        done: 'Обработано'
-        reopen: 'Вернуть'
+        done: Обработано
+        reopen: Вернуть
         delete_confirm: 'Удалить заявку?'
         filter:
-            open: 'Новые'
-            done: 'Обработанные'
-            all: 'Все'
+            open: Новые
+            done: Обработанные
+            all: Все
         col:
-            date: 'Дата'
+            date: Дата
         flash:
             deleted: 'Заявка удалена.'
     settings:
-        contacts: 'Контакты'
-        booking: 'Бронирование'
+        contacts: Контакты
+        booking: Бронирование
         announcement: 'Объявление на сайте'
         field:
-            phone: 'Телефон'
+            phone: Телефон
             email: 'Email для клиентов'
-            instagram: 'Instagram'
-            telegram: 'Telegram'
+            instagram: Instagram
+            telegram: Telegram
             handle_help: 'Только имя аккаунта, без @ и ссылки.'
             notification_email: 'Email для уведомлений'
             notification_email_help: 'Сюда приходят новые брони, звонки и отзывы. Если пусто — на email для клиентов.'
@@ -222,10 +224,14 @@ admin:
             blocked_dates_help: 'По одной на строку, ГГГГ-ММ-ДД или ДД.ММ.ГГГГ. В эти дни бронирование недоступно.'
             announcement: 'Текст объявления'
             announcement_help: 'Полоса над шапкой сайта, например «Сезон 2026 открыт!». Пусто — не показывать.'
+            yandex_metrika: 'Номер счётчика Яндекс.Метрики'
+            google_analytics: 'Google Analytics (Measurement ID)'
+            analytics_help: 'Счётчик подключается только на рабочем сайте и не считает визиты администраторов. Политика конфиденциальности обновится автоматически.'
         error:
             handle: 'Укажите только имя аккаунта (латиница, цифры, точка, подчёркивание).'
         flash:
             saved: 'Настройки сохранены.'
+        analytics: Веб-аналитика
     emails:
         hint: 'Письма, которые не удалось отправить после всех повторных попыток. Проверьте настройки почты (MAILER_DSN) и отправьте снова.'
         empty: 'Все письма доставлены.'
@@ -233,17 +239,25 @@ admin:
         retries: 'попыток: %count%'
         delete_confirm: 'Удалить письмо из очереди?'
         col:
-            subject: 'Тема'
-            to: 'Кому'
-            error: 'Ошибка'
-            failed_at: 'Время'
+            subject: Тема
+            to: Кому
+            error: Ошибка
+            failed_at: Время
         flash:
             retried: 'Письмо снова поставлено в очередь.'
             deleted: 'Письмо удалено.'
     logs:
-        level: 'Уровень'
-        lines: 'Строк'
+        level: Уровень
+        lines: Строк
         all_levels: 'Все уровни'
         last_lines: 'последние %count%'
         no_file: 'Файл журнала пока не создан.'
         empty: 'Записей нет.'
+    day:
+        title: 'Лист дня'
+        print: Печать
+        summary: 'Групп: %groups%, участников: %people%'
+        empty: 'В этот день сплавов нет.'
+        days: Даты
+        notes: 'Пожелания и заметки'
+        continues: продолжение

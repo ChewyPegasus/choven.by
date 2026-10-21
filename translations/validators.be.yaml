@@ -1,13 +1,10 @@
 phone:
     invalid: 'Увядзіце карэктны нумар тэлефона, напрыклад +375 29 123-45-67.'
-
 form:
     agree_required: 'Неабходна згода з умовамі.'
     spam_detected: 'Форма запоўнена некарэктна.'
-
 localized:
     default_required: 'Запоўніце тэкст хаця б на рускай мове.'
-
 user:
     email:
         not_blank: 'Увядзіце email.'
@@ -15,17 +12,14 @@ user:
         already_used: 'Гэты email ужо зарэгістраваны. Увайдзіце або аднавіце пароль.'
     phone:
         already_used: 'Гэты нумар ужо прывязаны да іншага акаўнта.'
-
 registration:
     error:
         password_required: 'Увядзіце пароль.'
         password_too_short: 'Пароль павінен быць не карацейшы за {{ limit }} сімвалаў.'
         passwords_mismatch: 'Паролі не супадаюць.'
-
 profile:
     password:
         current_invalid: 'Бягучы пароль указаны няправільна.'
-
 order:
     error:
         name_required: 'Укажыце імя.'
@@ -44,23 +38,19 @@ order:
         date_blocked: '{{ date }} сплавы не праводзяцца. Выберыце іншую дату.'
         sold_out: 'На {{ date }} месцаў няма. Выберыце іншую дату.'
         not_enough_places: 'На {{ date }} вольна толькі {{ free }} месцаў.'
-
 contact:
     error:
         name_required: 'Укажыце імя.'
         phone_required: 'Укажыце тэлефон.'
-
 review:
     error:
         name_required: 'Укажыце імя.'
         text_required: 'Напішыце пару слоў пра паездку.'
         text_too_short: 'Водгук занадта кароткі (мінімум {{ limit }} сімвалаў).'
-
 tour:
     slug:
         invalid: 'Толькі лацінскія літары, лічбы і злучкі.'
         already_used: 'Такі адрас ужо заняты.'
-
 route:
     slug:
         invalid: 'Толькі лацінскія літары, лічбы і злучкі.'
@@ -68,11 +58,12 @@ route:
     points:
         min_count: 'Дадайце мінімум дзве кропкі.'
         invalid_coordinates: 'Некарэктныя каардынаты кропкі.'
-
 admin:
     settings:
         error:
             handle: 'Укажыце толькі імя акаўнта (лацініца, лічбы, кропка, падкрэсліванне).'
+            metrika: 'Нумар лічыльніка — толькі лічбы.'
+            ga: 'Фармат: G-XXXXXXXXXX.'
     tours:
         error:
             image_type: 'Загрузіце выяву JPG, PNG або WebP.'

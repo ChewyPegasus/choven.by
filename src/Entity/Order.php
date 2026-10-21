@@ -118,6 +118,10 @@ class Order
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $cancelledAt = null;
 
+    /** When the "your trip is in two days" email was sent, so it is sent only once. */
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $reminderSentAt = null;
+
     public function __construct()
     {
         $this->reference = self::generateReference();
@@ -402,5 +406,17 @@ class Order
     public function getCancelledAt(): ?\DateTimeImmutable
     {
         return $this->cancelledAt;
+    }
+
+    public function getReminderSentAt(): ?\DateTimeImmutable
+    {
+        return $this->reminderSentAt;
+    }
+
+    public function markReminderSent(): static
+    {
+        $this->reminderSentAt = new \DateTimeImmutable();
+
+        return $this;
     }
 }

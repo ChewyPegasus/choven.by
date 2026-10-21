@@ -5,7 +5,10 @@
 {% block admin_body %}
     <div class="admin-head">
         <h1>{{ 'admin.menu.users'|trans }}</h1>
-        <a class="btn btn-sm" href="{{ path('app_admin_user_new') }}"><i class="fa-solid fa-user-plus"></i> {{ 'admin.users.new'|trans }}</a>
+        <div class="cluster">
+            <a class="btn btn-sm btn-outline" href="{{ path('app_admin_users_subscribers') }}" data-turbo="false" title="{{ 'admin.users.subscribers_help'|trans }}"><i class="fa-solid fa-envelope-open-text"></i> {{ 'admin.users.subscribers'|trans }}</a>
+            <a class="btn btn-sm" href="{{ path('app_admin_user_new') }}"><i class="fa-solid fa-user-plus"></i> {{ 'admin.users.new'|trans }}</a>
+        </div>
     </div>
 
     <form method="get" class="filters card" data-controller="autosubmit" data-action="input->autosubmit#submit change->autosubmit#submit" data-turbo-action="replace">

@@ -7,6 +7,7 @@ namespace App\Tests\Functional;
 use App\Entity\Order;
 use App\Enum\OrderStatus;
 use App\Repository\OrderRepository;
+use App\Tests\Support\RecordingHttpClient;
 use App\Tests\Support\WebTestCase;
 
 final class BookingTest extends WebTestCase
@@ -34,6 +35,7 @@ final class BookingTest extends WebTestCase
 
     public function testGuestCanBookATour(): void
     {
+        RecordingHttpClient::$requests = [];
         $crawler = $this->client->request('GET', '/ru/booking?tour=isloch-overnight');
         self::assertResponseIsSuccessful();
         self::assertInputValueSame('booking[durationDays]', '2');
@@ -57,6 +59,12 @@ final class BookingTest extends WebTestCase
         self::assertEmailAttachmentCount($confirmation, 1);
         self::assertEmailHtmlBodyContains($confirmation, $order->getAccessToken());
         self::assertEmailTextBodyContains($confirmation, $order->getReference());
+
+        // The team chat got a message too.
+        $requests = RecordingHttpClient::requests();
+        self::assertCount(1, $requests);
+        self::assertStringContainsString('api.telegram.org/bottest-token/sendMessage', $requests[0]['url']);
+        self::assertStringContainsString($order->getReference(), $requests[0]['body']);
 
         $crawler = $this->client->followRedirect();
         self::assertSelectorTextContains('h1', 'Заявка принята');

@@ -31,6 +31,13 @@
             <h2 class="card-title">{{ 'admin.settings.announcement'|trans }}</h2>
             {{ form_row(form.announcement) }}
         </div>
+        <div class="card mt-3">
+            <h2 class="card-title">{{ 'admin.settings.analytics'|trans }}</h2>
+            <div class="form-row">
+                {{ form_row(form.yandex_metrika_id) }}
+                {{ form_row(form.google_analytics_id) }}
+            </div>
+        </div>
         {{ form_rest(form) }}
         <div class="form-actions mt-3">
             <button type="submit" class="btn"><i class="fa-solid fa-floppy-disk"></i> {{ 'admin.common.save'|trans }}</button>

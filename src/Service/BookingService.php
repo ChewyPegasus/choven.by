@@ -19,6 +19,7 @@ class BookingService
     public function __construct(
         private readonly OrderRepository $orderRepository,
         private readonly AppMailer $mailer,
+        private readonly TeamNotifier $teamNotifier,
         private readonly LoggerInterface $logger,
     ) {
     }
@@ -47,7 +48,7 @@ class BookingService
         ]);
 
         $this->mailer->sendOrderConfirmation($order);
-        $this->mailer->sendNewOrderNotification($order);
+        $this->teamNotifier->newOrder($order);
     }
 
     /**
@@ -77,7 +78,7 @@ class BookingService
         $this->orderRepository->save($order);
 
         $this->mailer->sendOrderStatusChanged($order);
-        $this->mailer->sendOrderCancelledNotification($order);
+        $this->teamNotifier->orderCancelled($order);
     }
 
     /**

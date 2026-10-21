@@ -9,8 +9,10 @@ use App\Form\Admin\UserAdminType;
 use App\Repository\UserRepository;
 use App\Service\EmailVerifier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
@@ -37,6 +39,32 @@ final class UserController extends AbstractController
             'query' => $query,
             'role' => $role,
         ]);
+    }
+
+    /**
+     * Users who agreed to receive news (for the newsletter service).
+     */
+    #[Route('/subscribers.csv', name: 'app_admin_users_subscribers', methods: ['GET'])]
+    public function subscribers(): StreamedResponse
+    {
+        $users = $this->users->findBy(['marketingConsent' => true, 'isVerified' => true], ['createdAt' => 'ASC']);
+
+        $response = new StreamedResponse(static function () use ($users): void {
+            $out = fopen('php://output', 'w');
+            if (false === $out) {
+                return;
+            }
+            fwrite($out, "\xEF\xBB\xBF");
+            fputcsv($out, ['Email', 'Name', 'Language', 'Registered'], ';', '"', '');
+            foreach ($users as $user) {
+                fputcsv($out, [$user->getEmail(), $user->getName(), $user->getLocale(), $user->getCreatedAt()->format('Y-m-d')], ';', '"', '');
+            }
+            fclose($out);
+        });
+        $response->headers->set('Content-Type', 'text/csv; charset=UTF-8');
+        $response->headers->set('Content-Disposition', HeaderUtils::makeDisposition(HeaderUtils::DISPOSITION_ATTACHMENT, 'subscribers-'.date('Y-m-d').'.csv'));
+
+        return $response;
     }
 
     #[Route('/new', name: 'app_admin_user_new', methods: ['GET', 'POST'])]
