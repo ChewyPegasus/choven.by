@@ -167,17 +167,19 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
-     * Active bookings that touch the [from, to] period (a trip can span several days).
+     * Bookings that touch the [from, to] period (a trip can span several days); active ones by default.
+     *
+     * @param list<OrderStatus>|null $statuses
      *
      * @return list<Order>
      */
-    public function findActiveInPeriod(\DateTimeImmutable $from, \DateTimeImmutable $to, ?Order $exclude = null): array
+    public function findActiveInPeriod(\DateTimeImmutable $from, \DateTimeImmutable $to, ?Order $exclude = null, ?array $statuses = null): array
     {
         $qb = $this->createQueryBuilder('o')
             ->andWhere('o.status IN (:active)')
             ->andWhere('o.startDate >= :earliest')
             ->andWhere('o.startDate <= :to')
-            ->setParameter('active', OrderStatus::active())
+            ->setParameter('active', $statuses ?? OrderStatus::active())
             // Trips last at most MAX_DAYS, so anything that started earlier has already ended.
             ->setParameter('earliest', $from->setTime(0, 0)->modify(\sprintf('-%d days', Order::MAX_DAYS - 1)), Types::DATE_IMMUTABLE)
             ->setParameter('to', $to->setTime(0, 0), Types::DATE_IMMUTABLE)
@@ -253,14 +255,15 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
-     * Bookings and people per month of the trip start date for the last $months months.
+     * Bookings and people per month of the trip start date: $past months back and $future months ahead.
      *
      * @return array<string, array{orders: int, people: int}> "Y-m" => totals, oldest first
      */
-    public function getMonthlyStats(int $months = 12): array
+    public function getMonthlyStats(int $past = 8, int $future = 3): array
     {
-        $start = $this->today()->modify('first day of this month')->modify(\sprintf('-%d months', $months - 1));
-        $end = $this->today()->modify('last day of this month');
+        $thisMonth = $this->today()->modify('first day of this month');
+        $start = $thisMonth->modify(\sprintf('-%d months', $past));
+        $end = $thisMonth->modify(\sprintf('+%d months', $future))->modify('last day of this month');
 
         $result = [];
         for ($month = $start; $month <= $end; $month = $month->modify('+1 month')) {

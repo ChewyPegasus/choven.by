@@ -65,6 +65,8 @@ final class OrderFilterType extends AbstractType
             ->add('sort', ChoiceType::class, [
                 'label' => 'admin.orders.filter.sort',
                 'empty_data' => 'start_desc',
+                'required' => false,
+                'placeholder' => false,
                 'choices' => array_combine(
                     array_map(static fn (string $s): string => 'admin.orders.sort.'.$s, OrderFilter::SORTS),
                     OrderFilter::SORTS,

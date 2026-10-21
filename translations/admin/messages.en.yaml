@@ -42,7 +42,7 @@ admin:
         upcoming: 'Upcoming trips'
         no_upcoming: 'No upcoming trips.'
         chart: 'Participants by month'
-        chart_hint: 'Number of participants by trip start date (excluding cancelled).'
+        chart_hint: 'Number of participants by trip start date (excluding cancelled). Hatched bars are upcoming months already booked.'
     orders:
         new: 'New booking'
         edit: 'Booking %reference%'

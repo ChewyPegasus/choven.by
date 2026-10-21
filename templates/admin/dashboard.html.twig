@@ -78,11 +78,10 @@
             <h2 class="card-title">{{ 'admin.dashboard.chart'|trans }}</h2>
             <div class="bar-chart" role="img" aria-label="{{ 'admin.dashboard.chart'|trans }}">
                 {% for month, values in monthly %}
-                    {% set date = (month ~ '-01')|date_modify('+0 day') %}
-                    <div class="bar" title="{{ values.orders }} / {{ values.people }}">
+                    <div class="bar {{ month > current_month ? 'is-future' }} {{ month == current_month ? 'is-current' }}" title="{{ values.orders }} / {{ values.people }}">
                         <span class="bar-value">{{ values.people ?: '' }}</span>
                         <span class="bar-fill" style="height: {{ (values.people / monthly_max * 100)|round }}%"></span>
-                        <span class="bar-label">{{ date|format_date(pattern: 'LLL', locale: app.request.locale) }}</span>
+                        <span class="bar-label">{{ (month ~ '-01')|format_date(pattern: 'LLL', locale: app.request.locale) }}</span>
                     </div>
                 {% endfor %}
             </div>

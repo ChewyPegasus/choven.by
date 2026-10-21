@@ -44,7 +44,7 @@
                                         <div class="load {{ load >= 1 ? 'is-full' : (load >= 0.75 ? 'is-high') }}" title="{{ day.people }} / {{ capacity }}"><span style="width: {{ min(100, (load * 100)|round) }}%"></span></div>
                                     {% endif %}
                                     {% for order in day.orders|slice(0, 3) %}
-                                        <a class="cal-order {{ order.status.value == 'confirmed' ? 'is-confirmed' }}" href="{{ path('app_admin_order_edit', {id: order.id}) }}" title="{{ order.name }} · {{ order.amountOfPeople }}">{{ order.amountOfPeople }} · {{ order.name }}</a>
+                                        <a class="cal-order is-{{ order.status.value }}" href="{{ path('app_admin_order_edit', {id: order.id}) }}" title="{{ order.name }} · {{ order.amountOfPeople }}">{{ order.amountOfPeople }} · {{ order.name }}</a>
                                     {% endfor %}
                                     {% if day.orders|length > 3 %}
                                         <a class="text-small" href="{{ path('app_admin_orders', {from: key, to: key}) }}">+{{ day.orders|length - 3 }}</a>
@@ -60,6 +60,7 @@
     <p class="text-small text-muted mt-2">
         <span class="badge badge-status-new">{{ 'order.status.new'|trans }}</span>
         <span class="badge badge-status-confirmed">{{ 'order.status.confirmed'|trans }}</span>
+        <span class="badge badge-status-completed">{{ 'order.status.completed'|trans }}</span>
         {{ 'admin.calendar.legend'|trans }}
     </p>
 {% endblock %}

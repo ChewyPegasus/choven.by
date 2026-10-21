@@ -56,8 +56,14 @@ export default class extends Controller {
             this.L.polyline(points.map((p) => [p.lat, p.lng]), { color, weight: 5 }).addTo(this.layer);
         }
         points.forEach((p, index) => {
-            const marker = this.L.marker([p.lat, p.lng], { draggable: true, title: String(index + 1) }).addTo(this.layer);
-            marker.bindTooltip(String(index + 1), { permanent: true, direction: 'top', offset: [0, -10] });
+            // CSS pins (as on the public map): Leaflet's default PNG icons are not part of the asset map.
+            const icon = this.L.divIcon({
+                className: '',
+                html: `<div class="map-pin" style="--pin:${color}"><span class="map-pin-label">${index + 1}</span></div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 28],
+            });
+            const marker = this.L.marker([p.lat, p.lng], { draggable: true, title: String(index + 1), icon }).addTo(this.layer);
             marker.on('dragend', () => {
                 const { lat, lng } = marker.getLatLng();
                 p.item.querySelector('[data-route-editor-target="lat"]').value = lat.toFixed(6);

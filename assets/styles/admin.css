@@ -95,3 +95,7 @@ a.stat:hover { border-color: var(--c-primary); box-shadow: var(--shadow); color:
     .admin-sidebar nav { display: flex; gap: 4px; overflow-x: auto; }
     .admin-sidebar nav a { white-space: nowrap; padding: 8px 10px; }
 }
+
+.bar-chart .bar.is-future .bar-fill { background: repeating-linear-gradient(45deg, #ffb37a, #ffb37a 6px, #ffd2b0 6px, #ffd2b0 12px); }
+.bar-chart .bar.is-current .bar-label { color: var(--c-ink); font-weight: 800; }
+.calendar .cal-order.is-completed { background: var(--c-info-soft); color: var(--c-info); }

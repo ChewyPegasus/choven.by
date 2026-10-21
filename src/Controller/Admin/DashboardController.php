@@ -27,7 +27,7 @@ final class DashboardController extends AbstractController
         FailedMessages $failedMessages,
     ): Response {
         $monthAgo = new \DateTimeImmutable('-30 days');
-        $monthly = $orders->getMonthlyStats(12);
+        $monthly = $orders->getMonthlyStats();
         $maxPeople = max(1, ...array_map(static fn (array $m): int => $m['people'], array_values($monthly)));
 
         return $this->render('admin/dashboard.html.twig', [
@@ -42,6 +42,7 @@ final class DashboardController extends AbstractController
             'upcoming' => $orders->findUpcoming(8),
             'monthly' => $monthly,
             'monthly_max' => $maxPeople,
+            'current_month' => (new \DateTimeImmutable())->format('Y-m'),
         ]);
     }
 }

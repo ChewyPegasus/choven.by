@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Order;
+use App\Enum\OrderStatus;
 use App\Form\Admin\OrderAdminType;
 use App\Form\Admin\OrderFilterType;
 use App\Model\OrderFilter;
@@ -106,7 +107,7 @@ final class OrderController extends AbstractController
         $gridEnd = $monthEnd->modify('+'.(7 - (int) $monthEnd->format('N')).' days');
 
         $ordersByDay = [];
-        foreach ($this->orders->findActiveInPeriod($gridStart, $gridEnd) as $order) {
+        foreach ($this->orders->findActiveInPeriod($gridStart, $gridEnd, statuses: [OrderStatus::NEW, OrderStatus::CONFIRMED, OrderStatus::COMPLETED]) as $order) {
             for ($day = $order->getStartDate(); null !== $day && $day <= $order->getEndDate(); $day = $day->modify('+1 day')) {
                 $ordersByDay[$day->format('Y-m-d')][] = $order;
             }
