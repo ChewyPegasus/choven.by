@@ -29,5 +29,6 @@ services:
             - '../src/Entity/'
             - '../src/Enum/'
             - '../src/Message/'
+            - '../src/Exception/'
             - '../src/Model/'
             - '../src/Kernel.php'

@@ -133,19 +133,23 @@ class OrderRepository extends ServiceEntityRepository
     }
 
     /**
-     * Guest bookings made with the same email before the account was created.
+     * Links guest bookings made with the user's email to the account (optionally only those created since $since).
      */
-    public function attachGuestOrdersToUser(User $user): int
+    public function attachGuestOrdersToUser(User $user, ?\DateTimeImmutable $since = null): int
     {
-        return $this->createQueryBuilder('o')
+        $qb = $this->createQueryBuilder('o')
             ->update()
             ->set('o.user', ':user')
             ->andWhere('o.user IS NULL')
             ->andWhere('o.email = :email')
             ->setParameter('user', $user)
-            ->setParameter('email', $user->getEmail())
-            ->getQuery()
-            ->execute();
+            ->setParameter('email', $user->getEmail());
+
+        if (null !== $since) {
+            $qb->andWhere('o.createdAt > :since')->setParameter('since', $since);
+        }
+
+        return $qb->getQuery()->execute();
     }
 
     /**
@@ -242,6 +246,21 @@ class OrderRepository extends ServiceEntityRepository
         }
 
         return $result;
+    }
+
+    /**
+     * New bookings that still need a call: trips in the past are not counted.
+     */
+    public function countNewUpcoming(): int
+    {
+        return (int) $this->createQueryBuilder('o')
+            ->select('COUNT(o.id)')
+            ->andWhere('o.status = :new')
+            ->andWhere('o.startDate >= :today')
+            ->setParameter('new', OrderStatus::NEW)
+            ->setParameter('today', $this->today(), Types::DATE_IMMUTABLE)
+            ->getQuery()
+            ->getSingleScalarResult();
     }
 
     public function countSince(\DateTimeImmutable $since): int

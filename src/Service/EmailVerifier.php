@@ -48,7 +48,9 @@ class EmailVerifier
         $user->setIsVerified(true);
         $this->entityManager->flush();
 
-        // Bookings made as a guest with this email now show up in the personal account.
-        $this->orderRepository->attachGuestOrdersToUser($user);
+        // Only bookings made after the registration: otherwise whoever registered somebody else's email
+        // (and knows the password) would get access to that person's earlier bookings once they click the link.
+        // Older guest bookings are attached after a password reset (see ResetPasswordController).
+        $this->orderRepository->attachGuestOrdersToUser($user, $user->getCreatedAt());
     }
 }

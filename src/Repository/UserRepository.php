@@ -111,6 +111,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getSingleScalarResult();
     }
 
+    /**
+     * Deletes accounts whose email was never confirmed (their bookings stay, detached).
+     */
+    public function removeUnverifiedOlderThan(\DateTimeImmutable $before): int
+    {
+        return $this->createQueryBuilder('u')
+            ->delete()
+            ->andWhere('u.isVerified = false')
+            ->andWhere('u.createdAt < :before')
+            ->setParameter('before', $before)
+            ->getQuery()
+            ->execute();
+    }
+
     public function save(User $user, bool $flush = true): void
     {
         $this->getEntityManager()->persist($user);

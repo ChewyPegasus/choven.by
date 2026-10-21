@@ -57,7 +57,7 @@ final class UserController extends AbstractController
             fwrite($out, "\xEF\xBB\xBF");
             fputcsv($out, ['Email', 'Name', 'Language', 'Registered'], ';', '"', '');
             foreach ($users as $user) {
-                fputcsv($out, [$user->getEmail(), $user->getName(), $user->getLocale(), $user->getCreatedAt()->format('Y-m-d')], ';', '"', '');
+                fputcsv($out, array_map(OrderController::csvCell(...), [$user->getEmail(), $user->getName(), $user->getLocale(), $user->getCreatedAt()->format('Y-m-d')]), ';', '"', '');
             }
             fclose($out);
         });

@@ -38,6 +38,7 @@ order:
         date_blocked: 'No trips run on {{ date }}. Please choose another date.'
         sold_out: 'There are no places left on {{ date }}. Please choose another date.'
         not_enough_places: 'Only {{ free }} places are available on {{ date }}.'
+        just_taken: 'While you were filling in the form, the last places on these dates were taken. Choose another date or a smaller group.'
 contact:
     error:
         name_required: 'Please enter your name.'

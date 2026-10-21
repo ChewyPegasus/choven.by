@@ -23,7 +23,7 @@
         {% set data = data|merge({offers: {'@type': 'Offer', price: tour.priceFrom, priceCurrency: 'BYN', url: url('app_order_new', {tour: tour.slug}), availability: 'https://schema.org/InStock'}}) %}
     {% endif %}
     {% if image %}{% set data = data|merge({image: absolute_url(image)}) %}{% endif %}
-    <script type="application/ld+json">{{ data|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+    <script type="application/ld+json">{{ data|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
 {% endblock %}
 
 {% block body %}

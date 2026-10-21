@@ -7,8 +7,11 @@ namespace App\Service;
 use App\Entity\Order;
 use App\Entity\User;
 use App\Enum\OrderStatus;
+use App\Exception\DatesUnavailableException;
 use App\Mailer\AppMailer;
 use App\Repository\OrderRepository;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
+use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -21,11 +24,15 @@ class BookingService
         private readonly AppMailer $mailer,
         private readonly TeamNotifier $teamNotifier,
         private readonly LoggerInterface $logger,
+        private readonly EntityManagerInterface $entityManager,
+        private readonly AvailabilityChecker $availability,
     ) {
     }
 
     /**
      * Saves a booking made on the site and notifies the customer and the team.
+     *
+     * @throws DatesUnavailableException when the last places were taken by a concurrent booking
      */
     public function place(Order $order, ?User $user, string $locale): void
     {
@@ -39,8 +46,21 @@ class BookingService
 
         $order->setEstimatedPrice($order->getTour()?->estimatePrice((int) $order->getAmountOfPeople()));
 
-        $this->ensureUniqueReference($order);
-        $this->orderRepository->save($order);
+        // Serialize bookings so that two customers cannot take the same last places at the same moment.
+        $this->entityManager->wrapInTransaction(function () use ($order): void {
+            $this->lockSchedule();
+
+            $start = $order->getStartDate();
+            if (null !== $start) {
+                $problems = $this->availability->check($start, (int) $order->getDurationDays(), (int) $order->getAmountOfPeople());
+                if ([] !== $problems) {
+                    throw new DatesUnavailableException($problems);
+                }
+            }
+
+            $this->ensureUniqueReference($order);
+            $this->orderRepository->save($order);
+        });
 
         $this->logger->info('Booking {reference} placed for {date}', [
             'reference' => $order->getReference(),
@@ -96,6 +116,17 @@ class BookingService
             $this->mailer->sendReviewInvitation($order);
         } else {
             $this->mailer->sendOrderStatusChanged($order);
+        }
+    }
+
+    /**
+     * Transaction-scoped lock of the booking schedule (PostgreSQL advisory lock, released on commit).
+     */
+    private function lockSchedule(): void
+    {
+        $connection = $this->entityManager->getConnection();
+        if ($connection->getDatabasePlatform() instanceof PostgreSQLPlatform) {
+            $connection->executeStatement('SELECT pg_advisory_xact_lock(724205)');
         }
     }
 

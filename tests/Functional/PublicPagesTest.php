@@ -89,6 +89,13 @@ final class PublicPagesTest extends WebTestCase
         self::assertStringContainsString('hreflang="en"', $xml);
     }
 
+    public function testSpoofedForwardedHostIsIgnored(): void
+    {
+        $this->client->request('GET', '/robots.txt', server: ['HTTP_X_FORWARDED_HOST' => 'evil.example', 'REMOTE_ADDR' => '10.0.0.5']);
+
+        self::assertStringNotContainsString('evil.example', (string) $this->client->getResponse()->getContent());
+    }
+
     public function testHealthCheck(): void
     {
         $this->client->request('GET', '/health');

@@ -102,6 +102,42 @@ final class BookingTest extends WebTestCase
         self::assertSelectorTextContains('body', 'свободно только 2 мест');
     }
 
+    public function testAbsurdDurationIsRejectedQuickly(): void
+    {
+        $crawler = $this->client->request('GET', '/ru/booking');
+        $started = microtime(true);
+        $this->submit($crawler, 'Отправить заявку', $this->validData([
+            'booking[durationDays]' => '2000000000',
+            'booking[amountOfPeople]' => '100000',
+        ]));
+
+        self::assertResponseStatusCodeSame(422);
+        self::assertLessThan(5, microtime(true) - $started);
+    }
+
+    public function testLastPlacesTakenConcurrentlyAreNotOverbooked(): void
+    {
+        $crawler = $this->client->request('GET', '/ru/booking');
+        $form = $crawler->selectButton('Отправить заявку')->form($this->validData([
+            'booking[startDate]' => (new \DateTimeImmutable('+25 days'))->format('Y-m-d'),
+            'booking[durationDays]' => '1',
+            'booking[amountOfPeople]' => '15',
+        ]));
+
+        // Somebody else books 10 of the 20 places right after our form was validated.
+        $this->factory->order('+25 days', people: 10);
+        $service = static::getContainer()->get(\App\Service\BookingService::class);
+        $order = (new Order())
+            ->setName('Racer')->setEmail('racer@example.com')
+            ->setPhone(\libphonenumber\PhoneNumberUtil::getInstance()->parse('+375291234567', 'BY'))
+            ->setRiver(\App\Enum\River::ISLOCH)->setPackage(\App\Enum\Package::MINIMUM)
+            ->setStartDate(new \DateTimeImmutable('+25 days'))->setDurationDays(1)->setAmountOfPeople(15);
+
+        $this->expectException(\App\Exception\DatesUnavailableException::class);
+        $service->place($order, null, 'ru');
+        unset($form);
+    }
+
     public function testHoneypotStopsBots(): void
     {
         $crawler = $this->client->request('GET', '/ru/booking');

@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\NewPasswordType;
 use App\Form\ResetPasswordRequestType;
 use App\Mailer\AppMailer;
+use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -57,7 +58,7 @@ final class ResetPasswordController extends AbstractController
     }
 
     #[Route('/reset/{token}', name: 'app_reset_password', methods: ['GET', 'POST'])]
-    public function reset(Request $request, UserPasswordHasherInterface $hasher, ?string $token = null): Response
+    public function reset(Request $request, UserPasswordHasherInterface $hasher, OrderRepository $orders, ?string $token = null): Response
     {
         if (null !== $token) {
             // Keep the token out of the URL (and of Referer headers / browser history).
@@ -87,9 +88,11 @@ final class ResetPasswordController extends AbstractController
             $this->resetPasswordHelper->removeResetRequest($token);
 
             $user->setPassword($hasher->hashPassword($user, (string) $form->get('plainPassword')->getData()));
-            // Following the link proves that the user owns the mailbox.
+            // Following the link proves that the user owns the mailbox, and the password is now theirs:
+            // bookings made as a guest with this email can safely appear in the account.
             $user->setIsVerified(true);
             $this->entityManager->flush();
+            $orders->attachGuestOrdersToUser($user);
 
             $this->cleanSessionAfterReset();
             $this->addFlash('success', 'reset_password.flash.success');

@@ -8,7 +8,7 @@
     {% for i in 1..7 %}
         {% set faq = faq|merge([{'@type': 'Question', name: ('info.faq.' ~ i ~ '.question')|trans, acceptedAnswer: {'@type': 'Answer', text: ('info.faq.' ~ i ~ '.answer')|trans}}]) %}
     {% endfor %}
-    <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES'))|raw }}</script>
+    <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
 {% endblock %}
 
 {% block body %}

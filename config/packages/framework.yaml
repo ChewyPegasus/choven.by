@@ -1,8 +1,12 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
+    # nginx (docker/nginx/default.conf) appends the real client IP to X-Forwarded-For; only private networks
+    # (nginx itself, a reverse proxy on the same host) are trusted, so spoofed values from clients are ignored.
     trusted_proxies: '%env(TRUSTED_PROXIES)%'
-    trusted_headers: ['x-forwarded-for', 'x-forwarded-host', 'x-forwarded-proto', 'x-forwarded-port', 'x-forwarded-prefix']
+    trusted_headers: ['x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port']
+    # Requests with any other Host header are rejected (protects links in emails). Empty = any host (development).
+    trusted_hosts: '%env(TRUSTED_HOSTS)%'
 
     # Sessions start only when something is written to them (login, flash message, CSRF token),
     # so anonymous visitors of public pages never create one.
@@ -31,7 +35,7 @@ framework:
             interval: '1 hour'
         registration:
             policy: sliding_window
-            limit: 5
+            limit: 10
             interval: '1 hour'
         verification:
             policy: sliding_window

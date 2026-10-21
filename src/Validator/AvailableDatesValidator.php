@@ -29,8 +29,10 @@ final class AvailableDatesValidator extends ConstraintValidator
         $start = $value->getStartDate();
         $days = $value->getDurationDays();
         $people = $value->getAmountOfPeople();
-        if (null === $start || null === $days || null === $people || $days < 1 || $people < 1) {
-            return; // the field constraints report these
+        if (null === $start || null === $days || null === $people
+            || $days < Order::MIN_DAYS || $days > Order::MAX_DAYS
+            || $people < Order::MIN_PEOPLE || $people > Order::MAX_PEOPLE) {
+            return; // the field constraints report these; never loop over absurd ranges
         }
 
         $problems = $this->checker->check($start, $days, $people, $value->getId() ? $value : null);

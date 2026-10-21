@@ -60,7 +60,7 @@ final class OrderController extends AbstractController
             fputcsv($out, ['Reference', 'Status', 'Start', 'End', 'Days', 'People', 'River', 'Package', 'Tour', 'Name', 'Phone', 'Email', 'Price BYN', 'Comment', 'Admin note', 'Created'], ';', '"', '');
 
             foreach ($orders->iterateByFilter($filter) as $order) {
-                fputcsv($out, [
+                fputcsv($out, array_map(self::csvCell(...), [
                     $order->getReference(),
                     $order->getStatus()->trans($translator),
                     $order->getStartDate()?->format('Y-m-d'),
@@ -77,7 +77,7 @@ final class OrderController extends AbstractController
                     $order->getDescription(),
                     $order->getAdminNote(),
                     $order->getCreatedAt()->format('Y-m-d H:i'),
-                ], ';', '"', '');
+                ]), ';', '"', '');
             }
             fclose($out);
         });
@@ -213,6 +213,16 @@ final class OrderController extends AbstractController
         }
 
         return $this->redirectToRoute('app_admin_orders');
+    }
+
+    /**
+     * Neutralizes values that a spreadsheet would execute as a formula (=, +, -, @ …).
+     */
+    public static function csvCell(mixed $value): string
+    {
+        $value = (string) $value;
+
+        return '' !== $value && \in_array($value[0], ['=', '+', '-', '@', "\t", "\r"], true) ? "'".$value : $value;
     }
 
     /**

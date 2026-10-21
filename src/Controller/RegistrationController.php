@@ -40,13 +40,14 @@ final class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationType::class, $user);
         $form->handleRequest($request);
 
+        // Count every attempt (not only valid ones), otherwise "email already used" errors allow free enumeration.
+        if ($form->isSubmitted() && !$registrationLimiter->create($request->getClientIp())->consume()->isAccepted()) {
+            $this->addFlash('error', 'flash.too_many_requests');
+
+            return $this->redirectToRoute('app_register');
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
-            if (!$registrationLimiter->create($request->getClientIp())->consume()->isAccepted()) {
-                $this->addFlash('error', 'flash.too_many_requests');
-
-                return $this->redirectToRoute('app_register');
-            }
-
             $user->setPassword($hasher->hashPassword($user, (string) $form->get('plainPassword')->getData()));
             $user->setLocale($request->getLocale());
             $this->users->save($user);

@@ -2,6 +2,8 @@
 
 {% block title %}{{ 'booking.show.title'|trans({'%reference%': order.reference}) }}{% endblock %}
 {% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{# The URL contains the secret booking token: never send it to analytics. #}
+{% block analytics %}{% endblock %}
 
 {% block body %}
     {% set status = order.status.value %}

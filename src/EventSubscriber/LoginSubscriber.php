@@ -10,7 +10,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 /**
- * Remembers when and in which language the user last signed in (used for their emails).
+ * Remembers when the user last signed in.
  */
 final class LoginSubscriber implements EventSubscriberInterface
 {
@@ -31,7 +31,6 @@ final class LoginSubscriber implements EventSubscriberInterface
         }
 
         $user->setLastLoginAt(new \DateTimeImmutable());
-        $user->setLocale($event->getRequest()->getLocale());
         $this->entityManager->flush();
     }
 }

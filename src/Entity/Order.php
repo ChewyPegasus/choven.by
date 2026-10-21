@@ -63,7 +63,7 @@ class Order
 
     /** Nullable in the database only because bookings imported from the old system have no phone. */
     #[ORM\Column(type: 'phone_number', length: 20, nullable: true)]
-    #[Assert\NotBlank(message: 'order.error.phone_required')]
+    #[Assert\NotBlank(message: 'order.error.phone_required', groups: ['booking'])]
     #[PhoneNumberConstraint]
     private ?PhoneNumber $phone = null;
 

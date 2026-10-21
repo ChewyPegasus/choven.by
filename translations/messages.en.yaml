@@ -509,7 +509,7 @@ profile:
         name: Name
         phone: Phone
         locale: 'Email language'
-        locale_help: 'Booking emails will be sent in this language.'
+        locale_help: 'Account emails (email confirmation, password reset) are sent in this language.'
         save: Save
     password:
         title: 'Change password'

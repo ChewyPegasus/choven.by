@@ -10,7 +10,7 @@ x-php-env: &php-env
     MAILER_DSN: ${MAILER_DSN:-smtp://mailer:1025}
     MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
     DEFAULT_URI: ${DEFAULT_URI:-http://localhost:8080}
-    TRUSTED_PROXIES: 127.0.0.1,REMOTE_ADDR
+    TRUSTED_PROXIES: private_ranges
     XDEBUG_MODE: ${XDEBUG_MODE:-off}
 
 services:

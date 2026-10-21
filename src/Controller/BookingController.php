@@ -10,6 +10,7 @@ use App\Entity\User;
 use App\Enum\OrderStatus;
 use App\Enum\Package;
 use App\Enum\River;
+use App\Exception\DatesUnavailableException;
 use App\Form\BookingType;
 use App\Form\ReviewType;
 use App\Repository\OrderRepository;
@@ -20,7 +21,9 @@ use App\Service\BookingService;
 use App\Service\IcsGenerator;
 use App\Service\SiteSettings;
 use App\Service\TeamNotifier;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,6 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\RateLimiter\RateLimiterFactoryInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 #[Route('/booking')]
 final class BookingController extends AbstractController
@@ -46,6 +50,7 @@ final class BookingController extends AbstractController
         TourRepository $tours,
         SiteSettings $settings,
         RateLimiterFactoryInterface $bookingLimiter,
+        TranslatorInterface $translator,
     ): Response {
         if (!$settings->isBookingEnabled()) {
             return $this->render('booking/closed.html.twig');
@@ -63,9 +68,13 @@ final class BookingController extends AbstractController
                 return $this->redirectToRoute('app_order_new');
             }
 
-            $this->bookingService->place($order, $user instanceof User ? $user : null, $request->getLocale());
+            try {
+                $this->bookingService->place($order, $user instanceof User ? $user : null, $request->getLocale());
 
-            return $this->redirectToRoute('app_order_show', ['token' => $order->getAccessToken(), 'created' => 1]);
+                return $this->redirectToRoute('app_order_show', ['token' => $order->getAccessToken(), 'created' => 1]);
+            } catch (DatesUnavailableException) {
+                $form->get('startDate')->addError(new FormError($translator->trans('order.error.just_taken', [], 'validators')));
+            }
         }
 
         return $this->render('booking/new.html.twig', [
@@ -153,7 +162,9 @@ final class BookingController extends AbstractController
             return $this->redirectToRoute('app_order_show', ['token' => $token]);
         }
 
-        if (OrderStatus::COMPLETED !== $order->getStatus() && $order->isUpcoming()) {
+        $tookPlace = OrderStatus::COMPLETED === $order->getStatus()
+            || (OrderStatus::CONFIRMED === $order->getStatus() && !$order->isUpcoming());
+        if (!$tookPlace) {
             $this->addFlash('info', 'review.flash.after_trip');
 
             return $this->redirectToRoute('app_order_show', ['token' => $token]);
@@ -169,7 +180,12 @@ final class BookingController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $reviews->save($review);
+            try {
+                $reviews->save($review);
+            } catch (UniqueConstraintViolationException) {
+                // Double submit: the first one won.
+                return $this->redirectToRoute('app_order_show', ['token' => $token]);
+            }
             $teamNotifier->newReview($review);
             $this->addFlash('success', 'review.flash.thanks');
 

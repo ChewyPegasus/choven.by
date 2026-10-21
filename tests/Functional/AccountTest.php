@@ -47,15 +47,16 @@ final class AccountTest extends WebTestCase
         self::assertInstanceOf(User::class, $user);
         self::assertTrue($user->isVerified());
 
-        // The booking made as a guest is now in the account.
+        // A booking made as a guest BEFORE the registration is not attached by email confirmation alone
+        // (whoever registered might not be the owner of the mailbox) ...
         $guestOrder = $this->reload($guestOrder);
-        self::assertSame($user->getId(), $guestOrder->getUser()?->getId());
+        self::assertNull($guestOrder->getUser());
 
         $this->login('+375445556677', 'very-secret-1');
         self::assertResponseRedirects('/ru/profile/orders');
         $this->client->followRedirect();
         self::assertSelectorTextContains('h1', 'Новый');
-        self::assertSelectorTextContains('#upcoming', $guestOrder->getReference());
+        self::assertSelectorTextNotContains('body', $guestOrder->getReference());
     }
 
     public function testDuplicateEmailIsRejected(): void
@@ -86,6 +87,7 @@ final class AccountTest extends WebTestCase
 
     public function testPasswordReset(): void
     {
+        $guestOrder = $this->factory->order('+9 days', email: 'forgot@example.com');
         $this->factory->user('forgot@example.com');
 
         $crawler = $this->client->request('GET', '/ru/reset-password');
@@ -104,6 +106,10 @@ final class AccountTest extends WebTestCase
 
         $this->login('forgot@example.com', 'brand-new-pass');
         self::assertResponseRedirects('/ru/profile/orders');
+
+        // ... but after a password reset (owner of the mailbox + own password) earlier guest bookings show up.
+        $this->client->followRedirect();
+        self::assertSelectorTextContains('#upcoming', $guestOrder->getReference());
     }
 
     public function testUnknownEmailDoesNotRevealAnything(): void

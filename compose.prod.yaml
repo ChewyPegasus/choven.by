@@ -17,7 +17,8 @@ x-php-env: &php-env
     MAILER_FROM: ${MAILER_FROM:-Choven.by <info@choven.by>}
     MESSENGER_TRANSPORT_DSN: doctrine://default?auto_setup=0
     DEFAULT_URI: ${DEFAULT_URI:?Set DEFAULT_URI, e.g. https://choven.by}
-    TRUSTED_PROXIES: ${TRUSTED_PROXIES:-127.0.0.1,REMOTE_ADDR}
+    TRUSTED_PROXIES: ${TRUSTED_PROXIES:-private_ranges}
+    TRUSTED_HOSTS: ${TRUSTED_HOSTS:?Set TRUSTED_HOSTS, e.g. ^choven\.by$$,^www\.choven\.by$$}
     CONTACT_PHONE: ${CONTACT_PHONE:-+375 29 706-75-85}
     CONTACT_EMAIL: ${CONTACT_EMAIL:-info@choven.by}
     CONTACT_INSTAGRAM: ${CONTACT_INSTAGRAM:-}

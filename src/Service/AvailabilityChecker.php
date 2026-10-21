@@ -28,6 +28,7 @@ class AvailabilityChecker
      */
     public function check(\DateTimeImmutable $start, int $days, int $people, ?Order $exclude = null): array
     {
+        $days = max(Order::MIN_DAYS, min(Order::MAX_DAYS, $days));
         $end = $start->modify(\sprintf('+%d days', max(0, $days - 1)));
         $capacity = $this->settings->getDailyCapacity();
         $booked = $capacity > 0 ? $this->orderRepository->getBookedPeopleByDay($start, $end, $exclude) : [];
