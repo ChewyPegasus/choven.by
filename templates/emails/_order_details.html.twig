@@ -1,7 +1,7 @@
 {% set locale = email_locale|default(order.locale) %}
 {% set rows = [
     ['booking.form.start_date'|trans, order.startDate|format_date('full', locale: locale) ~ (order.durationDays > 1 ? ' — ' ~ order.endDate|format_date('long', locale: locale) : '')],
-    ['booking.form.duration'|trans, 'tour.days'|trans({'%count%': order.durationDays})],
+    ['booking.show.duration'|trans, 'tour.days'|trans({'%count%': order.durationDays})],
     ['booking.form.people'|trans, order.amountOfPeople],
     ['booking.form.river'|trans, order.river|trans],
     ['booking.form.package'|trans, order.package|trans],

@@ -50,7 +50,7 @@
                         {{ order.startDate|format_date('full', locale: app.request.locale) }}
                         {% if order.durationDays > 1 %} — {{ order.endDate|format_date('long', locale: app.request.locale) }}{% endif %}
                     </dd>
-                    <dt>{{ 'booking.form.duration'|trans }}</dt>
+                    <dt>{{ 'booking.show.duration'|trans }}</dt>
                     <dd>{{ 'tour.days'|trans({'%count%': order.durationDays}) }}</dd>
                     <dt>{{ 'booking.form.people'|trans }}</dt>
                     <dd>{{ order.amountOfPeople }}</dd>

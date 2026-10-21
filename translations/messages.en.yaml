@@ -1,83 +1,74 @@
 seo:
     default_title: 'Kayaking trips on the rivers of Belarus'
     default_description: 'Kayak and canoe trips on the Isloch, Svisloch and other rivers of Belarus: day trips and overnight adventures, all-inclusive packages, gear hire and corporate events. Book online.'
-
 locale:
-    ru: 'Русский'
-    be: 'Беларуская'
-    en: 'English'
-
+    ru: Русский
+    be: Беларуская
+    en: English
 a11y:
     skip_to_content: 'Skip to content'
-    close: 'Close'
-    previous: 'Previous'
-    next: 'Next'
+    close: Close
+    previous: Previous
+    next: Next
     show_password: 'Show password'
     hide_password: 'Hide password'
-
 nav:
     label: 'Main menu'
-    tours: 'Trips'
+    tours: Trips
     info: 'Trip guide'
     about: 'About us'
-    contacts: 'Contacts'
+    contacts: Contacts
     book: 'Book now'
-    admin: 'Admin'
-    language: 'Language'
-    account: 'Account'
+    admin: Admin
+    language: Language
+    account: Account
     my_bookings: 'My bookings'
-    settings: 'Settings'
+    settings: Settings
     login: 'Log in'
     register: 'Sign up'
     logout: 'Log out'
-    menu: 'Menu'
-
+    menu: Menu
 footer:
     tagline: 'Kayaking trips on the most scenic rivers of Belarus — for beginners, families and groups.'
-    site: 'Website'
-    documents: 'Documents'
+    site: Website
+    documents: Documents
     privacy: 'Privacy policy'
     terms: 'Terms of use'
     checklist: 'Packing list'
-    contacts: 'Contacts'
+    contacts: Contacts
     region: 'Minsk and Minsk Region'
     rights: 'All rights reserved.'
     made_with: 'Made with love for rivers'
-
 files:
-    checklist: 'Checklist'
-
+    checklist: Checklist
 pagination:
-    label: 'Pages'
+    label: Pages
     previous: 'Previous page'
     next: 'Next page'
     info: 'Showing %from%–%to% of %total%'
-
 flash:
     too_many_requests: 'Too many requests. Please try again a little later.'
     invalid_csrf: 'Your session has expired. Please refresh the page and try again.'
-
 river:
-    svisloch: 'Svisloch'
-    isloch: 'Isloch'
-    berezina: 'Berezina'
-    neman: 'Neman'
-    narochanka: 'Narochanka'
-    stracha: 'Stracha'
-    saryanka: 'Saryanka'
-    sluch: 'Sluch'
-    viliya: 'Viliya'
-    sula: 'Sula'
-    usa: 'Usa'
-    smerd: 'Smerd'
+    svisloch: Svisloch
+    isloch: Isloch
+    berezina: Berezina
+    neman: Neman
+    narochanka: Narochanka
+    stracha: Stracha
+    saryanka: Saryanka
+    sluch: Sluch
+    viliya: Viliya
+    sula: Sula
+    usa: Usa
+    smerd: Smerd
     other: 'Another river'
-
 package:
     details: 'Learn more'
     included: 'What’s included'
     book: 'Book now'
     all_inclusive:
-        title: 'All-inclusive'
+        title: All-inclusive
         description: 'The full package for maximum comfort: return transfer to the start, all the gear, an experienced instructor, meals on the route and camping kit for the night.'
         features:
             transfer: 'Return transfer to the starting point'
@@ -86,7 +77,7 @@ package:
             food: 'Meals on the route (breakfast, lunch, dinner)'
             camping: 'Camping kit: tents, sleeping bags, mats'
     minimum:
-        title: 'Basic'
+        title: Basic
         description: 'A basic package for outdoor lovers: the gear plus an instructor who gives a briefing and stays with you on the route.'
         features:
             equipment: 'All the gear: kayaks, paddles, life jackets'
@@ -97,7 +88,7 @@ package:
         features:
             equipment: 'Kayak, paddle and life jacket hire'
     corporate:
-        title: 'Corporate'
+        title: Corporate
         description: 'A river trip for companies: nature, team spirit and the outdoors. We handle everything, from transfers to the programme on shore.'
         features:
             team_building: 'Team building on the water and on shore'
@@ -107,29 +98,26 @@ package:
             transport: 'Transfer for the whole group'
             group_activities: 'Team games and entertainment'
     other:
-        title: 'Custom'
+        title: Custom
         description: 'A set of services tailored to your wishes.'
         features:
             custom: 'A tailor-made set of services'
-
 order:
     status:
-        new: 'New'
-        confirmed: 'Confirmed'
-        completed: 'Completed'
-        cancelled: 'Cancelled'
-
+        new: New
+        confirmed: Confirmed
+        completed: Completed
+        cancelled: Cancelled
 route:
     difficulty:
-        easy: 'Easy'
-        medium: 'Moderate'
-        hard: 'Challenging'
-
+        easy: Easy
+        medium: Moderate
+        hard: Challenging
 review:
     status:
         pending: 'Awaiting moderation'
-        approved: 'Published'
-        rejected: 'Rejected'
+        approved: Published
+        rejected: Rejected
     rating_label: 'Rating: %rating% out of 5'
     leave: 'Leave a review'
     yours: 'Your review'
@@ -140,18 +128,17 @@ review:
     form:
         name: 'Your name'
         name_help: 'This is how it will appear next to your review.'
-        rating: 'Rating'
-        text: 'Review'
+        rating: Rating
+        text: Review
     flash:
         thanks: 'Thank you for your review! It will appear on the site after moderation.'
         already_sent: 'You’ve already reviewed this trip.'
         after_trip: 'You can leave a review after the trip.'
-
 tour:
-    price_from: 'from'
+    price_from: from
     price_unit:
-        person: 'person'
-        group: 'group'
+        person: person
+        group: group
     price_unit_long:
         person: 'per person'
         group: 'per group'
@@ -163,13 +150,11 @@ tour:
     other: 'Other trips'
     no_prepayment: 'No prepayment online: we’ll call you back to arrange the details.'
     questions: 'Any questions? Give us a call:'
-
 map:
     km: '%km% km'
     points: '%count% point|%count% points'
     loading: 'Loading map…'
     show_all: 'All routes'
-
 main:
     title: 'Chöven — kayaking trips on the rivers of Belarus'
     meta_description: 'Kayaking trips on the Isloch and Svisloch: day routes and overnight trips, all-inclusive packages, gear hire and corporate events. Book online in a minute.'
@@ -192,13 +177,13 @@ main:
     benefits:
         label: 'Why choose us'
         safety:
-            title: 'Safe'
+            title: Safe
             text: 'Safety briefing, life jackets and experienced instructors'
         beginners:
             title: 'No experience needed'
             text: 'We’ll teach you to paddle in 15 minutes'
         transfer:
-            title: 'Transfer'
+            title: Transfer
             text: 'We’ll take you to the start and pick you up at the finish'
         equipment:
             title: 'All the gear'
@@ -209,8 +194,8 @@ main:
         subtitle: 'Ready-made programmes for a day, a weekend or a company outing. Want something different? Drop us a line.'
         empty: 'New routes are coming soon.'
     packages:
-        eyebrow: 'Formats'
-        title: 'Packages'
+        eyebrow: Formats
+        title: Packages
         subtitle: 'From gear hire to a fully organised trip with meals and an overnight stay.'
     steps:
         eyebrow: 'Simple and clear'
@@ -226,14 +211,14 @@ main:
             title: 'We call you back'
             text: 'We’ll go over the details, answer your questions and confirm your booking.'
         4:
-            title: 'Enjoy!'
+            title: Enjoy!
             text: 'We meet you, give a safety briefing and set off.'
     map:
-        eyebrow: 'Routes'
+        eyebrow: Routes
         title: 'Route map'
         subtitle: 'Choose a route to see the start, stops and finish.'
     reviews:
-        eyebrow: 'Reviews'
+        eyebrow: Reviews
         title: 'What our guests say'
         count: '%count% review|%count% reviews'
     faq:
@@ -242,18 +227,16 @@ main:
         eyebrow: 'Any questions?'
         title: 'We’ll help you choose a trip'
         text: 'Leave your number and we’ll call you back within one working day to find the right route and date.'
-
 contact:
     form:
         title: 'Call me back'
-        name: 'Name'
-        phone: 'Phone'
+        name: Name
+        phone: Phone
         email: 'Email (optional)'
         message: 'Question or requests'
         submit: 'Request a call'
     flash:
         sent: 'Thank you! We’ll call you back shortly.'
-
 info:
     title: 'Trip guide'
     eyebrow: 'Before you go'
@@ -297,7 +280,7 @@ info:
                 2: 'Gear handout'
                 3: 'Safety briefing'
         2:
-            title: 'Launch'
+            title: Launch
             text: 'We put the kayaks in the water, take our seats and the adventure begins. It may take a moment, but you’ll get the hang of it — you’ll see!'
             points:
                 1: 'Launching the kayaks'
@@ -328,7 +311,7 @@ info:
         title: 'Ready for an adventure?'
         text: 'Book your trip now — no prepayment, we’ll call you back and sort everything out.'
     faq:
-        title: 'FAQ'
+        title: FAQ
         1:
             question: 'Do I need any experience?'
             answer: 'No. Our instructors give a thorough briefing before the start and teach you everything you need. Most routes are suitable for beginners — all you need is enthusiasm and to follow the instructions.'
@@ -357,10 +340,9 @@ info:
         7:
             question: 'How safe is it?'
             answer: 'Safety is our priority. Every trip starts with a briefing, everyone gets a life jacket, and our instructors know the route. We choose calm rivers without difficult rapids.'
-
 about:
     title: 'About us'
-    eyebrow: 'Chöven'
+    eyebrow: Chöven
     meta_description: 'The story of the Chöven team: how a passion for paddling became river trips on the most beautiful rivers of Belarus. Photos and contacts.'
     history:
         title: 'Our story'
@@ -376,9 +358,8 @@ about:
         photo: 'Photo %number%'
     contacts:
         title: 'Get in touch'
-        phone: 'Phone'
-        messengers: 'Messengers'
-
+        phone: Phone
+        messengers: Messengers
 legal:
     effective: 'Effective from %date%, last updated %updated%'
     download_pdf: 'Download PDF'
@@ -388,26 +369,25 @@ legal:
     terms:
         title: 'Terms of use'
         description: 'Rules for using the Chöven website and for booking and cancelling trips.'
-
 booking:
     title: 'Book a trip'
     subtitle: 'Fill in the form — we’ll call you back, arrange the details and confirm your booking. No prepayment needed.'
     meta_description: 'Book a kayaking trip on the rivers of Belarus online. No prepayment: we’ll call you back to arrange the details.'
     section:
-        trip: 'Trip'
+        trip: Trip
         contacts: 'Contact details'
     form:
         name: 'Full name'
-        phone: 'Phone'
+        phone: Phone
         phone_help: 'We’ll call to confirm your booking.'
-        email: 'Email'
+        email: Email
         start_date: 'Start date'
         duration: 'Duration, days'
-        people: 'People'
-        river: 'River'
-        package: 'Package'
+        people: People
+        river: River
+        package: Package
         choose: '— select —'
-        comment: 'Requests'
+        comment: Requests
         comment_placeholder: 'For example: we need a tent, we’re bringing kids aged 8 and 10, we’d like a transfer from Minsk'
         agree: 'I agree to the <a href="%terms%" target="_blank">terms</a> and the <a href="%privacy%" target="_blank">privacy policy</a>'
     submit: 'Send request'
@@ -441,7 +421,7 @@ booking:
         thanks_text: 'We’ve sent a confirmation to %email% and will call you soon to arrange the details.'
         reference: 'Booking number'
         copy: 'Copy number'
-        copied: 'Copied'
+        copied: Copied
         progress: 'Booking status'
         status_hint:
             new: 'We’ll call you within one working day to confirm your booking.'
@@ -453,20 +433,19 @@ booking:
         cancel_confirm: 'Cancel this booking? This can’t be undone.'
         questions: 'Questions about your booking?'
         bookmark: 'Save this page or the email — you can use the link to check or cancel your booking at any time.'
-
+        duration: Duration
 login:
     title: 'Log in'
     subtitle: 'Log in to manage your bookings.'
     identifier: 'Email or phone'
     identifier_help: 'You can enter your phone number in any format, e.g. 8 029 123-45-67.'
-    password: 'Password'
+    password: Password
     remember_me: 'Remember me'
     forgot: 'Forgot your password?'
     submit: 'Log in'
     no_account: 'Don’t have an account?'
     register: 'Sign up'
     resend_verification: 'Resend email'
-
 registration:
     title: 'Sign up'
     subtitle: 'Your account: all your bookings in one place, faster booking and reviews.'
@@ -474,11 +453,11 @@ registration:
     have_account: 'Already have an account?'
     login: 'Log in'
     form:
-        name: 'Name'
-        email: 'Email'
-        phone: 'Phone'
+        name: Name
+        email: Email
+        phone: Phone
         phone_help: 'Optional. You can use it to log in instead of your email.'
-        password: 'Password'
+        password: Password
         password_help: 'At least 8 characters.'
         repeat_password: 'Repeat password'
         agree: 'I agree to the <a href="%terms%" target="_blank">terms</a> and the <a href="%privacy%" target="_blank">privacy policy</a>'
@@ -492,19 +471,17 @@ registration:
         title: 'Email confirmation'
         text: 'Enter the email you signed up with and we’ll send you a new link.'
         submit: 'Send link'
-
 verification:
     flash:
         success: 'Email confirmed! You can now log in.'
         already: 'Your email is already confirmed — just log in.'
         invalid: 'This link is invalid. Please request a new one.'
-
 reset_password:
     title: 'Reset password'
     text: 'Enter your account email and we’ll send you a link to reset your password.'
     submit: 'Send link'
     form:
-        email: 'Email'
+        email: Email
         new_password: 'New password'
     check_email:
         title: 'Check your inbox'
@@ -515,26 +492,25 @@ reset_password:
         submit: 'Save password'
     flash:
         success: 'Your password has been changed. Log in with your new password.'
-
 profile:
     nav: 'Account sections'
     hello: 'Hello, %name%!'
     orders_subtitle: 'All your bookings are here. Upcoming ones can be cancelled in one click.'
     new_booking: 'New booking'
-    upcoming: 'Upcoming'
-    past: 'Past'
+    upcoming: Upcoming
+    past: Past
     no_upcoming: 'You have no upcoming trips yet.'
     no_past: 'Your past trips will appear here.'
     book_again: 'Book again'
-    details: 'Details'
+    details: Details
     people: '%count% person|%count% people'
     form:
         title: 'Personal details'
-        name: 'Name'
-        phone: 'Phone'
+        name: Name
+        phone: Phone
         locale: 'Email language'
         locale_help: 'Booking emails will be sent in this language.'
-        save: 'Save'
+        save: Save
     password:
         title: 'Change password'
         current: 'Current password'
@@ -549,7 +525,6 @@ profile:
         password_changed: 'Password changed.'
         deleted: 'Your account has been deleted. We’d love to see you again!'
         last_admin: 'The last administrator can’t be deleted.'
-
 error:
     home: 'Go to homepage'
     contact: 'Need help? Call us:'
@@ -566,15 +541,13 @@ error:
         title: 'Something went wrong'
         text: 'We’re aware of the problem and are fixing it. Try refreshing the page in a couple of minutes.'
     generic:
-        title: 'Error'
+        title: Error
         text: 'The request could not be completed.'
-
 ics:
     summary: 'Chöven river trip — %river%'
     description: 'Booking %reference%, people: %people%. Phone: %phone%'
-
 email:
-    sender_name: 'Chöven'
+    sender_name: Chöven
     tagline: 'river trips in Belarus'
     link_fallback: 'If the button doesn’t work, copy this link into your browser:'
     footer:
