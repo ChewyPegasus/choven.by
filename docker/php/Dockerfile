@@ -68,7 +68,7 @@ RUN set -eux; \
 
 COPY . ./
 RUN set -eux; \
-    rm -rf legacy tests; \
+    rm -rf tests; \
     mkdir -p var/cache var/log public/uploads; \
     composer dump-autoload --classmap-authoritative --no-dev; \
     composer dump-env prod; \

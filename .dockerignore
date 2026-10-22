@@ -8,7 +8,6 @@
 .env.*.local
 var
 vendor
-legacy
 tests
 coverage
 assets/vendor

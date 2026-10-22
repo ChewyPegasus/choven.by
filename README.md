@@ -145,7 +145,6 @@ assets/                controllers/ (Stimulus), styles/
 translations/          messages, validators, security (+ admin/)
 migrations/            миграции, включая перенос данных со старой схемы
 docker/                Dockerfile (dev/prod), nginx, php.ini
-legacy/                код до переработки — для сверки, удалите после ревью
 ```
 
 ### Почему без Kafka
