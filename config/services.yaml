@@ -16,6 +16,16 @@ parameters:
         announcement: []
         yandex_metrika_id: ~
         google_analytics_id: ~
+        # Online prepayment: share of the price in % (0 = no prepayment), whether the booking waits for it,
+        # and after how many hours an unpaid booking is cancelled.
+        prepayment_percent: 0
+        prepayment_required: false
+        prepayment_hold_hours: 24
+        # Free cancellation (with refund of the prepayment) and online rescheduling up to N days before the trip.
+        free_change_days: 3
+        gift_certificates_enabled: true
+        # Administrators must set up two-factor authentication before using the admin panel.
+        admin_2fa_required: false
 
 services:
     _defaults:
@@ -32,3 +42,5 @@ services:
             - '../src/Exception/'
             - '../src/Model/'
             - '../src/Kernel.php'
+            # Value objects and gateways built by App\Payment\PaymentGateways.
+            - '../src/Payment/{CheckoutRequest,PaymentResult,PaymentException,BePaidGateway,DemoGateway}.php'

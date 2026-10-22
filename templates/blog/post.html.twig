@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% set title = post.title|localized %}
+{% set excerpt = post.excerpt|localized ?: (post.body|localized|markdown_text|u.truncate(160, '…', false)) %}
+{% set cover = image_url(post.coverImage) %}
+
+{% block title %}{{ title }}{% endblock %}
+{% block meta_description %}{{ excerpt }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}
+    {% if cover %}<meta property="og:image" content="{{ absolute_url(cover) }}">{% else %}{{ parent() }}{% endif %}
+{% endblock %}
+
+{% block structured_data %}
+    {% set article = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title|u.truncate(110),
+        description: excerpt,
+        datePublished: post.publishedAt|date('c'),
+        dateModified: post.updatedAt|date('c'),
+        inLanguage: app.request.locale,
+        mainEntityOfPage: url('app_blog_post', {slug: post.slug}),
+        author: post.author ? {'@type': 'Person', name: post.author} : {'@type': 'Organization', name: site_name},
+        publisher: {'@type': 'Organization', name: site_name, url: url('app_main')},
+    } %}
+    {% if cover %}{% set article = article|merge({image: absolute_url(cover)}) %}{% endif %}
+    <script type="application/ld+json">{{ article|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+    {% include '_partials/breadcrumbs_ld.html.twig' with {items: [
+        {name: site_name, url: url('app_main')},
+        {name: 'blog.title'|trans, url: url('app_blog')},
+        {name: title, url: url('app_blog_post', {slug: post.slug})},
+    ]} %}
+{% endblock %}
+
+{% block preload %}{{ image_preload(post.coverImage, '(max-width: 800px) 100vw, 800px') }}{% endblock %}
+
+{% block body %}
+    <article>
+        <section class="page-head">
+            <div class="container container-narrow">
+                <p class="text-small"><a href="{{ path('app_blog') }}">← {{ 'blog.all'|trans }}</a></p>
+                <h1>{{ title }}</h1>
+                <p class="text-muted">
+                    {{ post.publishedAt|format_date('long', locale: app.request.locale) }}
+                    · {{ 'blog.minutes'|trans({'%count%': post.readingMinutes(app.request.locale)}) }}
+                    {% if post.author %}· {{ post.author }}{% endif %}
+                </p>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top: 0">
+            <div class="container container-narrow">
+                {% if post.coverImage %}
+                    <div class="post-cover">{{ picture(post.coverImage, title, {sizes: '(max-width: 800px) 100vw, 800px', loading: 'eager', fetchpriority: 'high'}) }}</div>
+                {% endif %}
+                <div class="prose">{{ post.body|localized|markdown }}</div>
+
+                {% if post.tour and post.tour.active %}
+                    <div class="cta mt-4" style="grid-template-columns: 1fr auto">
+                        <div>
+                            <h2 class="mb-1">{{ post.tour.title|localized }}</h2>
+                            <p class="mb-0">{{ post.tour.summary|localized }}</p>
+                        </div>
+                        <a class="btn btn-lg btn-light" href="{{ path('app_order_new', {tour: post.tour.slug}) }}">{{ 'tour.book'|trans }}</a>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+    </article>
+
+    {% if more is not empty %}
+        <section class="section section-soft">
+            <div class="container">
+                <h2 class="section-title text-center">{{ 'blog.more'|trans }}</h2>
+                <div class="tour-grid mt-3">
+                    {% for post in more %}
+                        {% include 'blog/_card.html.twig' %}
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+    {% endif %}
+{% endblock %}

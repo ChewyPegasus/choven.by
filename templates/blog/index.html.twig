@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'blog.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'blog.meta_description'|trans }}{% endblock %}
+
+{% block structured_data %}
+    {% include '_partials/breadcrumbs_ld.html.twig' with {items: [
+        {name: site_name, url: url('app_main')},
+        {name: 'blog.title'|trans, url: url('app_blog')},
+    ]} %}
+{% endblock %}
+
+{% block body %}
+    <section class="page-head">
+        <div class="container">
+            <span class="eyebrow">{{ 'blog.eyebrow'|trans }}</span>
+            <h1>{{ 'blog.title'|trans }}</h1>
+            <p>{{ 'blog.subtitle'|trans }}</p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0">
+        <div class="container">
+            {% if page.items is empty %}
+                <div class="empty"><i class="fa-regular fa-newspaper"></i>{{ 'blog.empty'|trans }}</div>
+            {% else %}
+                <div class="tour-grid">
+                    {% for post in page.items %}
+                        {% include 'blog/_card.html.twig' %}
+                    {% endfor %}
+                </div>
+                {% include '_partials/pagination.html.twig' with {page: page} %}
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

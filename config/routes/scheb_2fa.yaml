@@ -1,0 +1,12 @@
+# Second step of the login (code from the authenticator app), in the language of the login page.
+2fa_login:
+    path: /{_locale}/2fa
+    requirements:
+        _locale: '%app.locales_regex%'
+    defaults:
+        _controller: "scheb_two_factor.form_controller::form"
+
+2fa_login_check:
+    path: /{_locale}/2fa_check
+    requirements:
+        _locale: '%app.locales_regex%'

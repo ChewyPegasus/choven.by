@@ -7,9 +7,18 @@ localized:
     prefix: /{_locale}
     requirements:
         _locale: '%app.locales_regex%'
-    exclude: '../src/Controller/RootController.php'
+    exclude:
+        - '../src/Controller/RootController.php'
+        - '../src/Controller/Webhook/'
 
 # "/", robots.txt, sitemap.xml and the health check have no language prefix.
 root:
     resource: App\Controller\RootController
+    type: attribute
+
+# Callbacks of payment providers and messenger bots.
+webhooks:
+    resource:
+        path: ../src/Controller/Webhook/
+        namespace: App\Controller\Webhook
     type: attribute

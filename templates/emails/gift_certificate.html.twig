@@ -1,0 +1,21 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block content %}
+    {% set locale = gift.locale %}
+    <h1 style="margin:0 0 12px;font-size:22px;color:#1b2a3a;">{{ 'email.gift_certificate.title'|trans({'%name%': gift.buyerName}) }}</h1>
+    <p>{{ 'email.gift_certificate.text'|trans({'%amount%': gift.amount|byn}) }}</p>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-radius:14px;background:#0b7285;color:#ffffff;margin:16px 0;">
+        <tr>
+            <td style="padding:22px 24px;">
+                <div style="font-size:12px;letter-spacing:2px;text-transform:uppercase;opacity:.85;">{{ 'gift.preview.label'|trans }}</div>
+                <div style="font-size:34px;font-weight:800;margin:6px 0;">{{ gift.amount|byn }}</div>
+                {% if gift.recipientName %}<div style="font-size:16px;">{{ 'gift.show.for'|trans({'%name%': gift.recipientName}) }}</div>{% endif %}
+                <div style="margin-top:14px;display:inline-block;padding:6px 12px;border:1px dashed #ffd2b0;border-radius:8px;font-family:monospace;font-size:18px;letter-spacing:1px;">{{ gift.code }}</div>
+                <div style="font-size:13px;margin-top:10px;opacity:.9;">{{ 'gift.show.valid_until'|trans({'%date%': gift.expiresAt|format_date('long', locale: locale)}) }}</div>
+            </td>
+        </tr>
+    </table>
+    <p>{{ 'email.gift_certificate.how'|trans }}</p>
+    {% include 'emails/_button.html.twig' with {href: gift_url, label: 'email.gift_certificate.button'|trans} %}
+    <p style="font-size:14px;color:#64748b;">{{ 'email.gift_certificate.pdf'|trans }}</p>
+{% endblock %}

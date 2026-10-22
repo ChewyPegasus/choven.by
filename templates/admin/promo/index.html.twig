@@ -1,0 +1,54 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.promo'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.promo'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_promo_code_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.promo.new'|trans }}</a>
+    </div>
+    <p class="text-muted">{{ 'admin.promo.hint'|trans }}</p>
+
+    {% if codes is empty %}
+        <div class="empty"><i class="fa-solid fa-ticket"></i>{{ 'admin.promo.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.promo.field.code'|trans }}</th>
+                        <th>{{ 'admin.promo.col.discount'|trans }}</th>
+                        <th>{{ 'admin.promo.col.period'|trans }}</th>
+                        <th class="num">{{ 'admin.promo.col.used'|trans }}</th>
+                        <th>{{ 'admin.promo.col.state'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for code in codes %}
+                        {% set usable = code.usableToday %}
+                        <tr>
+                            <td data-label="{{ 'admin.promo.field.code'|trans }}">
+                                <a href="{{ path('app_admin_promo_code_edit', {id: code.id}) }}"><strong class="mono">{{ code.code }}</strong></a>
+                                {% if code.note %}<div class="text-small text-muted">{{ code.note }}</div>{% endif %}
+                            </td>
+                            <td data-label="{{ 'admin.promo.col.discount'|trans }}">{{ code.type.value == 'percent' ? code.value ~ '%' : code.value|byn }}</td>
+                            <td data-label="{{ 'admin.promo.col.period'|trans }}">
+                                {{ code.validFrom ? code.validFrom|date('d.m.Y') : '…' }} — {{ code.validUntil ? code.validUntil|date('d.m.Y') : '…' }}
+                            </td>
+                            <td data-label="{{ 'admin.promo.col.used'|trans }}" class="num">{{ code.usedCount }}{{ code.maxUses ? ' / ' ~ code.maxUses }}</td>
+                            <td data-label="{{ 'admin.promo.col.state'|trans }}">
+                                <span class="badge {{ usable ? 'badge-success' }}">{{ (usable ? 'admin.promo.state.active' : 'admin.promo.state.inactive')|trans }}</span>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <a class="btn btn-sm btn-outline" href="{{ path('app_admin_promo_code_edit', {id: code.id}) }}">{{ 'admin.common.edit'|trans }}</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

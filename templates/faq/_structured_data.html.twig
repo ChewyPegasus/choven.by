@@ -1,0 +1,7 @@
+{% set questions = [] %}
+{% for item in items %}
+    {% set questions = questions|merge([{'@type': 'Question', name: item.question|localized, acceptedAnswer: {'@type': 'Answer', text: item.answer|localized|markdown_text}}]) %}
+{% endfor %}
+{% if questions is not empty %}
+    <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: questions}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+{% endif %}

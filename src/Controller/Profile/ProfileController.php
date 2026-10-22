@@ -11,6 +11,7 @@ use App\Form\ProfileType;
 use App\Repository\OrderRepository;
 use App\Repository\UserRepository;
 use App\Security\Voter\OrderVoter;
+use App\Service\BookingPolicy;
 use App\Service\BookingService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -33,11 +34,12 @@ final class ProfileController extends AbstractController
     }
 
     #[Route('/orders', name: 'app_profile_orders', methods: ['GET'])]
-    public function orders(#[CurrentUser] User $user, OrderRepository $orders): Response
+    public function orders(#[CurrentUser] User $user, OrderRepository $orders, BookingPolicy $policy): Response
     {
         return $this->render('profile/orders.html.twig', [
             'upcoming' => $orders->findUpcomingForUser($user),
             'past' => $orders->findPastForUser($user),
+            'policy' => $policy,
         ]);
     }
 

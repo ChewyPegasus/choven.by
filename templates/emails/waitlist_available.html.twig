@@ -1,0 +1,11 @@
+{% extends 'emails/layout.html.twig' %}
+
+{% block content %}
+    <h1 style="margin:0 0 12px;font-size:22px;color:#1b2a3a;">{{ 'email.waitlist_available.title'|trans({'%name%': entry.name}) }}</h1>
+    <p>{{ 'email.waitlist_available.text'|trans({
+        '%date%': entry.startDate|format_date('full', locale: entry.locale),
+        '%people%': 'profile.people'|trans({'%count%': entry.people}),
+    }) }}</p>
+    {% include 'emails/_button.html.twig' with {href: booking_url, label: 'email.waitlist_available.button'|trans} %}
+    <p style="font-size:14px;color:#64748b;">{{ 'email.waitlist_available.hint'|trans }}</p>
+{% endblock %}

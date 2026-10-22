@@ -1,9 +1,37 @@
 {% extends 'emails/layout.html.twig' %}
 
 {% block content %}
+    {% set locale = order.locale %}
     <h1 style="margin:0 0 12px;font-size:22px;color:#1b2a3a;">{{ 'email.trip_reminder.title'|trans({'%name%': order.name}) }}</h1>
-    <p>{{ 'email.trip_reminder.text'|trans({'%date%': order.startDate|format_date('full', locale: order.locale)}) }}</p>
+    <p>{{ 'email.trip_reminder.text'|trans({'%date%': order.startDate|format_date('full', locale: locale)}) }}</p>
     {% include 'emails/_order_details.html.twig' %}
+
+    {% if forecast is not empty %}
+        <h2 style="font-size:17px;color:#1b2a3a;margin:22px 0 8px;">{{ 'weather.title'|trans }}</h2>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e2e8f0;border-radius:10px;font-size:14px;">
+            {% for day in forecast %}
+                <tr>
+                    <td style="padding:10px 14px;width:34%;{{ not loop.last ? 'border-bottom:1px solid #e2e8f0;' }}">{{ day.date|format_date(pattern: 'EEEE, d MMMM', locale: locale) }}</td>
+                    <td style="padding:10px 14px;{{ not loop.last ? 'border-bottom:1px solid #e2e8f0;' }}">
+                        <span style="font-size:18px;">{{ day.emoji }}</span>
+                        {{ ('weather.kind.' ~ day.kind)|trans }}, <strong>{{ day.temperatureMin }}…{{ day.temperatureMax }} °C</strong>,
+                        {{ 'weather.rain_short'|trans }} {{ day.precipitationProbability }}%, {{ 'weather.wind'|trans({'%speed%': day.windSpeed}) }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        {% set rainy = forecast|filter(d => d.rainy)|length > 0 %}
+        {% set hot = forecast|filter(d => d.temperatureMax >= 25)|length > 0 %}
+        {% set cold = forecast|filter(d => d.temperatureMin <= 10)|length > 0 %}
+        {% if rainy or hot or cold %}
+            <ul style="padding-left:20px;margin:12px 0 0;">
+                {% if rainy %}<li>{{ 'weather.tip.rain'|trans }}</li>{% endif %}
+                {% if hot %}<li>{{ 'weather.tip.hot'|trans }}</li>{% endif %}
+                {% if cold %}<li>{{ 'weather.tip.cold'|trans }}</li>{% endif %}
+            </ul>
+        {% endif %}
+    {% endif %}
+
     <h2 style="font-size:17px;color:#1b2a3a;margin:22px 0 8px;">{{ 'email.trip_reminder.bring'|trans }}</h2>
     <ul style="padding-left:20px;margin:0;">
         {% for i in 1..5 %}

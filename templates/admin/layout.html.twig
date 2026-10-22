@@ -18,6 +18,7 @@
                     {route: 'app_admin_calendar', icon: 'fa-calendar-days', label: 'admin.menu.calendar', match: 'app_admin_calendar'},
                     {route: 'app_admin_contact_requests', icon: 'fa-phone-volume', label: 'admin.menu.requests', match: 'app_admin_contact_request', counter: counters.requests},
                     {route: 'app_admin_reviews', icon: 'fa-star', label: 'admin.menu.reviews', match: 'app_admin_review', counter: counters.reviews},
+                    {route: 'app_admin_waitlist', icon: 'fa-hourglass-half', label: 'admin.menu.waitlist', match: 'app_admin_waitlist', counter: counters.waitlist},
                 ] %}
                     <a href="{{ path(item.route) }}" class="{{ current_route starts with item.match and not (item.match == 'app_admin_order' and current_route == 'app_admin_calendar') ? 'is-active' }}">
                         <i class="fa-solid {{ item.icon }}"></i> {{ item.label|trans }}
@@ -25,10 +26,22 @@
                     </a>
                 {% endfor %}
 
+                <h2>{{ 'admin.menu.sales'|trans }}</h2>
+                {% for item in [
+                    {route: 'app_admin_payments', icon: 'fa-credit-card', label: 'admin.menu.payments', match: 'app_admin_payment'},
+                    {route: 'app_admin_promo_codes', icon: 'fa-ticket', label: 'admin.menu.promo', match: 'app_admin_promo_code'},
+                    {route: 'app_admin_gift_certificates', icon: 'fa-gift', label: 'admin.menu.gifts', match: 'app_admin_gift_certificate'},
+                    {route: 'app_admin_extras', icon: 'fa-puzzle-piece', label: 'admin.menu.extras', match: 'app_admin_extra'},
+                ] %}
+                    <a href="{{ path(item.route) }}" class="{{ current_route starts with item.match ? 'is-active' }}"><i class="fa-solid {{ item.icon }}"></i> {{ item.label|trans }}</a>
+                {% endfor %}
+
                 <h2>{{ 'admin.menu.content'|trans }}</h2>
                 {% for item in [
                     {route: 'app_admin_tours', icon: 'fa-water', label: 'admin.menu.tours', match: 'app_admin_tour'},
                     {route: 'app_admin_routes', icon: 'fa-map-location-dot', label: 'admin.menu.routes', match: 'app_admin_route'},
+                    {route: 'app_admin_posts', icon: 'fa-newspaper', label: 'admin.menu.posts', match: 'app_admin_post'},
+                    {route: 'app_admin_faq', icon: 'fa-circle-question', label: 'admin.menu.faq', match: 'app_admin_faq'},
                 ] %}
                     <a href="{{ path(item.route) }}" class="{{ current_route starts with item.match ? 'is-active' }}"><i class="fa-solid {{ item.icon }}"></i> {{ item.label|trans }}</a>
                 {% endfor %}
@@ -38,6 +51,7 @@
                     {route: 'app_admin_users', icon: 'fa-users', label: 'admin.menu.users', match: 'app_admin_user'},
                     {route: 'app_admin_settings', icon: 'fa-sliders', label: 'admin.menu.settings', match: 'app_admin_settings'},
                     {route: 'app_admin_failed_messages', icon: 'fa-envelope-circle-check', label: 'admin.menu.emails', match: 'app_admin_failed_message', counter: counters.emails},
+                    {route: 'app_admin_audit', icon: 'fa-clock-rotate-left', label: 'admin.menu.audit', match: 'app_admin_audit'},
                     {route: 'app_admin_logs', icon: 'fa-file-lines', label: 'admin.menu.logs', match: 'app_admin_logs'},
                 ] %}
                     <a href="{{ path(item.route) }}" class="{{ current_route starts with item.match ? 'is-active' }}">
@@ -50,6 +64,12 @@
         </aside>
 
         <div class="admin-main">
+            {% if not app.user.totpAuthenticationEnabled %}
+                <div class="alert alert-warning mb-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <div>{{ 'admin.twofa_hint'|trans({'%url%': path('app_profile_security') ~ '#two-factor'})|raw }}</div>
+                </div>
+            {% endif %}
             {% block admin_body %}{% endblock %}
         </div>
     </div>

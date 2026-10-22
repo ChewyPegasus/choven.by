@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repository;
+
+use App\Entity\PromoCode;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
+
+/**
+ * @extends ServiceEntityRepository<PromoCode>
+ */
+class PromoCodeRepository extends ServiceEntityRepository
+{
+    use SaveRemoveTrait;
+
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, PromoCode::class);
+    }
+
+    public function findOneByCode(string $code): ?PromoCode
+    {
+        return $this->findOneBy(['code' => PromoCode::normalizeCode($code)]);
+    }
+
+    /**
+     * @return list<PromoCode>
+     */
+    public function findAllOrdered(): array
+    {
+        return $this->findBy([], ['isActive' => 'DESC', 'createdAt' => 'DESC']);
+    }
+}

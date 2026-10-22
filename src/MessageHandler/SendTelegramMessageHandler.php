@@ -4,41 +4,55 @@ declare(strict_types=1);
 
 namespace App\MessageHandler;
 
+use App\Enum\MessengerChannel;
 use App\Message\SendTelegramMessage;
+use App\Messenger\TelegramBot;
+use App\Repository\MessengerSubscriptionRepository;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 
 /**
- * Posts a message to the team's Telegram chat through the Bot API.
+ * Posts a message through the Telegram Bot API: to the team chat or to a customer's chat.
  */
 #[AsMessageHandler]
 final class SendTelegramMessageHandler
 {
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        #[Autowire('%env(default::TELEGRAM_BOT_TOKEN)%')]
-        private readonly ?string $botToken,
+        private readonly TelegramBot $bot,
+        private readonly MessengerSubscriptionRepository $subscriptions,
+        private readonly LoggerInterface $logger,
         #[Autowire('%env(default::TELEGRAM_CHAT_ID)%')]
-        private readonly ?string $chatId,
+        private readonly ?string $teamChatId,
     ) {
     }
 
     public function __invoke(SendTelegramMessage $message): void
     {
-        if (null === $this->botToken || '' === $this->botToken || null === $this->chatId || '' === $this->chatId) {
+        if (!$this->bot->isEnabled()) {
             return;
         }
 
-        // A non-2xx answer throws, so Messenger retries the message later.
-        $this->httpClient->request('POST', \sprintf('https://api.telegram.org/bot%s/sendMessage', $this->botToken), [
-            'json' => [
-                'chat_id' => $this->chatId,
-                'text' => $message->text,
-                'parse_mode' => 'HTML',
-                'disable_web_page_preview' => true,
-            ],
-            'timeout' => 10,
-        ])->getContent();
+        $chatId = $message->chatId ?? $this->teamChatId;
+        if (null === $chatId || '' === $chatId) {
+            return;
+        }
+
+        try {
+            // A non-2xx answer throws, so Messenger retries the message later.
+            $this->bot->sendMessage($chatId, $message->text, $message->buttonText, $message->buttonUrl);
+        } catch (ClientExceptionInterface $e) {
+            if (null === $message->chatId || !\in_array($e->getResponse()->getStatusCode(), [400, 403], true)) {
+                throw $e;
+            }
+
+            // 400 "chat not found" / 403 "bot was blocked by the user": stop writing to this customer.
+            $this->subscriptions->deactivateAll(MessengerChannel::TELEGRAM, $chatId);
+            $this->logger->info('Telegram chat {chat} is unreachable ({message}); subscription deactivated.', [
+                'chat' => $chatId,
+                'message' => $e->getMessage(),
+            ]);
+        }
     }
 }

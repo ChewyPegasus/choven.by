@@ -7,9 +7,13 @@ namespace App\Controller;
 use App\Entity\ContactRequest;
 use App\Enum\Package;
 use App\Form\ContactRequestType;
+use App\Payment\PaymentGateways;
+use App\Repository\FaqItemRepository;
+use App\Repository\PostRepository;
 use App\Repository\ReviewRepository;
 use App\Repository\TourRepository;
 use App\Service\MapDataProvider;
+use App\Service\SiteSettings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,6 +27,10 @@ final class MainController extends AbstractController
         TourRepository $tours,
         ReviewRepository $reviews,
         MapDataProvider $mapData,
+        FaqItemRepository $faq,
+        PostRepository $posts,
+        SiteSettings $settings,
+        PaymentGateways $payments,
     ): Response {
         $contactForm = $this->createForm(ContactRequestType::class, new ContactRequest(), [
             'action' => $this->generateUrl('app_contact'),
@@ -35,13 +43,16 @@ final class MainController extends AbstractController
             'reviews' => $reviews->findPublished(6),
             'rating' => $reviews->getRatingSummary(),
             'contact_form' => $contactForm,
+            'faq' => $faq->findActive(homeOnly: true),
+            'posts' => $posts->findLatest(3),
+            'gifts_available' => $settings->isGiftCertificatesEnabled() && $payments->isEnabled(),
         ]);
     }
 
     #[Route('/info', name: 'app_info', methods: ['GET'])]
-    public function info(): Response
+    public function info(FaqItemRepository $faq): Response
     {
-        return $this->render('info/index.html.twig');
+        return $this->render('info/index.html.twig', ['faq' => $faq->findActive()]);
     }
 
     #[Route('/about', name: 'app_about', methods: ['GET'])]

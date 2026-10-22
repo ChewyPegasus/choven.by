@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Message\CheckWaitlist;
 use App\Message\CompletePastOrders;
+use App\Message\ExpireUnpaidOrders;
 use App\Message\PurgeExpiredData;
 use App\Message\SendTripReminders;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -15,16 +17,19 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Messenger\Stamp\HandledStamp;
+use Symfony\Component\Messenger\Stamp\TransportNamesStamp;
 
 /**
  * Runs the scheduled jobs right now (normally the worker runs them on schedule, see src/Schedule.php).
  */
-#[AsCommand(name: 'app:jobs:run', description: 'Runs scheduled jobs now: reminders, completing past trips, cleanup')]
+#[AsCommand(name: 'app:jobs:run', description: 'Runs scheduled jobs now: reminders, completing past trips, unpaid bookings, waitlist, cleanup')]
 final class RunJobsCommand extends Command
 {
     private const JOBS = [
         'reminders' => SendTripReminders::class,
         'complete' => CompletePastOrders::class,
+        'unpaid' => ExpireUnpaidOrders::class,
+        'waitlist' => CheckWaitlist::class,
         'purge' => PurgeExpiredData::class,
     ];
 
@@ -51,8 +56,8 @@ final class RunJobsCommand extends Command
 
         $jobs = \is_string($job) ? [$job => self::JOBS[$job]] : self::JOBS;
         foreach ($jobs as $name => $class) {
-            // These messages are not routed to a transport, so they are handled synchronously here.
-            $envelope = $this->bus->dispatch(new $class());
+            // Handled right here, even for messages that are normally routed to the async queue.
+            $envelope = $this->bus->dispatch(new $class(), [new TransportNamesStamp(['sync'])]);
             $result = $envelope->last(HandledStamp::class)?->getResult();
             $io->writeln(\sprintf('<info>%s</info>: %s', $name, is_scalar($result) ? (string) $result : 'done'));
         }

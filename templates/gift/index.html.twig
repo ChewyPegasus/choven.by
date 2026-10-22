@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'gift.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'gift.meta_description'|trans }}{% endblock %}
+
+{% block structured_data %}
+    {% set data = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: 'gift.title'|trans,
+        description: 'gift.meta_description'|trans,
+        brand: {'@type': 'Brand', name: site_name},
+        offers: {'@type': 'AggregateOffer', priceCurrency: 'BYN', lowPrice: constant('App\\Entity\\GiftCertificate::MIN_AMOUNT'), highPrice: constant('App\\Entity\\GiftCertificate::MAX_AMOUNT'), availability: can_buy ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock'},
+    } %}
+    <script type="application/ld+json">{{ data|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+{% endblock %}
+
+{% block body %}
+    <section class="page-head">
+        <div class="container">
+            <span class="eyebrow">{{ 'gift.eyebrow'|trans }}</span>
+            <h1>{{ 'gift.title'|trans }}</h1>
+            <p>{{ 'gift.subtitle'|trans }}</p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0">
+        <div class="container booking-layout" data-controller="gift" data-gift-default-recipient-value="{{ 'gift.preview.recipient'|trans }}">
+            <div class="card">
+                {% if not can_buy %}
+                    <div class="alert alert-info mb-2">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <div>{{ 'gift.offline'|trans({'%phone%': settings.phone}) }}</div>
+                    </div>
+                {% endif %}
+                {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                    <h2 class="form-section-title">{{ 'gift.section.certificate'|trans }}</h2>
+                    <div class="cluster mb-2" role="group" aria-label="{{ 'gift.form.amount'|trans }}">
+                        {% for preset in presets %}
+                            <button type="button" class="btn btn-sm btn-outline" data-action="gift#preset" data-gift-amount-param="{{ preset }}">{{ preset|byn }}</button>
+                        {% endfor %}
+                    </div>
+                    {{ form_row(form.amount) }}
+                    {{ form_row(form.recipientName) }}
+                    {{ form_row(form.message) }}
+                    <h2 class="form-section-title mt-2">{{ 'gift.section.buyer'|trans }}</h2>
+                    <div class="form-row">
+                        {{ form_row(form.buyerName) }}
+                        {{ form_row(form.buyerEmail) }}
+                    </div>
+                    {{ form_row(form.agreeTerms, {label_translation_parameters: {'%privacy%': path('app_privacy'), '%terms%': path('app_terms')}}) }}
+                    {{ form_rest(form) }}
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-lg" {{ can_buy ? '' : 'disabled' }}><i class="fa-solid fa-credit-card"></i> {{ 'gift.submit'|trans }}</button>
+                        <span class="text-small text-muted">{{ 'gift.after_payment'|trans }}</span>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+
+            <aside class="booking-aside">
+                <div class="gift-card" aria-hidden="true">
+                    <div class="gift-card-logo">{% include '_partials/logo_mark.svg.twig' %} Чöвен</div>
+                    <div class="gift-card-label">{{ 'gift.preview.label'|trans }}</div>
+                    <div class="gift-card-amount"><span data-gift-target="previewAmount">{{ form.amount.vars.value }}</span> BYN</div>
+                    <div class="gift-card-to" data-gift-target="previewRecipient">{{ 'gift.preview.recipient'|trans }}</div>
+                    <div class="gift-card-message" data-gift-target="previewMessage"></div>
+                    <div class="gift-card-code">GIFT-XXXX-XXXX</div>
+                </div>
+                <ul class="check-list mt-3 text-small">
+                    <li>{{ 'gift.benefit.1'|trans }}</li>
+                    <li>{{ 'gift.benefit.2'|trans }}</li>
+                    <li>{{ 'gift.benefit.3'|trans }}</li>
+                </ul>
+            </aside>
+        </div>
+    </section>
+{% endblock %}

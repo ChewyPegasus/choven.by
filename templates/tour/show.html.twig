@@ -23,8 +23,26 @@
         {% set data = data|merge({offers: {'@type': 'Offer', price: tour.priceFrom, priceCurrency: 'BYN', url: url('app_order_new', {tour: tour.slug}), availability: 'https://schema.org/InStock'}}) %}
     {% endif %}
     {% if image %}{% set data = data|merge({image: absolute_url(image)}) %}{% endif %}
+    {% if rating.count > 0 %}
+        {% set data = data|merge({aggregateRating: {'@type': 'AggregateRating', ratingValue: rating.average, reviewCount: rating.count, bestRating: 5}}) %}
+    {% endif %}
+    {% if tour.durationDays %}{% set data = data|merge({duration: 'P' ~ tour.durationDays ~ 'D'}) %}{% endif %}
+    {% if map_routes is not empty and tour.route %}
+        {% set places = [] %}
+        {% for point in tour.route.points %}
+            {% set places = places|merge([{'@type': 'Place', name: point.name|localized ?: (tour.route.name|localized), geo: {'@type': 'GeoCoordinates', latitude: point.lat, longitude: point.lng}}]) %}
+        {% endfor %}
+        {% set data = data|merge({itinerary: {'@type': 'ItemList', itemListElement: places}}) %}
+    {% endif %}
     <script type="application/ld+json">{{ data|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+    {% include '_partials/breadcrumbs_ld.html.twig' with {items: [
+        {name: site_name, url: url('app_main')},
+        {name: 'nav.tours'|trans, url: url('app_main') ~ '#tours'},
+        {name: title, url: url('app_tour_show', {slug: tour.slug})},
+    ]} %}
 {% endblock %}
+
+{% block preload %}{{ image_preload(tour.image, '(max-width: 960px) 100vw, 800px') }}{% endblock %}
 
 {% block body %}
     <section class="page-head">
@@ -40,7 +58,7 @@
             <div class="stack">
                 <div class="tour-media" style="border-radius: var(--radius-lg)">
                     {% if image %}
-                        <img src="{{ image }}" alt="{{ title }}" fetchpriority="high" width="1200" height="750">
+                        {{ picture(tour.image, title, {sizes: '(max-width: 960px) 100vw, 800px', loading: 'eager', fetchpriority: 'high'}) }}
                     {% else %}
                         <div class="img-placeholder"><i class="fa-solid fa-water"></i></div>
                     {% endif %}
@@ -89,7 +107,13 @@
                         <dd>{{ tour.package|trans }}</dd>
                     </dl>
                     <a class="btn btn-block btn-lg" href="{{ path('app_order_new', {tour: tour.slug}) }}">{{ 'tour.book'|trans }}</a>
-                    <p class="text-small text-muted mt-2 mb-0">{{ 'tour.no_prepayment'|trans }}</p>
+                    {% if rating.count > 0 %}
+                        <div class="cluster mt-2 text-small" style="gap: 6px">
+                            {% include '_partials/stars.html.twig' with {rating: rating.average} %}
+                            <span class="text-muted">{{ rating.average|number_format(1, ',') }} · {{ 'main.reviews.count'|trans({'%count%': rating.count}) }}</span>
+                        </div>
+                    {% endif %}
+                    <p class="text-small text-muted mt-2 mb-0">{{ (prepayment_percent > 0 ? 'tour.prepayment' : 'tour.no_prepayment')|trans({'%percent%': prepayment_percent}) }}</p>
                 </div>
                 <div class="card card-muted">
                     <p class="mb-1 fw-bold">{{ 'tour.questions'|trans }}</p>

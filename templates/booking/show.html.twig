@@ -64,10 +64,6 @@
                     <dd>{{ order.river|trans }}</dd>
                     <dt>{{ 'booking.form.package'|trans }}</dt>
                     <dd>{{ order.package|trans }}</dd>
-                    {% if order.estimatedPrice %}
-                        <dt>{{ 'booking.estimate'|trans }}</dt>
-                        <dd>{{ order.estimatedPrice|byn }}</dd>
-                    {% endif %}
                     <dt>{{ 'booking.form.name'|trans }}</dt>
                     <dd>{{ order.name }}</dd>
                     {% if order.phoneFormatted %}
@@ -82,12 +78,46 @@
                     {% endif %}
                 </dl>
 
+                {% include '_partials/order_price.html.twig' %}
+
+                {% if can_pay %}
+                    <div class="pay-box mt-2">
+                        <div>
+                            <div class="fw-bold">{{ 'payment.due'|trans({'%amount%': order.depositDue|byn}) }}</div>
+                            <div class="text-small text-muted">
+                                {{ settings.prepaymentRequired and status == 'new'
+                                    ? 'payment.due_required'|trans({'%time%': order.createdAt|date_modify('+' ~ settings.prepaymentHoldHours ~ ' hours')|format_datetime('short', 'short', locale: app.request.locale)})
+                                    : 'payment.due_optional'|trans }}
+                            </div>
+                        </div>
+                        <form method="post" action="{{ path('app_order_pay', {token: order.accessToken}) }}" data-turbo="false">
+                            <input type="hidden" name="_token" value="{{ csrf_token('pay-order-' ~ order.id) }}">
+                            <button type="submit" class="btn btn-lg"><i class="fa-solid fa-credit-card"></i> {{ 'payment.pay'|trans({'%amount%': order.depositDue|byn}) }}</button>
+                        </form>
+                    </div>
+                {% endif %}
+
+                {% if order.canBeCancelledByCustomer %}
+                    {% set deadline = policy.freeChangeDeadline(order) %}
+                    <p class="text-small text-muted mt-2 mb-0">
+                        <i class="fa-solid fa-circle-info"></i>
+                        {% if policy.withinFreePeriod(order) %}
+                            {{ 'policy.free_until'|trans({'%date%': deadline|format_date('long', locale: app.request.locale)}) }}
+                        {% else %}
+                            {{ (order.paidAmount > 0 ? 'policy.late_paid' : 'policy.late')|trans }}
+                        {% endif %}
+                    </p>
+                {% endif %}
+
                 <div class="form-actions mt-3">
                     {% if status != 'cancelled' and order.upcoming %}
                         <a class="btn btn-outline" href="{{ path('app_order_ics', {token: order.accessToken}) }}" data-turbo="false"><i class="fa-regular fa-calendar-plus"></i> {{ 'booking.show.add_to_calendar'|trans }}</a>
                     {% endif %}
+                    {% if policy.canReschedule(order) %}
+                        <a class="btn btn-outline" href="{{ path('app_order_reschedule', {token: order.accessToken}) }}"><i class="fa-regular fa-calendar"></i> {{ 'reschedule.button'|trans }}</a>
+                    {% endif %}
                     {% if order.canBeCancelledByCustomer %}
-                        <form method="post" action="{{ path('app_order_cancel', {token: order.accessToken}) }}" data-turbo-confirm="{{ 'booking.show.cancel_confirm'|trans }}">
+                        <form method="post" action="{{ path('app_order_cancel', {token: order.accessToken}) }}" data-turbo-confirm="{{ (policy.refundable(order) ? 'booking.show.cancel_confirm_refund' : (order.paidAmount > 0 ? 'booking.show.cancel_confirm_no_refund' : 'booking.show.cancel_confirm'))|trans }}">
                             <input type="hidden" name="_token" value="{{ csrf_token('cancel-order-' ~ order.id) }}">
                             <button type="submit" class="btn btn-ghost text-danger"><i class="fa-solid fa-xmark"></i> {{ 'booking.show.cancel'|trans }}</button>
                         </form>
@@ -97,6 +127,32 @@
                     {% endif %}
                 </div>
             </div>
+
+            {% if forecast is not empty %}
+                <div class="card">
+                    <h2 class="card-title"><i class="fa-solid fa-cloud-sun"></i> {{ 'weather.title'|trans }}</h2>
+                    {% include '_partials/forecast.html.twig' %}
+                </div>
+            {% endif %}
+
+            {% if status in ['new', 'confirmed'] and order.upcoming and (messengers.telegram or messengers.viber) %}
+                <div class="card">
+                    <h2 class="card-title"><i class="fa-regular fa-bell"></i> {{ 'messenger.title'|trans }}</h2>
+                    {% if messengers.connected is not empty %}
+                        <p class="text-success mb-2"><i class="fa-solid fa-check"></i> {{ 'messenger.connected'|trans({'%channels%': messengers.connected|join(', ')}) }}</p>
+                    {% else %}
+                        <p class="text-muted">{{ 'messenger.text'|trans }}</p>
+                    {% endif %}
+                    <div class="cluster">
+                        {% if messengers.telegram %}
+                            <a class="btn btn-outline btn-telegram" href="{{ messengers.telegram }}" target="_blank" rel="noopener"><i class="fa-brands fa-telegram"></i> Telegram</a>
+                        {% endif %}
+                        {% if messengers.viber %}
+                            <a class="btn btn-outline btn-viber" href="{{ messengers.viber }}"><i class="fa-brands fa-viber"></i> Viber</a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
 
             {% if review %}
                 <div class="card">

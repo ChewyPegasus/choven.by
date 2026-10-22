@@ -1,0 +1,71 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.payments'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.payments'|trans }}</h1>
+    </div>
+
+    {% if not enabled %}
+        <div class="alert alert-info mb-2"><i class="fa-solid fa-circle-info"></i><div>{{ 'admin.settings.payments_off'|trans }}</div></div>
+    {% endif %}
+
+    <div class="stat-grid mb-3">
+        <div class="stat">
+            <div class="stat-label">{{ 'admin.payments.month'|trans }}</div>
+            <div class="stat-value">{{ month_total|byn }}</div>
+        </div>
+    </div>
+
+    <form method="get" class="filters" data-controller="autosubmit">
+        <select name="status" class="form-select" data-action="autosubmit#submit" aria-label="{{ 'admin.payments.col.status'|trans }}">
+            <option value="">{{ 'admin.payments.all'|trans }}</option>
+            {% for case in enum_cases('App\\Enum\\PaymentStatus') %}
+                <option value="{{ case.value }}" {{ status == case ? 'selected' }}>{{ case|trans }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-solid fa-credit-card"></i>{{ 'admin.payments.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.payments.col.date'|trans }}</th>
+                        <th>{{ 'admin.payments.col.subject'|trans }}</th>
+                        <th class="num">{{ 'admin.payments.col.amount'|trans }}</th>
+                        <th>{{ 'admin.payments.col.status'|trans }}</th>
+                        <th>{{ 'admin.payments.col.provider'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in page.items %}
+                        <tr>
+                            <td data-label="{{ 'admin.payments.col.date'|trans }}">{{ (payment.paidAt ?? payment.createdAt)|date('d.m.Y H:i') }}</td>
+                            <td data-label="{{ 'admin.payments.col.subject'|trans }}">
+                                {% if payment.order %}
+                                    <a href="{{ path('app_admin_order_edit', {id: payment.order.id}) }}"><strong class="mono">{{ payment.order.reference }}</strong></a> · {{ payment.order.name }}
+                                {% elseif payment.giftCertificate %}
+                                    <i class="fa-solid fa-gift"></i> <span class="mono">{{ payment.giftCertificate.code }}</span> · {{ payment.giftCertificate.buyerName }}
+                                {% else %}—{% endif %}
+                            </td>
+                            <td data-label="{{ 'admin.payments.col.amount'|trans }}" class="num">
+                                {{ payment.amount|byn }}
+                                {% if payment.refundedAmount > 0 %}<div class="text-small text-danger">−{{ payment.refundedAmount|byn }}</div>{% endif %}
+                            </td>
+                            <td data-label="{{ 'admin.payments.col.status'|trans }}">
+                                <span class="badge badge-payment-{{ payment.status.value }}">{{ payment.status|trans }}</span>
+                                {% if payment.error %}<div class="text-small text-muted" title="{{ payment.error }}">{{ payment.error|u.truncate(40, '…') }}</div>{% endif %}
+                            </td>
+                            <td data-label="{{ 'admin.payments.col.provider'|trans }}">{{ payment.provider }}{% if payment.test %} <span class="badge badge-warning">test</span>{% endif %}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

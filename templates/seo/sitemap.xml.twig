@@ -4,6 +4,9 @@
 {% for locale in locales %}
     <url>
         <loc>{{ url(page.route, page.params|merge({_locale: locale})) }}</loc>
+{% if page.lastmod is defined %}
+        <lastmod>{{ page.lastmod|date('Y-m-d', false) }}</lastmod>
+{% endif %}
         <changefreq>{{ page.changefreq }}</changefreq>
         <priority>{{ page.priority }}</priority>
 {% for alternate in locales %}

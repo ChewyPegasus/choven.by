@@ -18,6 +18,7 @@ use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\PositiveOrZero;
+use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\Regex;
 
 /**
@@ -85,6 +86,37 @@ final class SettingsType extends AbstractType
                 'required' => false,
                 'attr' => ['placeholder' => 'G-XXXXXXXXXX'],
                 'constraints' => [new Regex(pattern: '/^G-[A-Z0-9]{4,15}$/', message: 'admin.settings.error.ga')],
+            ])
+            ->add(SiteSettings::PREPAYMENT_PERCENT, IntegerType::class, [
+                'label' => 'admin.settings.field.prepayment_percent',
+                'help' => 'admin.settings.field.prepayment_percent_help',
+                'constraints' => [new Range(min: 0, max: 100)],
+                'attr' => ['min' => 0, 'max' => 100],
+            ])
+            ->add(SiteSettings::PREPAYMENT_REQUIRED, CheckboxType::class, [
+                'label' => 'admin.settings.field.prepayment_required',
+                'help' => 'admin.settings.field.prepayment_required_help',
+                'required' => false,
+            ])
+            ->add(SiteSettings::PREPAYMENT_HOLD_HOURS, IntegerType::class, [
+                'label' => 'admin.settings.field.prepayment_hold_hours',
+                'constraints' => [new Range(min: 1, max: 168)],
+                'attr' => ['min' => 1, 'max' => 168],
+            ])
+            ->add(SiteSettings::FREE_CHANGE_DAYS, IntegerType::class, [
+                'label' => 'admin.settings.field.free_change_days',
+                'help' => 'admin.settings.field.free_change_days_help',
+                'constraints' => [new Range(min: 0, max: 60)],
+                'attr' => ['min' => 0, 'max' => 60],
+            ])
+            ->add(SiteSettings::GIFT_CERTIFICATES_ENABLED, CheckboxType::class, [
+                'label' => 'admin.settings.field.gift_certificates_enabled',
+                'required' => false,
+            ])
+            ->add(SiteSettings::ADMIN_2FA_REQUIRED, CheckboxType::class, [
+                'label' => 'admin.settings.field.admin_2fa_required',
+                'help' => 'admin.settings.field.admin_2fa_required_help',
+                'required' => false,
             ])
             ->add(SiteSettings::ANNOUNCEMENT, LocalizedTextType::class, [
                 'label' => 'admin.settings.field.announcement',

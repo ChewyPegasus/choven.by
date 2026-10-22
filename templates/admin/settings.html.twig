@@ -27,6 +27,25 @@
                 {{ form_row(form.blocked_dates) }}
             </div>
         </div>
+        <div class="grid grid-2 mt-3" style="align-items: start">
+            <div class="card">
+                <h2 class="card-title">{{ 'admin.settings.payments'|trans }}</h2>
+                {% if not payments_enabled %}
+                    <div class="alert alert-info mb-2"><i class="fa-solid fa-circle-info"></i><div>{{ 'admin.settings.payments_off'|trans }}</div></div>
+                {% endif %}
+                <div class="form-row">
+                    {{ form_row(form.prepayment_percent) }}
+                    {{ form_row(form.prepayment_hold_hours) }}
+                </div>
+                {{ form_row(form.prepayment_required) }}
+                {{ form_row(form.gift_certificates_enabled) }}
+            </div>
+            <div class="card">
+                <h2 class="card-title">{{ 'admin.settings.policy'|trans }}</h2>
+                {{ form_row(form.free_change_days) }}
+                {{ form_row(form.admin_2fa_required) }}
+            </div>
+        </div>
         <div class="card mt-3">
             <h2 class="card-title">{{ 'admin.settings.announcement'|trans }}</h2>
             {{ form_row(form.announcement) }}

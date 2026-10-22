@@ -6,7 +6,7 @@ namespace App\MessageHandler;
 
 use App\Entity\Order;
 use App\Enum\OrderStatus;
-use App\Mailer\AppMailer;
+use App\Mailer\CustomerNotifier;
 use App\Message\CompletePastOrders;
 use App\Repository\OrderRepository;
 use Doctrine\DBAL\Types\Types;
@@ -21,7 +21,7 @@ final class CompletePastOrdersHandler
     public function __construct(
         private readonly OrderRepository $orders,
         private readonly EntityManagerInterface $entityManager,
-        private readonly AppMailer $mailer,
+        private readonly CustomerNotifier $customerNotifier,
         private readonly ClockInterface $clock,
         private readonly LoggerInterface $logger,
     ) {
@@ -48,7 +48,7 @@ final class CompletePastOrdersHandler
 
             $order->setStatus(OrderStatus::COMPLETED);
             $this->entityManager->flush();
-            $this->mailer->sendReviewInvitation($order);
+            $this->customerNotifier->reviewInvitation($order);
             ++$completed;
         }
 

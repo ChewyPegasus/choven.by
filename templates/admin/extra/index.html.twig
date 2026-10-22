@@ -1,0 +1,52 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.extras'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.extras'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_extra_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.extras.new'|trans }}</a>
+    </div>
+    <p class="text-muted">{{ 'admin.extras.hint'|trans }}</p>
+
+    {% if extras is empty %}
+        <div class="empty"><i class="fa-solid fa-puzzle-piece"></i>{{ 'admin.extras.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.extras.field.name'|trans }}</th>
+                        <th class="num">{{ 'admin.extras.field.price'|trans }}</th>
+                        <th>{{ 'admin.extras.field.unit'|trans }}</th>
+                        <th class="num">{{ 'admin.common.position'|trans }}</th>
+                        <th>{{ 'admin.tours.col.visible'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for extra in extras %}
+                        <tr>
+                            <td data-label="{{ 'admin.extras.field.name'|trans }}">
+                                <i class="fa-solid {{ extra.icon ?? 'fa-plus' }} text-muted"></i>
+                                <a href="{{ path('app_admin_extra_edit', {id: extra.id}) }}"><strong>{{ extra.name|localized }}</strong></a>
+                            </td>
+                            <td data-label="{{ 'admin.extras.field.price'|trans }}" class="num">{{ extra.price|byn }}</td>
+                            <td data-label="{{ 'admin.extras.field.unit'|trans }}">{{ extra.unit|trans }}{{ extra.perDay ? ', ' ~ 'extra.per_day'|trans }}</td>
+                            <td data-label="{{ 'admin.common.position'|trans }}" class="num">{{ extra.position }}</td>
+                            <td data-label="{{ 'admin.tours.col.visible'|trans }}">
+                                <form method="post" action="{{ path('app_admin_extra_toggle', {id: extra.id}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('toggle-extra-' ~ extra.id) }}">
+                                    <button type="submit" class="badge {{ extra.active ? 'badge-success' }}" style="cursor:pointer">
+                                        <i class="fa-solid {{ extra.active ? 'fa-eye' : 'fa-eye-slash' }}"></i> {{ (extra.active ? 'admin.tours.visible' : 'admin.tours.hidden')|trans }}
+                                    </button>
+                                </form>
+                            </td>
+                            <td><div class="table-actions"><a class="btn btn-sm btn-outline" href="{{ path('app_admin_extra_edit', {id: extra.id}) }}">{{ 'admin.common.edit'|trans }}</a></div></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

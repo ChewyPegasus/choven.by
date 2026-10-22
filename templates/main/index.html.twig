@@ -29,7 +29,18 @@
         {% set org = org|merge({sameAs: ['https://www.instagram.com/' ~ settings.instagram ~ '/']}) %}
     {% endif %}
     <script type="application/ld+json">{{ org|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+    <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'WebSite', name: site_name, url: url('app_main'), inLanguage: app.request.locale}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+    {% if tours is not empty %}
+        {% set list = [] %}
+        {% for tour in tours %}
+            {% set list = list|merge([{'@type': 'ListItem', position: loop.index, url: url('app_tour_show', {slug: tour.slug}), name: tour.title|localized}]) %}
+        {% endfor %}
+        <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'ItemList', itemListElement: list}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+    {% endif %}
+    {% include 'faq/_structured_data.html.twig' with {items: faq} %}
 {% endblock %}
+
+{% block preload %}{{ image_preload('images/slider/kayaks.png') }}{% endblock %}
 
 {% block body %}
     {# Hero ------------------------------------------------------------------- #}
@@ -42,8 +53,9 @@
                     {image: 'images/slider/campfire.jpg', key: '3', href: path('app_info'), icon: 'fa-fire'},
                 ] %}
                     <div class="swiper-slide hero-slide">
-                        {% if asset_exists(slide.image) %}
-                            <img src="{{ asset(slide.image) }}" alt="" {{ loop.first ? 'fetchpriority="high"' : 'loading="lazy"' }} decoding="async">
+                        {% set image = picture(slide.image, '', loop.first ? {loading: 'eager', fetchpriority: 'high'} : {}) %}
+                        {% if image %}
+                            {{ image }}
                         {% else %}
                             <div class="img-placeholder"><i class="fa-solid {{ slide.icon }}"></i></div>
                         {% endif %}
@@ -211,22 +223,51 @@
     {% endif %}
 
     {# FAQ -------------------------------------------------------------------- #}
+    {% if faq is not empty %}
     <section class="section section-soft" id="faq">
         <div class="container container-narrow">
             <div class="section-header">
                 <h2 class="section-title">{{ 'info.faq.title'|trans }}</h2>
             </div>
-            <div class="accordion">
-                {% for i in [1, 2, 4] %}
-                    <details>
-                        <summary>{{ ('info.faq.' ~ i ~ '.question')|trans }}</summary>
-                        <div class="accordion-body">{{ ('info.faq.' ~ i ~ '.answer')|trans }}</div>
-                    </details>
-                {% endfor %}
-            </div>
-            <p class="text-center mt-3"><a href="{{ path('app_info') }}#faq">{{ 'main.faq.more'|trans }} →</a></p>
+            {% include 'faq/_list.html.twig' with {items: faq} %}
+            <p class="text-center mt-3"><a href="{{ path('app_faq') }}">{{ 'main.faq.more'|trans }} →</a></p>
         </div>
     </section>
+    {% endif %}
+
+    {# Blog ------------------------------------------------------------------- #}
+    {% if posts is not empty %}
+        <section class="section" id="blog">
+            <div class="container">
+                <div class="section-header">
+                    <span class="eyebrow">{{ 'blog.eyebrow'|trans }}</span>
+                    <h2 class="section-title">{{ 'main.blog.title'|trans }}</h2>
+                </div>
+                <div class="tour-grid">
+                    {% for post in posts %}
+                        {% include 'blog/_card.html.twig' %}
+                    {% endfor %}
+                </div>
+                <p class="text-center mt-3"><a class="btn btn-outline" href="{{ path('app_blog') }}">{{ 'blog.all'|trans }}</a></p>
+            </div>
+        </section>
+    {% endif %}
+
+    {# Gift certificates ------------------------------------------------------ #}
+    {% if gifts_available %}
+        <section class="section section-soft" id="gift">
+            <div class="container">
+                <div class="cta" style="grid-template-columns: 1fr auto">
+                    <div>
+                        <span class="eyebrow" style="color:#ffd2b0">{{ 'gift.eyebrow'|trans }}</span>
+                        <h2>{{ 'main.gift.title'|trans }}</h2>
+                        <p class="mb-0">{{ 'main.gift.text'|trans }}</p>
+                    </div>
+                    <a class="btn btn-lg btn-light" href="{{ path('app_gift') }}"><i class="fa-solid fa-gift"></i> {{ 'main.gift.button'|trans }}</a>
+                </div>
+            </div>
+        </section>
+    {% endif %}
 
     {# Contact / call back ---------------------------------------------------- #}
     <section class="section" id="contact">

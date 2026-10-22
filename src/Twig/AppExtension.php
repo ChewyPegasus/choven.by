@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Twig;
 
 use App\Model\Localized;
+use App\Service\ImageVariants;
 use Symfony\Component\AssetMapper\AssetMapperInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -18,6 +19,7 @@ final class AppExtension extends AbstractExtension
         private readonly AssetMapperInterface $assetMapper,
         private readonly RequestStack $requestStack,
         private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly ImageVariants $imageVariants,
     ) {
     }
 
@@ -26,6 +28,8 @@ final class AppExtension extends AbstractExtension
         return [
             new TwigFunction('asset_exists', $this->assetExists(...)),
             new TwigFunction('image_url', $this->imageUrl(...)),
+            new TwigFunction('picture', $this->picture(...), ['is_safe' => ['html']]),
+            new TwigFunction('image_preload', $this->imagePreload(...), ['is_safe' => ['html']]),
             new TwigFunction('locale_url', $this->localeUrl(...)),
             new TwigFunction('supported_locales', static fn (): array => Localized::LOCALES),
         ];
@@ -60,6 +64,81 @@ final class AppExtension extends AbstractExtension
         }
 
         return $this->assetMapper->getPublicPath($path);
+    }
+
+    /**
+     * Responsive <picture> with AVIF/WebP sources in several widths and the real width/height
+     * (no layout shift). Returns '' when the image is missing, so templates can show a placeholder.
+     *
+     * Options: sizes (default "100vw"), class, loading ("lazy" by default, "eager" for the first screen),
+     * fetchpriority, width/height (override).
+     *
+     * @param array<string, string|int|null> $options
+     */
+    public function picture(?string $path, string $alt = '', array $options = []): string
+    {
+        if (null === $path || '' === $path) {
+            return '';
+        }
+
+        $info = $this->imageVariants->describe($path);
+        if (null === $info) {
+            return '';
+        }
+
+        $sizes = (string) ($options['sizes'] ?? '100vw');
+        $loading = (string) ($options['loading'] ?? 'lazy');
+        $esc = static fn (string|int $value): string => htmlspecialchars((string) $value, \ENT_QUOTES);
+
+        $html = '<picture>';
+        foreach ($info['sources'] as $type => $srcset) {
+            $html .= \sprintf('<source type="%s" srcset="%s" sizes="%s">', $esc($type), $esc($srcset), $esc($sizes));
+        }
+
+        $attributes = ['src' => $info['src'], 'alt' => $alt];
+        $width = $options['width'] ?? $info['width'];
+        $height = $options['height'] ?? $info['height'];
+        if (null !== $width && null !== $height) {
+            $attributes['width'] = $width;
+            $attributes['height'] = $height;
+        }
+        if ('eager' !== $loading) {
+            $attributes['loading'] = 'lazy';
+        }
+        $attributes['decoding'] = 'async';
+        if (isset($options['fetchpriority'])) {
+            $attributes['fetchpriority'] = $options['fetchpriority'];
+        }
+        if (isset($options['class'])) {
+            $attributes['class'] = $options['class'];
+        }
+
+        $html .= '<img';
+        foreach ($attributes as $name => $value) {
+            $html .= ' '.$name.'="'.$esc((string) $value).'"';
+        }
+
+        return $html.'></picture>';
+    }
+
+    /**
+     * <link rel="preload"> for the main picture of the page (Largest Contentful Paint).
+     */
+    public function imagePreload(?string $path, string $sizes = '100vw'): string
+    {
+        $info = null !== $path && '' !== $path ? $this->imageVariants->describe($path) : null;
+        if (null === $info) {
+            return '';
+        }
+
+        $esc = static fn (string $value): string => htmlspecialchars($value, \ENT_QUOTES);
+        foreach (['image/avif', 'image/webp'] as $type) {
+            if (isset($info['sources'][$type])) {
+                return \sprintf('<link rel="preload" as="image" type="%s" imagesrcset="%s" imagesizes="%s" fetchpriority="high">', $type, $esc($info['sources'][$type]), $esc($sizes));
+            }
+        }
+
+        return \sprintf('<link rel="preload" as="image" href="%s" fetchpriority="high">', $esc($info['src']));
     }
 
     /**

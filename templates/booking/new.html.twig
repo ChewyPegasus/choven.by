@@ -3,11 +3,13 @@
 {% block title %}{{ 'booking.title'|trans }}{% endblock %}
 {% block meta_description %}{{ 'booking.meta_description'|trans }}{% endblock %}
 
+{% set prepayment = payments_enabled ? settings.prepaymentPercent : 0 %}
+
 {% block body %}
     <section class="page-head">
         <div class="container">
             <h1>{{ 'booking.title'|trans }}</h1>
-            <p>{{ 'booking.subtitle'|trans }}</p>
+            <p>{{ prepayment > 0 ? 'booking.subtitle_prepayment'|trans({'%percent%': prepayment}) : 'booking.subtitle'|trans }}</p>
         </div>
     </section>
 
@@ -15,72 +17,138 @@
         <div class="container booking-layout"
              data-controller="booking"
              data-booking-availability-url-value="{{ path('app_booking_availability') }}"
+             data-booking-promo-url-value="{{ path('app_booking_promo') }}"
              data-booking-price-value="{{ tour.priceFrom ?? 0 }}"
              data-booking-unit-value="{{ tour.priceUnit ?? 'person' }}"
+             data-booking-deposit-percent-value="{{ prepayment }}"
              data-booking-labels-value="{{ {
                  available: 'booking.availability.available'|trans,
                  few: 'booking.availability.few'|trans,
                  notEnough: 'booking.availability.not_enough'|trans,
                  soldOut: 'booking.availability.sold_out'|trans,
                  blocked: 'booking.availability.blocked'|trans,
+                 promoApplied: 'booking.promo.applied'|trans,
+                 giftApplied: 'booking.promo.gift_applied'|trans,
              }|json_encode }}">
-            <div class="card">
-                {{ form_start(form) }}
-                    {{ form_errors(form) }}
+            <div class="stack">
+                {% if waitlist_form %}
+                    <div class="card card-waitlist" id="waitlist">
+                        <h2 class="card-title"><i class="fa-solid fa-hourglass-half"></i> {{ 'waitlist.title'|trans }}</h2>
+                        <p class="text-muted">{{ 'waitlist.text'|trans }}</p>
+                        {{ form_start(waitlist_form) }}
+                            <div class="form-row form-row-3">
+                                {{ form_row(waitlist_form.startDate) }}
+                                {{ form_row(waitlist_form.durationDays) }}
+                                {{ form_row(waitlist_form.people) }}
+                            </div>
+                            <div class="form-row form-row-3">
+                                {{ form_row(waitlist_form.name) }}
+                                {{ form_row(waitlist_form.email) }}
+                                {{ form_row(waitlist_form.phone) }}
+                            </div>
+                            {{ form_row(waitlist_form.agreeTerms, {label_translation_parameters: {'%privacy%': path('app_privacy'), '%terms%': path('app_terms')}}) }}
+                            {{ form_rest(waitlist_form) }}
+                            <button type="submit" class="btn btn-dark"><i class="fa-solid fa-bell"></i> {{ 'waitlist.submit'|trans }}</button>
+                        {{ form_end(waitlist_form) }}
+                    </div>
+                {% endif %}
 
-                    <h2 class="form-section-title">{{ 'booking.section.trip'|trans }}</h2>
-                    <div class="form-row">
-                        <div>
-                            {{ form_row(form.startDate) }}
-                            <p class="availability" data-booking-target="availability" hidden aria-live="polite"></p>
+                <div class="card">
+                    {{ form_start(form) }}
+                        {{ form_errors(form) }}
+
+                        <h2 class="form-section-title">{{ 'booking.section.trip'|trans }}</h2>
+                        <div class="form-row">
+                            <div>
+                                {{ form_row(form.startDate) }}
+                                <p class="availability" data-booking-target="availability" hidden aria-live="polite"></p>
+                            </div>
+                            {{ form_row(form.durationDays) }}
                         </div>
-                        {{ form_row(form.durationDays) }}
-                    </div>
-                    <div class="form-row form-row-3">
-                        {{ form_row(form.amountOfPeople) }}
-                        {{ form_row(form.river) }}
-                        {{ form_row(form.package) }}
-                    </div>
+                        <div class="form-row form-row-3">
+                            {{ form_row(form.amountOfPeople) }}
+                            {{ form_row(form.river) }}
+                            {{ form_row(form.package) }}
+                        </div>
 
-                    <h2 class="form-section-title mt-2">{{ 'booking.section.contacts'|trans }}</h2>
-                    <div class="form-row">
-                        {{ form_row(form.name) }}
-                        {{ form_row(form.phone) }}
-                    </div>
-                    {{ form_row(form.email) }}
-                    {{ form_row(form.description) }}
-                    {{ form_row(form.agreeTerms, {label_translation_parameters: {'%privacy%': path('app_privacy'), '%terms%': path('app_terms')}}) }}
-                    {{ form_rest(form) }}
+                        {% if form.extras is defined %}
+                            <h2 class="form-section-title mt-2">{{ 'booking.section.extras'|trans }}</h2>
+                            <div class="extras-list">
+                                {% for extra in extras %}
+                                    {% set field = form.extras['e' ~ extra.id] %}
+                                    <div class="extra-item{{ extra.unit.hasQuantity ? ' has-quantity' }}">
+                                        <span class="extra-icon"><i class="fa-solid {{ extra.icon ?? 'fa-plus' }}"></i></span>
+                                        <div class="extra-text">
+                                            <label for="{{ field.vars.id }}" class="fw-bold">{{ extra.name|localized }}</label>
+                                            {% set description = extra.description|localized %}
+                                            {% if description %}<div class="text-small text-muted">{{ description }}</div>{% endif %}
+                                            <div class="text-small">{{ extra.price|byn }} {{ extra.unit|trans }}{{ extra.perDay ? ' ' ~ 'extra.per_day'|trans }}</div>
+                                        </div>
+                                        <div class="extra-input">{{ form_widget(field) }}</div>
+                                        {{ form_errors(field) }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
 
-                    <div class="form-actions">
-                        <button type="submit" class="btn btn-lg"><i class="fa-solid fa-paper-plane"></i> {{ 'booking.submit'|trans }}</button>
-                        <span class="text-small text-muted">{{ 'booking.no_prepayment'|trans }}</span>
-                    </div>
-                {{ form_end(form) }}
+                        <h2 class="form-section-title mt-2">{{ 'booking.section.contacts'|trans }}</h2>
+                        <div class="form-row">
+                            {{ form_row(form.name) }}
+                            {{ form_row(form.phone) }}
+                        </div>
+                        {{ form_row(form.email) }}
+                        {{ form_row(form.description) }}
+                        <div class="promo-row">
+                            {{ form_row(form.promoCode) }}
+                            <p class="text-small" data-booking-target="promoMessage" hidden aria-live="polite"></p>
+                        </div>
+                        {{ form_row(form.agreeTerms, {label_translation_parameters: {'%privacy%': path('app_privacy'), '%terms%': path('app_terms')}}) }}
+                        {{ form_rest(form) }}
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-lg"><i class="fa-solid fa-paper-plane"></i> {{ 'booking.submit'|trans }}</button>
+                            <span class="text-small text-muted">
+                                {{ prepayment > 0
+                                    ? (settings.prepaymentRequired ? 'booking.prepayment_required'|trans({'%percent%': prepayment, '%hours%': settings.prepaymentHoldHours}) : 'booking.prepayment_optional'|trans({'%percent%': prepayment}))
+                                    : 'booking.no_prepayment'|trans }}
+                            </span>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
             </div>
 
             <aside class="booking-aside">
                 <div class="card">
                     {% if tour %}
                         <div class="booking-tour">
-                            {% set image = image_url(tour.image) %}
-                            {% if image %}<img src="{{ image }}" alt="">{% else %}<div class="img-placeholder"><i class="fa-solid fa-water"></i></div>{% endif %}
+                            {% set image = picture(tour.image, '', {sizes: '84px'}) %}
+                            {% if image %}{{ image }}{% else %}<div class="img-placeholder"><i class="fa-solid fa-water"></i></div>{% endif %}
                             <div>
                                 <div class="text-small text-muted">{{ 'booking.selected_tour'|trans }}</div>
                                 <h3>{{ tour.title|localized }}</h3>
                             </div>
                         </div>
-                        {% if tour.priceFrom %}
-                            <div class="text-small text-muted">{{ 'booking.estimate'|trans }}</div>
-                            <div class="price-estimate" data-booking-target="price">{{ tour.estimatePrice(order.amountOfPeople ?? 1)|byn }}</div>
-                            <p class="text-small text-muted">{{ 'booking.estimate_hint'|trans }}</p>
-                        {% endif %}
                     {% else %}
                         <h3 class="card-title">{{ 'booking.how.title'|trans }}</h3>
                     {% endif %}
+
+                    <div class="price-summary" data-booking-target="summary" {{ tour and tour.priceFrom ? '' : 'hidden' }}>
+                        <div class="text-small text-muted">{{ 'booking.estimate'|trans }}</div>
+                        <table class="price-table">
+                            <tr data-booking-target="baseRow"><th>{{ 'price.trip'|trans }}</th><td data-booking-target="base">{{ tour ? tour.estimatePrice(order.amountOfPeople ?? 1)|byn }}</td></tr>
+                            <tbody data-booking-target="extraRows"></tbody>
+                            <tr class="is-discount" data-booking-target="discountRow" hidden><th>{{ 'price.discount'|trans }}</th><td data-booking-target="discount"></td></tr>
+                            <tr class="is-total"><th>{{ 'price.total'|trans }}</th><td class="price-estimate" data-booking-target="price">{{ tour ? tour.estimatePrice(order.amountOfPeople ?? 1)|byn }}</td></tr>
+                            {% if prepayment > 0 %}
+                                <tr data-booking-target="depositRow"><th>{{ 'price.deposit_online'|trans({'%percent%': prepayment}) }}</th><td data-booking-target="deposit"></td></tr>
+                            {% endif %}
+                        </table>
+                        <p class="text-small text-muted">{{ 'booking.estimate_hint'|trans }}</p>
+                    </div>
+
                     <ol class="text-small" style="padding-left: 18px; margin-bottom: 0">
                         <li>{{ 'booking.how.1'|trans }}</li>
-                        <li>{{ 'booking.how.2'|trans }}</li>
+                        <li>{{ (prepayment > 0 ? 'booking.how.2_prepayment' : 'booking.how.2')|trans }}</li>
                         <li>{{ 'booking.how.3'|trans }}</li>
                     </ol>
                 </div>
@@ -88,6 +156,9 @@
                     <p class="fw-bold mb-1">{{ 'booking.prefer_phone'|trans }}</p>
                     <p class="mb-0"><i class="fa-solid fa-phone"></i> <a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a></p>
                 </div>
+                {% if settings.giftCertificatesEnabled and payments_enabled %}
+                    <a class="card card-gift-link" href="{{ path('app_gift') }}"><i class="fa-solid fa-gift"></i> {{ 'gift.teaser'|trans }}</a>
+                {% endif %}
                 {% if not app.user %}
                     <p class="text-small text-muted mt-2">{{ 'booking.login_hint'|trans({'%login%': path('app_login'), '%register%': path('app_register')})|raw }}</p>
                 {% endif %}

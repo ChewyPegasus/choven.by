@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Message\GenerateImageVariants;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * Stores images uploaded from the admin panel under public/uploads.
@@ -25,6 +27,8 @@ class ImageUploader
         private readonly string $publicDir,
         private readonly Filesystem $filesystem,
         private readonly LoggerInterface $logger,
+        private readonly MessageBusInterface $bus,
+        private readonly ImageVariants $variants,
     ) {
     }
 
@@ -41,13 +45,21 @@ class ImageUploader
 
         $optimized = $this->optimize($file->getPathname(), $directory.'/'.$name.'.webp');
         if ($optimized) {
-            return 'uploads/'.$folder.'/'.$name.'.webp';
+            $path = 'uploads/'.$folder.'/'.$name.'.webp';
+        } else {
+            $extension = $file->guessExtension() ?? 'jpg';
+            $file->move($directory, $name.'.'.$extension);
+            $path = 'uploads/'.$folder.'/'.$name.'.'.$extension;
         }
 
-        $extension = $file->guessExtension() ?? 'jpg';
-        $file->move($directory, $name.'.'.$extension);
+        // Smaller AVIF/WebP copies for phones are built by the worker.
+        try {
+            $this->bus->dispatch(new GenerateImageVariants($path));
+        } catch (\Throwable $e) {
+            $this->logger->notice('Could not queue image variants: {message}', ['message' => $e->getMessage()]);
+        }
 
-        return 'uploads/'.$folder.'/'.$name.'.'.$extension;
+        return $path;
     }
 
     public function remove(?string $path): void
@@ -57,6 +69,7 @@ class ImageUploader
         }
 
         $this->filesystem->remove($this->publicDir.'/'.$path);
+        $this->variants->remove($path);
     }
 
     private function optimize(string $source, string $target): bool

@@ -1,0 +1,12 @@
+promo:
+    error:
+        not_found: 'There is no such promo code or gift certificate.'
+        expired: 'The code has expired or is no longer valid.'
+        gift_used: 'The gift certificate has been fully used.'
+    code_taken: 'This code already exists.'
+    code_invalid: 'Code: 3–32 characters, capital Latin letters, digits, dash and underscore.'
+    percent_range: 'The discount cannot exceed 100%.'
+    dates_order: 'The end date is before the start date.'
+reschedule:
+    same_date: 'This is the same date. Please choose another one.'
+    unavailable: 'Not enough places on this date. Please choose another one.'

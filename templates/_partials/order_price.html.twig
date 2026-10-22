@@ -1,0 +1,28 @@
+{# Price breakdown of a saved booking: trip, add-ons, discounts, prepayment. #}
+{% if order.estimatedPrice is not null or order.extras is not empty %}
+    <table class="price-table">
+        {% if order.basePrice is not null %}
+            <tr><th>{{ 'price.trip'|trans }}</th><td>{{ order.basePrice|byn }}</td></tr>
+        {% endif %}
+        {% for extra in order.extras %}
+            <tr>
+                <th>{{ extra.name|localized }}{% if extra.unit.hasQuantity %} × {{ extra.quantity }}{% endif %}</th>
+                <td>{{ extra.total|byn }}</td>
+            </tr>
+        {% endfor %}
+        {% if order.discount > 0 %}
+            <tr class="is-discount"><th>{{ 'price.promo'|trans({'%code%': order.promoCode ? order.promoCode.code : ''}) }}</th><td>−{{ order.discount|byn }}</td></tr>
+        {% endif %}
+        {% if order.giftAmount > 0 %}
+            <tr class="is-discount"><th>{{ 'price.gift'|trans }}</th><td>−{{ order.giftAmount|byn }}</td></tr>
+        {% endif %}
+        {% if order.estimatedPrice is not null %}
+            <tr class="is-total"><th>{{ 'price.total'|trans }}</th><td>{{ order.estimatedPrice|byn }}</td></tr>
+        {% endif %}
+        {% if order.paidAmount > 0 %}
+            <tr class="is-paid"><th>{{ 'price.paid'|trans }}</th><td>{{ order.paidAmount|byn }}</td></tr>
+        {% elseif order.depositAmount %}
+            <tr><th>{{ 'price.deposit'|trans }}</th><td>{{ order.depositAmount|byn }}</td></tr>
+        {% endif %}
+    </table>
+{% endif %}

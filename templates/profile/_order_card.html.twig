@@ -31,8 +31,14 @@
                 <a class="btn btn-sm btn-ghost" href="{{ path('app_review_new', {token: order.accessToken}) }}"><i class="fa-regular fa-star"></i> {{ 'review.leave'|trans }}</a>
             {% endif %}
         {% endif %}
+        {% if order.depositDue > 0 and order.status.active and order.upcoming %}
+            <a class="btn btn-sm" href="{{ path('app_order_show', {token: order.accessToken}) }}"><i class="fa-solid fa-credit-card"></i> {{ 'payment.pay'|trans({'%amount%': order.depositDue|byn}) }}</a>
+        {% endif %}
+        {% if policy.canReschedule(order) %}
+            <a class="btn btn-sm btn-outline" href="{{ path('app_order_reschedule', {token: order.accessToken}) }}">{{ 'reschedule.button'|trans }}</a>
+        {% endif %}
         {% if order.canBeCancelledByCustomer %}
-            <form method="post" action="{{ path('app_profile_order_cancel', {reference: order.reference}) }}" data-turbo-confirm="{{ 'booking.show.cancel_confirm'|trans }}">
+            <form method="post" action="{{ path('app_profile_order_cancel', {reference: order.reference}) }}" data-turbo-confirm="{{ (policy.refundable(order) ? 'booking.show.cancel_confirm_refund' : (order.paidAmount > 0 ? 'booking.show.cancel_confirm_no_refund' : 'booking.show.cancel_confirm'))|trans }}">
                 <input type="hidden" name="_token" value="{{ csrf_token('cancel-order-' ~ order.id) }}">
                 <button type="submit" class="btn btn-sm btn-ghost text-danger w-100">{{ 'booking.show.cancel'|trans }}</button>
             </form>

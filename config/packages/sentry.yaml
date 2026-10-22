@@ -1,0 +1,45 @@
+# Error monitoring with Sentry or a self-hosted, Sentry-compatible GlitchTip.
+# Nothing is sent while SENTRY_DSN is empty.
+when@prod:
+    sentry:
+        dsn: '%env(default::SENTRY_DSN)%'
+        # Errors are reported through the Monolog handler below, which also covers logged errors
+        # (e.g. an email that could not be queued); the error listener would report exceptions twice.
+        register_error_listener: false
+        register_error_handler: false
+        options:
+            environment: '%env(default:sentry_environment:SENTRY_ENVIRONMENT)%'
+            release: '%env(default::APP_RELEASE)%'
+            send_default_pii: false
+            traces_sample_rate: '%env(float:default:sentry_traces_rate:SENTRY_TRACES_SAMPLE_RATE)%'
+            ignore_exceptions:
+                - Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+                - Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException
+                - Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
+                - Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+                - Symfony\Component\Security\Core\Exception\AccessDeniedException
+                - Symfony\Component\HttpFoundation\Exception\SuspiciousOperationException
+        messenger:
+            enabled: true
+            capture_soft_fails: false
+        tracing:
+            enabled: '%env(bool:default:sentry_tracing_enabled:SENTRY_TRACING)%'
+            dbal:
+                enabled: true
+            twig:
+                enabled: false
+            cache:
+                enabled: false
+
+    parameters:
+        sentry_environment: production
+        sentry_traces_rate: 0.0
+        sentry_tracing_enabled: false
+
+    services:
+        Sentry\Monolog\Handler:
+            arguments:
+                $hub: '@Sentry\State\HubInterface'
+                $level: !php/enum Monolog\Level::Error
+                $bubble: true
+                $fillExtraContext: true

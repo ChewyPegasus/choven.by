@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'reschedule.title'|trans({'%reference%': order.reference}) }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block analytics %}{% endblock %}
+
+{% block body %}
+    <section class="section">
+        <div class="container container-form"
+             data-controller="booking"
+             data-booking-availability-url-value="{{ path('app_booking_availability') }}"
+             data-booking-labels-value="{{ {
+                 available: 'booking.availability.available'|trans,
+                 few: 'booking.availability.few'|trans,
+                 notEnough: 'booking.availability.not_enough'|trans,
+                 soldOut: 'booking.availability.sold_out'|trans,
+                 blocked: 'booking.availability.blocked'|trans,
+             }|json_encode }}">
+            <p class="text-small"><a href="{{ path('app_order_show', {token: order.accessToken}) }}">← {{ 'booking.show.heading'|trans }} {{ order.reference }}</a></p>
+            <h1>{{ 'reschedule.heading'|trans }}</h1>
+            <div class="card">
+                <p>{{ 'reschedule.current'|trans({
+                    '%date%': order.startDate|format_date('full', locale: app.request.locale),
+                    '%days%': 'tour.days'|trans({'%count%': order.durationDays}),
+                    '%people%': 'profile.people'|trans({'%count%': order.amountOfPeople}),
+                }) }}</p>
+                {{ form_start(form) }}
+                    {{ form_errors(form) }}
+                    {{ form_row(form.startDate, {attr: form.startDate.vars.attr|merge({'data-booking-target': 'date', 'data-action': 'booking#refresh'})}) }}
+                    <p class="availability" data-booking-target="availability" hidden aria-live="polite"></p>
+                    <input type="hidden" value="{{ order.durationDays }}" data-booking-target="days">
+                    <input type="hidden" value="{{ order.amountOfPeople }}" data-booking-target="people">
+                    {{ form_rest(form) }}
+                    <p class="text-small text-muted">{{ 'reschedule.hint'|trans({'%count%': constant('App\\Service\\BookingPolicy::MAX_RESCHEDULES') - order.rescheduleCount}) }}</p>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-lg"><i class="fa-regular fa-calendar-check"></i> {{ 'reschedule.submit'|trans }}</button>
+                        <a class="btn btn-ghost" href="{{ path('app_order_show', {token: order.accessToken}) }}">{{ 'reschedule.back'|trans }}</a>
+                    </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

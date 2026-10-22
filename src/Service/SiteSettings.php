@@ -9,12 +9,16 @@ use App\Repository\SettingRepository;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Contracts\Cache\CacheInterface;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * Typed access to admin-editable settings. Values from the database override the defaults
  * configured in services.yaml (which in turn come from environment variables).
+ *
+ * The values are memoized per request; reset() (called between requests by long-running
+ * workers such as FrankenPHP and Messenger) makes the next request read fresh settings.
  */
-class SiteSettings
+class SiteSettings implements ResetInterface
 {
     private const CACHE_KEY = 'app.site_settings';
 
@@ -29,6 +33,12 @@ class SiteSettings
     public const ANNOUNCEMENT = 'announcement';
     public const YANDEX_METRIKA = 'yandex_metrika_id';
     public const GOOGLE_ANALYTICS = 'google_analytics_id';
+    public const PREPAYMENT_PERCENT = 'prepayment_percent';
+    public const PREPAYMENT_REQUIRED = 'prepayment_required';
+    public const PREPAYMENT_HOLD_HOURS = 'prepayment_hold_hours';
+    public const FREE_CHANGE_DAYS = 'free_change_days';
+    public const GIFT_CERTIFICATES_ENABLED = 'gift_certificates_enabled';
+    public const ADMIN_2FA_REQUIRED = 'admin_2fa_required';
 
     /** @var array<string, mixed>|null */
     private ?array $values = null;
@@ -163,6 +173,50 @@ class SiteSettings
     public function hasAnalytics(): bool
     {
         return null !== $this->getYandexMetrikaId() || null !== $this->getGoogleAnalyticsId();
+    }
+
+    /**
+     * Share of the price paid online when booking, 0–100 (0 = no prepayment).
+     */
+    public function getPrepaymentPercent(): int
+    {
+        return max(0, min(100, (int) $this->all()[self::PREPAYMENT_PERCENT]));
+    }
+
+    /**
+     * Whether the booking is confirmed only after the prepayment (otherwise paying online is optional).
+     */
+    public function isPrepaymentRequired(): bool
+    {
+        return $this->getPrepaymentPercent() > 0 && (bool) $this->all()[self::PREPAYMENT_REQUIRED];
+    }
+
+    public function getPrepaymentHoldHours(): int
+    {
+        return max(1, (int) $this->all()[self::PREPAYMENT_HOLD_HOURS]);
+    }
+
+    /**
+     * Customers can cancel with a refund and reschedule online until this many days before the trip.
+     */
+    public function getFreeChangeDays(): int
+    {
+        return max(0, (int) $this->all()[self::FREE_CHANGE_DAYS]);
+    }
+
+    public function isGiftCertificatesEnabled(): bool
+    {
+        return (bool) $this->all()[self::GIFT_CERTIFICATES_ENABLED];
+    }
+
+    public function isAdmin2faRequired(): bool
+    {
+        return (bool) $this->all()[self::ADMIN_2FA_REQUIRED];
+    }
+
+    public function reset(): void
+    {
+        $this->values = null;
     }
 
     private function nullableString(string $key): ?string

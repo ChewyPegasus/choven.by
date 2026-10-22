@@ -15,7 +15,10 @@
                 <ul>
                     <li><a href="{{ path('app_main') }}#tours">{{ 'nav.tours'|trans }}</a></li>
                     <li><a href="{{ path('app_info') }}">{{ 'nav.info'|trans }}</a></li>
+                    <li><a href="{{ path('app_faq') }}">{{ 'nav.faq'|trans }}</a></li>
+                    <li><a href="{{ path('app_blog') }}">{{ 'nav.blog'|trans }}</a></li>
                     <li><a href="{{ path('app_about') }}">{{ 'nav.about'|trans }}</a></li>
+                    {% if settings.giftCertificatesEnabled %}<li><a href="{{ path('app_gift') }}">{{ 'nav.gift'|trans }}</a></li>{% endif %}
                     <li><a href="{{ path('app_order_new') }}">{{ 'nav.book'|trans }}</a></li>
                 </ul>
             </div>

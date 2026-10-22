@@ -236,3 +236,76 @@ dialog.lightbox img { max-width: 96vw; max-height: 86vh; border-radius: var(--ra
 
 /* Legal ---------------------------------------------------------------------- */
 .legal-meta { color: var(--c-muted); font-size: .92rem; }
+
+/* Pictures (responsive variants): the <picture> wrapper must not affect the layout of the <img>. */
+.tour-media picture, .hero-slide picture, .gallery picture, .booking-tour picture, .post-cover picture { display: contents; }
+.post-cover img { width: 100%; height: auto; border-radius: var(--radius-lg); margin-bottom: 24px; }
+
+/* Price breakdown ------------------------------------------------------------ */
+.price-table { width: 100%; border-collapse: collapse; font-size: .92rem; margin: 10px 0; }
+.price-table th { text-align: left; font-weight: 500; color: var(--c-muted); padding: 5px 0; }
+.price-table td { text-align: right; white-space: nowrap; color: var(--c-ink); padding: 5px 0 5px 12px; }
+.price-table .is-discount td { color: var(--c-success); }
+.price-table .is-total th, .price-table .is-total td { border-top: 1px solid var(--c-line); padding-top: 10px; color: var(--c-ink); font-weight: 750; }
+.price-table .is-total .price-estimate { font-size: 1.4rem; }
+.price-table .is-paid td { color: var(--c-success); font-weight: 650; }
+.price-summary { margin-bottom: 14px; }
+
+/* Add-ons in the booking form ------------------------------------------------- */
+.extras-list { display: grid; gap: 10px; margin-bottom: 8px; }
+.extra-item { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 10px 14px; border: 1px solid var(--c-line); border-radius: var(--radius); }
+.extra-item:has(input:checked), .extra-item.has-quantity:has(input:not([value="0"]):not([value=""])) { border-color: var(--c-primary); background: var(--c-primary-soft); }
+.extra-icon { width: 40px; height: 40px; border-radius: 50%; background: var(--c-water-soft); color: var(--c-water); display: grid; place-items: center; }
+.extra-text label { display: block; cursor: pointer; }
+.extra-input .form-check-input { width: 22px; height: 22px; }
+.extra-input .extra-quantity { width: 76px; text-align: center; }
+.extra-item .form-errors { grid-column: 2 / -1; }
+.promo-row .form-control { text-transform: uppercase; max-width: 320px; }
+
+/* Payment, waitlist, weather ------------------------------------------------- */
+.pay-box { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 16px 18px; border-radius: var(--radius); background: var(--c-primary-soft); border: 1px solid #ffd2b0; }
+.card-waitlist { border-color: #f8dfae; background: var(--c-warning-soft); }
+.card-gift-link { display: flex; gap: 10px; align-items: center; font-weight: 650; color: var(--c-ink); text-decoration: none; }
+.card-gift-link i { color: var(--c-primary); font-size: 1.3rem; }
+.forecast { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+.forecast-day { padding: 12px; border-radius: var(--radius); background: var(--c-water-soft); text-align: center; }
+.forecast-day.is-rainy { background: var(--c-info-soft); }
+.forecast-day > i { font-size: 1.8rem; color: var(--c-water); margin: 6px 0; }
+.forecast-temp { font-size: 1.3rem; font-weight: 800; color: var(--c-ink); }
+.forecast-temp span { font-size: .95rem; font-weight: 600; color: var(--c-muted); }
+.btn-telegram { color: #229ed9; border-color: #229ed9; }
+.btn-viber { color: #7360f2; border-color: #7360f2; }
+
+/* Gift certificate ------------------------------------------------------------ */
+.gift-card {
+    position: relative; overflow: hidden; border-radius: var(--radius-lg); padding: 26px 24px; color: #fff;
+    background: radial-gradient(circle at 85% 15%, rgb(255 107 0 / 55%), transparent 45%), linear-gradient(135deg, var(--c-water), #08505e);
+    box-shadow: var(--shadow-lg); min-height: 230px;
+}
+.gift-card-logo { display: flex; gap: 8px; align-items: center; font-weight: 800; letter-spacing: .04em; }
+.gift-card-logo svg { width: 28px; height: 28px; }
+.gift-card-label { margin-top: 22px; font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; opacity: .85; }
+.gift-card-amount { font-size: clamp(2.2rem, 1.6rem + 2vw, 3rem); font-weight: 850; line-height: 1.1; }
+.gift-card-to { margin-top: 8px; font-size: 1.05rem; font-weight: 600; }
+.gift-card-message { margin-top: 6px; font-style: italic; opacity: .9; white-space: pre-line; }
+.gift-card-code { display: inline-block; margin-top: 16px; padding: 4px 10px; border: 1px dashed #ffd2b0; border-radius: 8px; font-family: ui-monospace, monospace; letter-spacing: .08em; }
+.gift-card-valid { margin-top: 8px; font-size: .85rem; opacity: .85; }
+.gift-card-large { max-width: 640px; margin: 0 auto; min-height: 300px; padding: 36px; }
+.badge-status-active, .badge-status-used { background: var(--c-success-soft); color: var(--c-success); border-color: #bfe6cd; }
+@media print {
+    .site-header, .site-footer, .print-hide, .flash-stack, .announcement, .skip-link { display: none !important; }
+    .gift-card { box-shadow: none; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
+/* Two-factor authentication --------------------------------------------------- */
+.setup-steps { padding-left: 20px; }
+.setup-steps li { margin-bottom: 16px; }
+.qr-box { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 10px; }
+.qr-box img { border: 1px solid var(--c-line); border-radius: var(--radius); padding: 8px; background: #fff; }
+.secret, .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .05em; }
+.secret { display: inline-block; padding: 6px 10px; border-radius: var(--radius-sm); background: var(--c-bg-soft); word-break: break-all; }
+.backup-codes { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 6px; padding: 0; list-style: none; margin: 8px 0; }
+.backup-codes code { display: block; padding: 4px 8px; background: #fff; border-radius: var(--radius-sm); text-align: center; }
+.otp-input { font-size: 1.4rem; letter-spacing: .3em; text-align: center; }
+.plain-list { list-style: none; padding: 0; margin: 0; }
+.plain-list li + li { margin-top: 8px; }

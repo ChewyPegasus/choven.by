@@ -6,6 +6,7 @@ namespace App\Repository;
 
 use App\Entity\Order;
 use App\Entity\Review;
+use App\Entity\Tour;
 use App\Enum\ReviewStatus;
 use App\Model\Page;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -40,15 +41,19 @@ class ReviewRepository extends ServiceEntityRepository
     /**
      * @return array{average: float|null, count: int}
      */
-    public function getRatingSummary(): array
+    public function getRatingSummary(?Tour $tour = null): array
     {
-        /** @var array{average: string|float|null, total: int|string} $row */
-        $row = $this->createQueryBuilder('r')
+        $qb = $this->createQueryBuilder('r')
             ->select('AVG(r.rating) AS average, COUNT(r.id) AS total')
             ->andWhere('r.status = :approved')
-            ->setParameter('approved', ReviewStatus::APPROVED)
-            ->getQuery()
-            ->getSingleResult();
+            ->setParameter('approved', ReviewStatus::APPROVED);
+        if (null !== $tour) {
+            // Reviews are written for bookings; a booking may be linked to a tour.
+            $qb->join('r.order', 'o')->andWhere('o.tour = :tour')->setParameter('tour', $tour);
+        }
+
+        /** @var array{average: string|float|null, total: int|string} $row */
+        $row = $qb->getQuery()->getSingleResult();
 
         $count = (int) $row['total'];
 

@@ -55,3 +55,8 @@ when@prod:
                 type: console
                 process_psr_3_messages: false
                 channels: ["!event", "!doctrine"]
+            # Errors (including uncaught exceptions) go to Sentry / GlitchTip when SENTRY_DSN is set.
+            sentry:
+                type: service
+                id: Sentry\Monolog\Handler
+                channels: ["!deprecation", "!event"]

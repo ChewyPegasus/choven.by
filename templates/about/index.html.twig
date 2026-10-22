@@ -35,7 +35,7 @@
                     <div class="gallery">
                         {% for image in gallery_images %}
                             <a href="{{ asset(image) }}" data-lightbox-target="link" data-action="lightbox#open">
-                                <img src="{{ asset(image) }}" alt="{{ 'about.gallery.photo'|trans({'%number%': loop.index}) }}" loading="lazy" decoding="async">
+                                {{ picture(image, 'about.gallery.photo'|trans({'%number%': loop.index}), {sizes: '(max-width: 600px) 50vw, 300px'}) }}
                             </a>
                         {% endfor %}
                     </div>

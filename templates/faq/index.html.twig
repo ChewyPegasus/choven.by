@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'faq.title'|trans }}{% endblock %}
+{% block meta_description %}{{ 'faq.meta_description'|trans }}{% endblock %}
+
+{% block structured_data %}
+    {% include 'faq/_structured_data.html.twig' %}
+    {% include '_partials/breadcrumbs_ld.html.twig' with {items: [
+        {name: site_name, url: url('app_main')},
+        {name: 'faq.title'|trans, url: url('app_faq')},
+    ]} %}
+{% endblock %}
+
+{% block body %}
+    <section class="page-head">
+        <div class="container">
+            <span class="eyebrow">{{ 'info.eyebrow'|trans }}</span>
+            <h1>{{ 'faq.title'|trans }}</h1>
+            <p>{{ 'faq.subtitle'|trans }}</p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: 0">
+        <div class="container container-narrow">
+            {% if items is empty %}
+                <div class="empty"><i class="fa-regular fa-circle-question"></i>{{ 'faq.empty'|trans }}</div>
+            {% else %}
+                {% include 'faq/_list.html.twig' with {open_first: true} %}
+            {% endif %}
+
+            <div class="card card-muted mt-3">
+                <p class="fw-bold mb-1">{{ 'faq.no_answer'|trans }}</p>
+                <p class="mb-0">
+                    <i class="fa-solid fa-phone"></i> <a href="tel:{{ settings.phoneLink }}">{{ settings.phone }}</a>
+                    &nbsp;·&nbsp; <a href="{{ path('app_main') }}#contact">{{ 'contact.form.title'|trans }}</a>
+                </p>
+            </div>
+        </div>
+    </section>
+{% endblock %}

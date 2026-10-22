@@ -1,0 +1,9 @@
+{# Accordion of FAQ items; open_first: whether the first answer is expanded. #}
+<div class="accordion">
+    {% for item in items %}
+        <details {{ loop.first and open_first|default(false) ? 'open' }} id="faq-{{ item.id }}">
+            <summary>{{ item.question|localized }}</summary>
+            <div class="accordion-body">{{ item.answer|localized|markdown }}</div>
+        </details>
+    {% endfor %}
+</div>

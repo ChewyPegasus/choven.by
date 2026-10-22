@@ -6,7 +6,7 @@ namespace App\MessageHandler;
 
 use App\Entity\Order;
 use App\Enum\OrderStatus;
-use App\Mailer\AppMailer;
+use App\Mailer\CustomerNotifier;
 use App\Message\SendTripReminders;
 use App\Repository\OrderRepository;
 use Doctrine\DBAL\Types\Types;
@@ -23,7 +23,7 @@ final class SendTripRemindersHandler
     public function __construct(
         private readonly OrderRepository $orders,
         private readonly EntityManagerInterface $entityManager,
-        private readonly AppMailer $mailer,
+        private readonly CustomerNotifier $customerNotifier,
         private readonly ClockInterface $clock,
     ) {
     }
@@ -45,7 +45,7 @@ final class SendTripRemindersHandler
             ->getResult();
 
         foreach ($orders as $order) {
-            $this->mailer->sendTripReminder($order);
+            $this->customerNotifier->tripReminder($order);
             $order->markReminderSent();
         }
         $this->entityManager->flush();

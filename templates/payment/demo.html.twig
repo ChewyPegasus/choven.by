@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'payment.demo.title'|trans }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block analytics %}{% endblock %}
+
+{% block body %}
+    <section class="auth-page">
+        <div class="auth-card">
+            <div class="card text-center">
+                <div class="auth-icon"><i class="fa-solid fa-credit-card"></i></div>
+                <h1>{{ 'payment.demo.title'|trans }}</h1>
+                <p class="lead">{{ 'payment.demo.text'|trans }}</p>
+                <p class="price-estimate">{{ payment.amount|byn }}</p>
+                {% if payment.pending %}
+                    <form method="post" class="cluster" style="justify-content: center">
+                        <input type="hidden" name="_token" value="{{ csrf_token('demo-pay-' ~ payment.publicId) }}">
+                        <button type="submit" name="result" value="pay" class="btn btn-lg btn-success"><i class="fa-solid fa-check"></i> {{ 'payment.demo.pay'|trans }}</button>
+                        <button type="submit" name="result" value="decline" class="btn btn-lg btn-ghost text-danger">{{ 'payment.demo.decline'|trans }}</button>
+                    </form>
+                {% else %}
+                    <p><span class="badge">{{ payment.status|trans }}</span></p>
+                    <a class="btn" href="{{ path('app_payment_return', {publicId: payment.publicId}) }}">{{ 'payment.demo.back'|trans }}</a>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+{% endblock %}

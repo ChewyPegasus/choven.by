@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ 'gift.show.title'|trans({'%code%': gift.code}) }}{% endblock %}
+{% block robots %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{# The URL contains the secret certificate token: never send it to analytics. #}
+{% block analytics %}{% endblock %}
+
+{% block body %}
+    {% set status = gift.status.value %}
+    <section class="section">
+        <div class="container container-narrow">
+            {% if status == 'pending' %}
+                <div class="booking-hero">
+                    <div class="icon-circle"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <h1>{{ 'gift.show.pending'|trans }}</h1>
+                    <p class="text-muted">{{ 'gift.show.pending_text'|trans }}</p>
+                </div>
+            {% else %}
+                <h1 class="print-hide">{{ 'gift.show.heading'|trans }}</h1>
+                <div class="gift-card gift-card-large">
+                    <div class="gift-card-logo">{% include '_partials/logo_mark.svg.twig' %} Чöвен</div>
+                    <div class="gift-card-label">{{ 'gift.preview.label'|trans }}</div>
+                    <div class="gift-card-amount">{{ gift.amount|byn }}</div>
+                    {% if gift.recipientName %}<div class="gift-card-to">{{ 'gift.show.for'|trans({'%name%': gift.recipientName}) }}</div>{% endif %}
+                    {% if gift.message %}<div class="gift-card-message">{{ gift.message }}</div>{% endif %}
+                    <div class="gift-card-code">{{ gift.code }}</div>
+                    <div class="gift-card-valid">{{ 'gift.show.valid_until'|trans({'%date%': gift.expiresAt|format_date('long', locale: app.request.locale)}) }}</div>
+                </div>
+
+                <div class="card mt-3 print-hide">
+                    <dl class="dl">
+                        <dt>{{ 'gift.show.status'|trans }}</dt><dd><span class="badge badge-status-{{ status }}">{{ gift.status|trans }}</span></dd>
+                        <dt>{{ 'gift.show.balance'|trans }}</dt><dd>{{ gift.balance|byn }}</dd>
+                    </dl>
+                    <p class="text-small text-muted">{{ 'gift.show.how'|trans }}</p>
+                    <div class="form-actions">
+                        <a class="btn" href="{{ path('app_gift_pdf', {token: gift.token}) }}" target="_blank" rel="noopener" data-turbo="false"><i class="fa-solid fa-file-pdf"></i> {{ 'gift.show.pdf'|trans }}</a>
+                        <button type="button" class="btn btn-outline" onclick="window.print()"><i class="fa-solid fa-print"></i> {{ 'gift.show.print'|trans }}</button>
+                        <a class="btn btn-ghost" href="{{ path('app_order_new') }}">{{ 'gift.show.book'|trans }}</a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

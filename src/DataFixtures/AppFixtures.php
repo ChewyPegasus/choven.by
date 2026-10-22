@@ -5,11 +5,17 @@ declare(strict_types=1);
 namespace App\DataFixtures;
 
 use App\Entity\ContactRequest;
+use App\Entity\Extra;
+use App\Entity\GiftCertificate;
 use App\Entity\Order;
+use App\Entity\Post;
+use App\Entity\PromoCode;
 use App\Entity\Review;
 use App\Entity\User;
+use App\Enum\ExtraUnit;
 use App\Enum\OrderStatus;
 use App\Enum\Package;
+use App\Enum\PromoType;
 use App\Enum\ReviewStatus;
 use App\Enum\River;
 use App\Repository\TourRepository;
@@ -71,6 +77,7 @@ final class AppFixtures extends Fixture
                 ->setDurationDays($tour?->getDurationDays() ?? mt_rand(1, 3))
                 ->setAmountOfPeople($people)
                 ->setEstimatedPrice($tour?->estimatePrice($people))
+                ->setBasePrice($tour?->estimatePrice($people))
                 ->setDescription(0 === $i % 4 ? 'Будут дети, нужен трансфер из Минска' : null)
                 ->setLocale(['ru', 'ru', 'be', 'en'][$i % 4])
                 ->setUser($owner)
@@ -108,6 +115,82 @@ final class AppFixtures extends Fixture
                 ->setMessage($message));
         }
 
+        $this->loadSales($manager);
+        $this->loadPosts($manager, $tours);
+
         $manager->flush();
+    }
+
+    /**
+     * Example add-ons, a promo code and a gift certificate (prices are examples: set the real ones in the admin panel).
+     */
+    private function loadSales(ObjectManager $manager): void
+    {
+        $extras = [
+            [['ru' => 'Трансфер из Минска', 'be' => 'Трансфер з Мінска', 'en' => 'Transfer from Minsk'], ['ru' => 'Микроавтобус от ст. м. «Уручье» и обратно', 'be' => 'Мікрааўтобус ад ст. м. «Уручча» і назад', 'en' => 'Minibus from Uruchye metro station and back'], 25, ExtraUnit::PER_PERSON, false, 'fa-van-shuttle'],
+            [['ru' => 'Аренда палатки', 'be' => 'Арэнда палаткі', 'en' => 'Tent rental'], ['ru' => 'Трёхместная палатка', 'be' => 'Трохмесная палатка', 'en' => 'Three-person tent'], 15, ExtraUnit::PER_ITEM, true, 'fa-campground'],
+            [['ru' => 'Спальник и коврик', 'be' => 'Спальнік і дыванок', 'en' => 'Sleeping bag and mat'], [], 8, ExtraUnit::PER_ITEM, true, 'fa-bed'],
+            [['ru' => 'Гермомешок 60 л', 'be' => 'Герметычны мех 60 л', 'en' => 'Dry bag 60 l'], [], 5, ExtraUnit::PER_ITEM, false, 'fa-bag-shopping'],
+            [['ru' => 'Фотограф на маршруте', 'be' => 'Фатограф на маршруце', 'en' => 'Photographer on the route'], ['ru' => '100+ обработанных фото через 3 дня', 'be' => '100+ апрацаваных фота праз 3 дні', 'en' => '100+ edited photos in 3 days'], 150, ExtraUnit::PER_ORDER, false, 'fa-camera'],
+        ];
+        foreach ($extras as $position => [$name, $description, $price, $unit, $perDay, $icon]) {
+            $manager->persist((new Extra())
+                ->setName($name)
+                ->setDescription($description)
+                ->setPrice($price)
+                ->setUnit($unit)
+                ->setPerDay($perDay)
+                ->setIcon($icon)
+                ->setPosition($position + 1));
+        }
+
+        $manager->persist((new PromoCode())
+            ->setCode('SUMMER10')
+            ->setType(PromoType::PERCENT)
+            ->setValue(10)
+            ->setValidUntil(new \DateTimeImmutable('+6 months'))
+            ->setNote('Демо: 10% на лето'));
+
+        $gift = (new GiftCertificate())
+            ->setAmount(200)
+            ->setBuyerName('Ольга Новик')
+            ->setBuyerEmail('olga@example.com')
+            ->setRecipientName('Сергей')
+            ->setMessage('С днём рождения!')
+            ->activate();
+        $manager->persist($gift);
+    }
+
+    /**
+     * @param list<\App\Entity\Tour> $tours
+     */
+    private function loadPosts(ObjectManager $manager, array $tours): void
+    {
+        $posts = [
+            [
+                'first-kayak-trip',
+                ['ru' => 'Первый сплав: как подготовиться и ничего не забыть', 'be' => 'Першы сплаў: як падрыхтавацца і нічога не забыць', 'en' => 'Your first kayak trip: how to prepare'],
+                ['ru' => 'Что надеть, что взять с собой и чего ждать от первого дня на воде.', 'be' => 'Што апрануць, што ўзяць з сабой і чаго чакаць ад першага дня на вадзе.', 'en' => 'What to wear, what to bring and what to expect from your first day on the water.'],
+                ['ru' => "Первый сплав — это всегда немного волнительно. Хорошая новость: опыт не нужен, всему научим на месте.\n\n## Что надеть\n\n- быстросохнущую одежду (не хлопок);\n- обувь, которую не жалко намочить;\n- головной убор и солнцезащитные очки.\n\n## Что взять с собой\n\n- сменную одежду в гермомешке;\n- воду и перекус;\n- крем от солнца и средство от комаров.\n\n> Главное правило — спасательный жилет надет всегда.\n\nОстальное — снаряжение, инструктаж и хорошее настроение — с нас.", 'en' => "A first trip is always a little exciting. The good news: no experience needed, we teach everything on site.\n\n## What to wear\n\n- quick-drying clothes (not cotton);\n- shoes you do not mind getting wet;\n- a hat and sunglasses.\n\n> The main rule: the life jacket is always on."],
+            ],
+            [
+                'isloch-vs-svisloch',
+                ['ru' => 'Ислочь или Свислочь: какую реку выбрать', 'be' => 'Іслач або Свіслач: якую раку выбраць', 'en' => 'Isloch or Svisloch: which river to choose'],
+                ['ru' => 'Сравниваем два самых популярных маршрута рядом с Минском.', 'be' => 'Параўноўваем два самыя папулярныя маршруты побач з Мінскам.', 'en' => 'Comparing the two most popular routes near Minsk.'],
+                ['ru' => "**Ислочь** — быстрая лесная река с поворотами и перекатами: для тех, кто хочет немного драйва.\n\n**Свислочь** — спокойная и широкая, идеальна для семей с детьми и первого знакомства с байдаркой.\n\n| | Ислочь | Свислочь |\n|---|---|---|\n| Течение | быстрое | спокойное |\n| Для детей | с 10 лет | с 5 лет |\n| Ночёвка | да | по запросу |"],
+            ],
+        ];
+
+        foreach ($posts as $index => [$slug, $title, $excerpt, $body]) {
+            $manager->persist((new Post())
+                ->setSlug($slug)
+                ->setTitle($title)
+                ->setExcerpt($excerpt)
+                ->setBody($body)
+                ->setAuthor('Команда Чöвен')
+                ->setTour($tours[$index] ?? null)
+                ->setIsPublished(true)
+                ->setPublishedAt(new \DateTimeImmutable(\sprintf('-%d days', 10 + $index * 12))));
+        }
     }
 }

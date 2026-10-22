@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="{{ gift.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ gift.code }}</title>
+    <style>
+        @page { margin: 0; }
+        body { margin: 0; font-family: "DejaVu Sans", sans-serif; color: #1b2a3a; }
+        .sheet { position: relative; width: 210mm; height: 148mm; background: #0b7285; }
+        .inner { position: absolute; top: 9mm; left: 9mm; right: 9mm; bottom: 9mm; background: #ffffff; border-radius: 6mm; padding: 12mm 14mm; }
+        .brand { font-size: 15pt; font-weight: bold; color: #ff6b00; letter-spacing: 1pt; }
+        .label { margin-top: 9mm; font-size: 11pt; text-transform: uppercase; letter-spacing: 3pt; color: #64748b; }
+        .amount { font-size: 46pt; font-weight: bold; color: #1b2a3a; line-height: 1.1; }
+        .to { margin-top: 4mm; font-size: 14pt; }
+        .message { margin-top: 3mm; font-size: 11pt; font-style: italic; color: #334155; max-width: 140mm; }
+        .footer { position: absolute; left: 14mm; right: 14mm; bottom: 11mm; font-size: 9pt; color: #64748b; }
+        .code { position: absolute; right: 14mm; top: 14mm; font-size: 13pt; font-weight: bold; border: 1pt dashed #ff6b00; padding: 2mm 4mm; border-radius: 2mm; color: #d95a00; }
+        .wave { position: absolute; right: 14mm; bottom: 26mm; font-size: 9pt; color: #0b7285; text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="sheet">
+        <div class="inner">
+            <div class="brand">ЧÖВЕН · CHOVEN.BY</div>
+            <div class="code">{{ gift.code }}</div>
+            <div class="label">{{ 'gift.preview.label'|trans }}</div>
+            <div class="amount">{{ gift.amount }} BYN</div>
+            {% if gift.recipientName %}<div class="to">{{ 'gift.show.for'|trans({'%name%': gift.recipientName}) }}</div>{% endif %}
+            {% if gift.message %}<div class="message">«{{ gift.message }}»</div>{% endif %}
+            <div class="wave">{{ 'gift.pdf.tagline'|trans }}</div>
+            <div class="footer">
+                {{ 'gift.show.valid_until'|trans({'%date%': gift.expiresAt|date('d.m.Y')}) }} ·
+                {{ 'gift.pdf.how'|trans }} {{ url('app_order_new', {_locale: gift.locale}) }} · {{ settings.phone }}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -10,6 +10,7 @@
             <ul>
                 <li><a href="{{ path('app_main') }}#tours">{{ 'nav.tours'|trans }}</a></li>
                 <li><a href="{{ path('app_info') }}" {{ current_route == 'app_info' ? 'aria-current="page"' }}>{{ 'nav.info'|trans }}</a></li>
+                <li><a href="{{ path('app_blog') }}" {{ current_route starts with 'app_blog' ? 'aria-current="page"' }}>{{ 'nav.blog'|trans }}</a></li>
                 <li><a href="{{ path('app_about') }}" {{ current_route == 'app_about' ? 'aria-current="page"' }}>{{ 'nav.about'|trans }}</a></li>
                 <li><a href="{{ path('app_main') }}#contact">{{ 'nav.contacts'|trans }}</a></li>
                 {% if is_granted('ROLE_ADMIN') %}
@@ -42,6 +43,7 @@
                         <div class="dropdown-label">{{ app.user.email }}</div>
                         <a href="{{ path('app_profile_orders') }}" role="menuitem"><i class="fa-solid fa-calendar-check"></i> {{ 'nav.my_bookings'|trans }}</a>
                         <a href="{{ path('app_profile_settings') }}" role="menuitem"><i class="fa-solid fa-gear"></i> {{ 'nav.settings'|trans }}</a>
+                        <a href="{{ path('app_profile_security') }}" role="menuitem"><i class="fa-solid fa-shield-halved"></i> {{ 'nav.security'|trans }}</a>
                         {% if is_granted('ROLE_ADMIN') %}
                             <a href="{{ path('app_admin_dashboard') }}" role="menuitem"><i class="fa-solid fa-gauge-high"></i> {{ 'nav.admin'|trans }}</a>
                         {% endif %}

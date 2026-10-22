@@ -1,0 +1,20 @@
+# Two-factor authentication (authenticator app + backup codes), see App\Controller\Profile\SecurityController.
+scheb_two_factor:
+    security_tokens:
+        - Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
+        - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
+    totp:
+        enabled: true
+        server_name: 'Choven.by'
+        issuer: 'Choven.by'
+        leeway: 15
+        template: security/2fa_form.html.twig
+    backup_codes:
+        enabled: true
+    # "Trust this browser for 30 days": no code is asked on that device.
+    trusted_device:
+        enabled: true
+        lifetime: 2592000
+        cookie_name: trusted_device
+        cookie_secure: auto
+        cookie_same_site: lax

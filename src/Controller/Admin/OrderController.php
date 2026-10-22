@@ -57,7 +57,7 @@ final class OrderController extends AbstractController
             }
             // UTF-8 BOM so that Excel opens Cyrillic text correctly.
             fwrite($out, "\xEF\xBB\xBF");
-            fputcsv($out, ['Reference', 'Status', 'Start', 'End', 'Days', 'People', 'River', 'Package', 'Tour', 'Name', 'Phone', 'Email', 'Price BYN', 'Comment', 'Admin note', 'Created'], ';', '"', '');
+            fputcsv($out, ['Reference', 'Status', 'Start', 'End', 'Days', 'People', 'River', 'Package', 'Tour', 'Extras', 'Name', 'Phone', 'Email', 'Price BYN', 'Discount BYN', 'Promo code', 'Gift BYN', 'Paid BYN', 'Comment', 'Admin note', 'Created'], ';', '"', '');
 
             foreach ($orders->iterateByFilter($filter) as $order) {
                 fputcsv($out, array_map(self::csvCell(...), [
@@ -70,10 +70,18 @@ final class OrderController extends AbstractController
                     $order->getRiver()?->trans($translator),
                     $order->getPackage()?->trans($translator),
                     $order->getTour()?->getLocalizedTitle(),
+                    implode(', ', array_map(
+                        static fn ($e): string => $e->getLocalizedName().($e->getUnit()->hasQuantity() ? ' ×'.$e->getQuantity() : ''),
+                        $order->getExtras()->toArray(),
+                    )),
                     $order->getName(),
                     $order->getPhoneE164(),
                     $order->getEmail(),
                     $order->getEstimatedPrice(),
+                    $order->getDiscount() ?: null,
+                    $order->getPromoCode()?->getCode(),
+                    $order->getGiftAmount() ?: null,
+                    $order->getPaidAmount() ?: null,
                     $order->getDescription(),
                     $order->getAdminNote(),
                     $order->getCreatedAt()->format('Y-m-d H:i'),
@@ -181,11 +189,12 @@ final class OrderController extends AbstractController
     public function edit(Order $order, Request $request, AvailabilityChecker $checker): Response
     {
         $previousStatus = $order->getStatus();
+        $previous = ['start' => $order->getStartDate(), 'end' => $order->getEndDate(), 'people' => $order->getAmountOfPeople()];
         $form = $this->createForm(OrderAdminType::class, $order);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->bookingService->update($order, $previousStatus, (bool) $form->get('notifyCustomer')->getData());
+            $this->bookingService->update($order, $previousStatus, (bool) $form->get('notifyCustomer')->getData(), $previous);
             $this->addFlash('success', 'admin.orders.flash.saved');
 
             return $this->redirectToRoute('app_admin_order_edit', ['id' => $order->getId()]);
@@ -206,7 +215,7 @@ final class OrderController extends AbstractController
     public function delete(Order $order, Request $request): Response
     {
         if ($this->isCsrfTokenValid('delete-order-'.$order->getId(), $request->getPayload()->getString('_token'))) {
-            $this->orders->remove($order);
+            $this->bookingService->delete($order);
             $this->addFlash('success', 'admin.orders.flash.deleted');
         } else {
             $this->addFlash('error', 'flash.invalid_csrf');

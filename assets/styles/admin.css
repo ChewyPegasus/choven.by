@@ -111,3 +111,16 @@ a.stat:hover { border-color: var(--c-primary); box-shadow: var(--shadow); color:
     .print-only { display: table-cell; }
     a { color: inherit; text-decoration: none; }
 }
+
+/* Payments, audit log --------------------------------------------------------- */
+.badge-payment-succeeded { background: var(--c-success-soft); color: var(--c-success); border-color: #bfe6cd; }
+.badge-payment-pending { background: var(--c-warning-soft); color: var(--c-warning); border-color: #f8dfae; }
+.badge-payment-failed, .badge-payment-cancelled { background: var(--c-danger-soft); color: var(--c-danger); border-color: #f6c6c6; }
+.badge-payment-refunded { background: var(--c-info-soft); color: var(--c-info); border-color: #c9d8fb; }
+.badge-audit-create { background: var(--c-success-soft); color: var(--c-success); }
+.badge-audit-delete { background: var(--c-danger-soft); color: var(--c-danger); }
+.badge-audit-login { background: var(--c-info-soft); color: var(--c-info); }
+.audit-table .changes { list-style: none; padding: 0; margin: 0; font-size: .85rem; max-width: 520px; }
+.audit-table .changes li { word-break: break-word; }
+.audit-table del { color: var(--c-danger); text-decoration: line-through; }
+.audit-table ins { color: var(--c-success); text-decoration: none; }

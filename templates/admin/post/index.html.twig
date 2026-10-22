@@ -1,0 +1,58 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.posts'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.posts'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_post_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.posts.new'|trans }}</a>
+    </div>
+    <p class="text-muted">{{ 'admin.posts.hint'|trans }}</p>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-regular fa-newspaper"></i>{{ 'admin.posts.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{{ 'admin.posts.field.title'|trans }}</th>
+                        <th>{{ 'admin.posts.field.published_at'|trans }}</th>
+                        <th>{{ 'admin.promo.col.state'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for post in page.items %}
+                        {% set cover = image_url(post.coverImage) %}
+                        <tr>
+                            <td>{% if cover %}<img class="thumb" src="{{ cover }}" alt="">{% else %}<div class="thumb img-placeholder"><i class="fa-regular fa-newspaper"></i></div>{% endif %}</td>
+                            <td data-label="{{ 'admin.posts.field.title'|trans }}">
+                                <a href="{{ path('app_admin_post_edit', {id: post.id}) }}"><strong>{{ post.title|localized }}</strong></a>
+                                <div class="text-small text-muted">/blog/{{ post.slug }}</div>
+                            </td>
+                            <td data-label="{{ 'admin.posts.field.published_at'|trans }}">{{ post.publishedAt ? post.publishedAt|date('d.m.Y H:i') : '—' }}</td>
+                            <td data-label="{{ 'admin.promo.col.state'|trans }}">
+                                {% if post.visible %}
+                                    <span class="badge badge-success">{{ 'admin.posts.state.published'|trans }}</span>
+                                {% elseif post.published %}
+                                    <span class="badge badge-warning">{{ 'admin.posts.state.scheduled'|trans }}</span>
+                                {% else %}
+                                    <span class="badge">{{ 'admin.posts.state.draft'|trans }}</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    {% if post.visible %}<a class="btn btn-sm btn-ghost" href="{{ path('app_blog_post', {slug: post.slug}) }}" target="_blank" rel="noopener" title="{{ 'admin.common.view_on_site'|trans }}"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>{% endif %}
+                                    <a class="btn btn-sm btn-outline" href="{{ path('app_admin_post_edit', {id: post.id}) }}">{{ 'admin.common.edit'|trans }}</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

@@ -7,7 +7,21 @@
     ['booking.form.package'|trans, order.package|trans],
 ] %}
 {% if order.tour %}{% set rows = rows|merge([['booking.selected_tour'|trans, order.tour.title|localized(locale)]]) %}{% endif %}
-{% if order.estimatedPrice %}{% set rows = rows|merge([['booking.estimate'|trans, order.estimatedPrice|byn]]) %}{% endif %}
+{% if order.extras is not empty %}
+    {% set extras = [] %}
+    {% for extra in order.extras %}
+        {% set extras = extras|merge([extra.name|localized(locale) ~ (extra.unit.hasQuantity ? ' × ' ~ extra.quantity : '') ~ ' — ' ~ extra.total|byn]) %}
+    {% endfor %}
+    {% set rows = rows|merge([['booking.section.extras'|trans, extras|join("\n")]]) %}
+{% endif %}
+{% if order.discount > 0 %}{% set rows = rows|merge([['price.promo'|trans({'%code%': order.promoCode ? order.promoCode.code : ''}), '−' ~ order.discount|byn]]) %}{% endif %}
+{% if order.giftAmount > 0 %}{% set rows = rows|merge([['price.gift'|trans, '−' ~ order.giftAmount|byn]]) %}{% endif %}
+{% if order.estimatedPrice is not null %}{% set rows = rows|merge([['booking.estimate'|trans, order.estimatedPrice|byn]]) %}{% endif %}
+{% if order.paidAmount > 0 %}
+    {% set rows = rows|merge([['price.paid'|trans, order.paidAmount|byn]]) %}
+{% elseif order.depositAmount %}
+    {% set rows = rows|merge([['price.deposit'|trans, order.depositAmount|byn]]) %}
+{% endif %}
 {% if show_contacts|default(false) %}
     {% set rows = rows|merge([
         ['booking.form.name'|trans, order.name],

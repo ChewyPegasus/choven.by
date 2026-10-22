@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Form\Admin\SettingsType;
+use App\Payment\PaymentGateways;
 use App\Service\FailedMessages;
 use App\Service\SiteSettings;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 final class SystemController extends AbstractController
 {
     #[Route('/settings', name: 'app_admin_settings', methods: ['GET', 'POST'])]
-    public function settings(Request $request, SiteSettings $settings): Response
+    public function settings(Request $request, SiteSettings $settings, PaymentGateways $payments): Response
     {
         $form = $this->createForm(SettingsType::class, $settings->all());
         $form->handleRequest($request);
@@ -35,7 +36,7 @@ final class SystemController extends AbstractController
             return $this->redirectToRoute('app_admin_settings');
         }
 
-        return $this->render('admin/settings.html.twig', ['form' => $form]);
+        return $this->render('admin/settings.html.twig', ['form' => $form, 'payments_enabled' => $payments->isEnabled()]);
     }
 
     #[Route('/emails', name: 'app_admin_failed_messages', methods: ['GET'])]

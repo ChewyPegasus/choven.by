@@ -1,0 +1,18 @@
+<article class="tour-card post-card">
+    <a class="tour-media" href="{{ path('app_blog_post', {slug: post.slug}) }}" tabindex="-1" aria-hidden="true">
+        {% set cover = picture(post.coverImage, '', {sizes: '(max-width: 700px) 100vw, 380px'}) %}
+        {% if cover %}{{ cover }}{% else %}<div class="img-placeholder"><i class="fa-regular fa-newspaper"></i></div>{% endif %}
+    </a>
+    <div class="tour-body">
+        <div class="tour-meta">
+            <span class="badge"><i class="fa-regular fa-calendar"></i> {{ post.publishedAt|format_date('long', locale: app.request.locale) }}</span>
+            <span class="badge badge-water"><i class="fa-regular fa-clock"></i> {{ 'blog.minutes'|trans({'%count%': post.readingMinutes(app.request.locale)}) }}</span>
+        </div>
+        <h3><a href="{{ path('app_blog_post', {slug: post.slug}) }}">{{ post.title|localized }}</a></h3>
+        {% set excerpt = post.excerpt|localized %}
+        <p>{{ excerpt ? excerpt : (post.body|localized|markdown_text|u.truncate(180, '…', false)) }}</p>
+        <div class="tour-actions">
+            <a class="btn btn-outline btn-sm" href="{{ path('app_blog_post', {slug: post.slug}) }}">{{ 'blog.read'|trans }}</a>
+        </div>
+    </div>
+</article>

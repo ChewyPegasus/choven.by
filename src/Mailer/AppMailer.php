@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace App\Mailer;
 
 use App\Entity\ContactRequest;
+use App\Entity\GiftCertificate;
 use App\Entity\Order;
+use App\Entity\Payment;
 use App\Entity\Review;
 use App\Entity\User;
+use App\Entity\WaitlistEntry;
+use App\Model\DayForecast;
 use App\Model\Localized;
+use App\Service\GiftCertificatePdf;
 use App\Service\IcsGenerator;
 use App\Service\SiteSettings;
 use Psr\Log\LoggerInterface;
@@ -40,6 +45,7 @@ class AppMailer
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly SiteSettings $settings,
         private readonly IcsGenerator $icsGenerator,
+        private readonly GiftCertificatePdf $giftPdf,
         private readonly LoggerInterface $logger,
         #[Autowire('%env(MAILER_FROM)%')]
         private readonly string $from,
@@ -96,17 +102,119 @@ class AppMailer
     }
 
     /**
-     * "Your trip is in two days": date, meeting details, what to bring.
+     * "Your trip is in two days": date, meeting details, weather forecast, what to bring.
+     *
+     * @param list<DayForecast> $forecast
      */
-    public function sendTripReminder(Order $order): void
+    public function sendTripReminder(Order $order, array $forecast = []): void
     {
         $this->send(
             to: new Address($order->getEmail(), $order->getName()),
             subjectKey: 'email.trip_reminder.subject',
             subjectParams: ['%date%' => $order->getStartDate()?->format('d.m') ?? ''],
             template: 'emails/trip_reminder.html.twig',
-            context: ['order' => $order, 'order_url' => $this->orderUrl($order)],
+            context: ['order' => $order, 'order_url' => $this->orderUrl($order), 'forecast' => $forecast],
             locale: $order->getLocale(),
+        );
+    }
+
+    public function sendPaymentReceived(Order $order, Payment $payment): void
+    {
+        $this->send(
+            to: new Address($order->getEmail(), $order->getName()),
+            subjectKey: 'email.payment_received.subject',
+            subjectParams: ['%reference%' => $order->getReference()],
+            template: 'emails/payment_received.html.twig',
+            context: ['order' => $order, 'payment' => $payment, 'order_url' => $this->orderUrl($order)],
+            locale: $order->getLocale(),
+        );
+    }
+
+    public function sendOrderRescheduled(Order $order, ?\DateTimeImmutable $previousStart): void
+    {
+        $url = $this->orderUrl($order);
+        $ics = $this->icsGenerator->forOrder($order, $url);
+
+        $this->send(
+            to: new Address($order->getEmail(), $order->getName()),
+            subjectKey: 'email.order_rescheduled.subject',
+            subjectParams: ['%reference%' => $order->getReference(), '%date%' => $order->getStartDate()?->format('d.m.Y') ?? ''],
+            template: 'emails/order_rescheduled.html.twig',
+            context: ['order' => $order, 'previous_start' => $previousStart, 'order_url' => $url],
+            locale: $order->getLocale(),
+            configure: static fn (Email $email) => $email->attach($ics, $order->getReference().'.ics', 'text/calendar; charset=utf-8; method=PUBLISH'),
+        );
+    }
+
+    /**
+     * The required prepayment did not arrive in time and the booking was cancelled.
+     */
+    public function sendOrderExpired(Order $order): void
+    {
+        $this->send(
+            to: new Address($order->getEmail(), $order->getName()),
+            subjectKey: 'email.order_expired.subject',
+            subjectParams: ['%reference%' => $order->getReference()],
+            template: 'emails/order_expired.html.twig',
+            context: [
+                'order' => $order,
+                'rebook_url' => $this->urlGenerator->generate('app_order_new', ['_locale' => $order->getLocale()], UrlGeneratorInterface::ABSOLUTE_URL),
+            ],
+            locale: $order->getLocale(),
+        );
+    }
+
+    public function sendWaitlistJoined(WaitlistEntry $entry): void
+    {
+        $this->send(
+            to: new Address($entry->getEmail(), $entry->getName()),
+            subjectKey: 'email.waitlist_joined.subject',
+            subjectParams: ['%date%' => $entry->getStartDate()?->format('d.m.Y') ?? ''],
+            template: 'emails/waitlist_joined.html.twig',
+            context: ['entry' => $entry],
+            locale: $entry->getLocale(),
+        );
+    }
+
+    /**
+     * Places became free on the dates someone was waiting for: link to the pre-filled booking form.
+     */
+    public function sendWaitlistAvailable(WaitlistEntry $entry): void
+    {
+        $params = array_filter([
+            '_locale' => $entry->getLocale(),
+            'tour' => $entry->getTour()?->getSlug(),
+            'date' => $entry->getStartDate()?->format('Y-m-d'),
+            'duration' => $entry->getDurationDays(),
+            'people' => $entry->getPeople(),
+        ], static fn (mixed $v): bool => null !== $v);
+
+        $this->send(
+            to: new Address($entry->getEmail(), $entry->getName()),
+            subjectKey: 'email.waitlist_available.subject',
+            subjectParams: ['%date%' => $entry->getStartDate()?->format('d.m.Y') ?? ''],
+            template: 'emails/waitlist_available.html.twig',
+            context: ['entry' => $entry, 'booking_url' => $this->urlGenerator->generate('app_order_new', $params, UrlGeneratorInterface::ABSOLUTE_URL)],
+            locale: $entry->getLocale(),
+        );
+    }
+
+    /**
+     * The paid certificate with the printable PDF attached.
+     */
+    public function sendGiftCertificate(GiftCertificate $gift): void
+    {
+        $url = $this->urlGenerator->generate('app_gift_show', ['_locale' => $gift->getLocale(), 'token' => $gift->getToken()], UrlGeneratorInterface::ABSOLUTE_URL);
+        $pdf = $this->giftPdf->render($gift);
+
+        $this->send(
+            to: new Address($gift->getBuyerEmail(), $gift->getBuyerName()),
+            subjectKey: 'email.gift_certificate.subject',
+            subjectParams: ['%amount%' => (string) $gift->getAmount()],
+            template: 'emails/gift_certificate.html.twig',
+            context: ['gift' => $gift, 'gift_url' => $url],
+            locale: $gift->getLocale(),
+            configure: static fn (Email $email) => null !== $pdf ? $email->attach($pdf, $gift->getCode().'.pdf', 'application/pdf') : $email,
         );
     }
 
@@ -123,14 +231,17 @@ class AppMailer
         );
     }
 
-    public function sendOrderCancelledNotification(Order $order): void
+    /**
+     * @param bool $refundable the customer cancelled in time and the prepayment must be returned
+     */
+    public function sendOrderCancelledNotification(Order $order, bool $refundable = false): void
     {
         $this->send(
             to: new Address($this->settings->getNotificationEmail()),
             subjectKey: 'email.admin_order_cancelled.subject',
             subjectParams: ['%reference%' => $order->getReference()],
             template: 'emails/admin/order_cancelled.html.twig',
-            context: ['order' => $order, 'admin_url' => $this->adminOrderUrl($order)],
+            context: ['order' => $order, 'admin_url' => $this->adminOrderUrl($order), 'refundable' => $refundable],
             locale: self::ADMIN_LOCALE,
         );
     }

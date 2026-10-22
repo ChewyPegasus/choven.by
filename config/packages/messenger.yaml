@@ -13,8 +13,13 @@ framework:
                     max_delay: 3600000
             # Messages that failed all retries; visible in Admin → Emails.
             failed: 'doctrine://default?queue_name=failed&auto_setup=0'
+            # Handled immediately; used by `app:jobs:run`.
+            sync: 'sync://'
 
         routing:
             Symfony\Component\Mailer\Messenger\SendEmailMessage: async
             App\Message\SendTelegramMessage: async
+            App\Message\SendViberMessage: async
+            App\Message\CheckWaitlist: async
+            App\Message\GenerateImageVariants: async
 

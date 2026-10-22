@@ -1,0 +1,63 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.waitlist'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.waitlist'|trans }}</h1>
+    </div>
+    <p class="text-muted">{{ 'admin.waitlist.hint'|trans }}</p>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-solid fa-hourglass-half"></i>{{ 'admin.waitlist.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'booking.form.start_date'|trans }}</th>
+                        <th class="num">{{ 'booking.form.people'|trans }}</th>
+                        <th>{{ 'admin.waitlist.col.contact'|trans }}</th>
+                        <th>{{ 'admin.orders.field.tour'|trans }}</th>
+                        <th>{{ 'admin.promo.col.state'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in page.items %}
+                        <tr>
+                            <td data-label="{{ 'booking.form.start_date'|trans }}">
+                                <a href="{{ path('app_admin_order_day', {date: entry.startDate|date('Y-m-d')}) }}">{{ entry.startDate|date('d.m.Y') }}</a>
+                                <div class="text-small text-muted">{{ 'tour.days'|trans({'%count%': entry.durationDays}) }}</div>
+                            </td>
+                            <td data-label="{{ 'booking.form.people'|trans }}" class="num">{{ entry.people }}</td>
+                            <td data-label="{{ 'admin.waitlist.col.contact'|trans }}">
+                                <strong>{{ entry.name }}</strong>
+                                <div class="text-small"><a href="mailto:{{ entry.email }}">{{ entry.email }}</a>{% if entry.phoneFormatted %} · <a href="tel:{{ entry.phoneFormatted|replace({' ': '', '-': ''}) }}">{{ entry.phoneFormatted }}</a>{% endif %}</div>
+                            </td>
+                            <td data-label="{{ 'admin.orders.field.tour'|trans }}">{{ entry.tour ? entry.tour.title|localized : '—' }}</td>
+                            <td data-label="{{ 'admin.promo.col.state'|trans }}">
+                                {% if entry.notifiedAt %}
+                                    <span class="badge badge-success">{{ 'admin.waitlist.notified'|trans({'%date%': entry.notifiedAt|date('d.m H:i')}) }}</span>
+                                {% else %}
+                                    <span class="badge badge-warning">{{ 'admin.waitlist.waiting'|trans }}</span>
+                                {% endif %}
+                                <div class="text-small text-muted">{{ entry.createdAt|date('d.m.Y') }}</div>
+                            </td>
+                            <td>
+                                <div class="table-actions">
+                                    <a class="btn btn-sm btn-outline" href="{{ path('app_admin_order_new', {date: entry.startDate|date('Y-m-d')}) }}" title="{{ 'admin.orders.new'|trans }}"><i class="fa-solid fa-plus"></i></a>
+                                    <form method="post" action="{{ path('app_admin_waitlist_delete', {id: entry.id}) }}" data-turbo-confirm="{{ 'admin.waitlist.delete_confirm'|trans }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete-waitlist-' ~ entry.id) }}">
+                                        <button type="submit" class="btn btn-sm btn-ghost text-danger" title="{{ 'admin.common.delete'|trans }}"><i class="fa-solid fa-trash"></i></button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

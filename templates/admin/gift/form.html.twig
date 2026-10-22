@@ -1,0 +1,27 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.gifts.new'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <div class="breadcrumbs"><a href="{{ path('app_admin_gift_certificates') }}">{{ 'admin.menu.gifts'|trans }}</a> /</div>
+        <h1>{{ 'admin.gifts.new'|trans }}</h1>
+    </div>
+    <p class="text-muted">{{ 'admin.gifts.issue_hint'|trans }}</p>
+
+    <div class="card" style="max-width: 720px">
+        {{ form_start(form) }}
+            {{ form_errors(form) }}
+            {{ form_row(form.amount) }}
+            <div class="form-row">
+                {{ form_row(form.buyerName) }}
+                {{ form_row(form.buyerEmail) }}
+            </div>
+            {{ form_row(form.recipientName) }}
+            {{ form_row(form.message) }}
+            {{ form_row(form.sendEmail) }}
+            {{ form_rest(form) }}
+            <button type="submit" class="btn"><i class="fa-solid fa-gift"></i> {{ 'admin.gifts.issue'|trans }}</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

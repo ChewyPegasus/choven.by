@@ -1,0 +1,46 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% set is_new = post.id is null %}
+{% block title %}{{ is_new ? 'admin.posts.new'|trans : post.title|localized }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <div class="breadcrumbs"><a href="{{ path('app_admin_posts') }}">{{ 'admin.menu.posts'|trans }}</a> /</div>
+        <h1>{{ is_new ? 'admin.posts.new'|trans : post.title|localized }}</h1>
+    </div>
+
+    {{ form_start(form) }}
+    <div class="admin-form-layout" data-controller="slug" data-slug-source-value="#{{ form.title.ru.vars.id }}">
+        <div class="card">
+            {{ form_errors(form) }}
+            {{ form_row(form.title) }}
+            {{ form_row(form.slug, {attr: {'data-slug-target': 'slug', 'data-action': 'slug#edited'}}) }}
+            {{ form_row(form.excerpt) }}
+            {{ form_row(form.body) }}
+        </div>
+        <aside>
+            <div class="card">
+                {% set cover = image_url(post.coverImage) %}
+                {% if cover %}<img src="{{ cover }}" alt="" style="border-radius: 10px; margin-bottom: 12px">{% endif %}
+                {{ form_row(form.coverFile) }}
+                {{ form_row(form.isPublished) }}
+                {{ form_row(form.publishedAt) }}
+                {{ form_row(form.author) }}
+                {{ form_row(form.tour) }}
+                {{ form_rest(form) }}
+                <button type="submit" class="btn btn-block"><i class="fa-solid fa-floppy-disk"></i> {{ 'admin.common.save'|trans }}</button>
+                {% if not is_new and post.visible %}
+                    <a class="btn btn-block btn-ghost mt-1" href="{{ path('app_blog_post', {slug: post.slug}) }}" target="_blank" rel="noopener"><i class="fa-solid fa-arrow-up-right-from-square"></i> {{ 'admin.common.view_on_site'|trans }}</a>
+                {% endif %}
+            </div>
+        </aside>
+    </div>
+    {{ form_end(form) }}
+
+    {% if not is_new %}
+        <form method="post" action="{{ path('app_admin_post_delete', {id: post.id}) }}" class="mt-3" data-turbo-confirm="{{ 'admin.posts.delete_confirm'|trans }}">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete-post-' ~ post.id) }}">
+            <button type="submit" class="btn btn-sm btn-ghost text-danger"><i class="fa-solid fa-trash"></i> {{ 'admin.common.delete'|trans }}</button>
+        </form>
+    {% endif %}
+{% endblock %}

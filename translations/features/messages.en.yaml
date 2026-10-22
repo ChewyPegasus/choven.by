@@ -1,0 +1,292 @@
+nav:
+    blog: Blog
+    faq: FAQ
+    gift: 'Gift certificate'
+    security: Security
+price:
+    trip: Trip
+    promo: 'Promo code %code%'
+    gift: 'Gift certificate'
+    discount: Discount
+    total: Total
+    paid: 'Paid online'
+    deposit: Prepayment
+    deposit_online: 'Online prepayment (%percent%%)'
+weather:
+    title: 'Weather forecast'
+    source: 'Forecast by Open-Meteo, updated several times a day.'
+    wind: 'wind %speed% m/s'
+    rain_short: rain
+    kind:
+        clear: Clear
+        partly_cloudy: 'Partly cloudy'
+        cloudy: Cloudy
+        fog: Fog
+        drizzle: Drizzle
+        rain: Rain
+        snow: Snow
+        thunderstorm: Thunderstorm
+    tip:
+        rain: 'Rain is expected: bring a raincoat and spare shoes.'
+        hot: 'It will be hot: sunscreen, a hat and plenty of water.'
+        cold: 'It will be cool: a warm layer and a waterproof jacket will help.'
+booking:
+    subtitle_prepayment: 'Fill in the form and pay a %percent%% prepayment online, and your booking is confirmed. The rest is paid on the day of the trip.'
+    section:
+        extras: 'Add-on services'
+    form:
+        promo: 'Promo code or gift certificate'
+        promo_help: 'If you have one, the discount is applied right away.'
+    promo:
+        applied: 'Promo code applied'
+        gift_applied: 'Gift certificate: %amount% BYN on balance'
+    prepayment_required: 'The booking is confirmed after a %percent%% prepayment (to be paid within %hours% h).'
+    prepayment_optional: 'You can pay a %percent%% prepayment online now or pay everything on site.'
+    how:
+        2_prepayment: 'You pay the prepayment online by card or via ERIP, and the booking is confirmed automatically.'
+    show:
+        cancel_confirm_refund: 'Cancel the booking? The prepayment will be returned to your card within a few days.'
+        cancel_confirm_no_refund: 'Cancel the booking? The trip is too close, so the prepayment is not refundable.'
+extra:
+    unit:
+        order: 'per booking'
+        person: 'per person'
+        item: 'per item'
+    per_day: 'per day'
+waitlist:
+    title: 'Tell me when places become free'
+    text: 'These dates are sold out. Leave your contacts: as soon as someone cancels, we will email you a booking link.'
+    submit: 'Join the waitlist'
+    form:
+        phone: 'Phone (optional)'
+    done: 'You are on the waitlist'
+    already: 'You are already on the waitlist'
+    done_text: 'As soon as places become free on %date%, we will write to %email%. Meanwhile you can pick another date.'
+    other_date: 'Pick another date'
+payment:
+    status:
+        pending: 'Awaiting payment'
+        succeeded: Paid
+        failed: Failed
+        cancelled: Cancelled
+        refunded: Refunded
+    description:
+        order: 'Prepayment for booking %reference% (%date%)'
+        gift: 'Choven gift certificate, %amount% BYN'
+    flash:
+        unavailable: 'Online payment is not available right now. Please try later or call us.'
+        succeeded: 'Payment successful. Thank you!'
+        pending: 'The payment is being processed. We will email you as soon as it arrives.'
+        failed: 'The payment did not go through. Please try again or use another method.'
+    due: 'To pay online: %amount%'
+    due_required: 'The booking is confirmed right after the payment. Please pay before %time%, otherwise it will be cancelled.'
+    due_optional: 'A prepayment secures your places. The rest is paid on the day of the trip.'
+    pay: 'Pay %amount%'
+    demo:
+        title: 'Test payment'
+        text: 'This is a demo page instead of the bank page: no money is charged.'
+        pay: Pay
+        decline: Decline
+        back: 'Back to the site'
+policy:
+    free_until: 'You can reschedule or cancel for free (with the prepayment refunded) until %date% inclusive.'
+    late: 'The trip is close: the date can only be changed by phone.'
+    late_paid: 'The trip is close: if you cancel, the prepayment is not refunded. The date can be changed by phone.'
+reschedule:
+    button: 'Change date'
+    title: 'Reschedule booking %reference%'
+    heading: 'Move the trip to another date'
+    current: 'Now: %date%, %days%, %people%.'
+    new_date: 'New start date'
+    hint: 'Duration and group size stay the same. You can reschedule online %count% more time(s).'
+    submit: Reschedule
+    back: 'Keep the date'
+    flash:
+        not_allowed: 'This booking can no longer be rescheduled online. Please call us and we will find a solution.'
+        done: 'Done! The booking has been moved; an email with the new dates is on its way.'
+messenger:
+    title: 'Notifications in a messenger'
+    text: 'Connect Telegram or Viber: we will tell you about the confirmation and payment and send a reminder with the weather forecast.'
+    account_text: 'Notifications about all your bookings will be sent to the chosen messenger.'
+    connected: 'Connected: %channels%'
+    disconnect: Disconnect
+    unavailable: 'Messenger notifications are not set up yet.'
+    flash:
+        disconnected: 'Messenger disconnected.'
+    notify:
+        button: 'Open booking'
+        placed: '🛶 Booking <b>%reference%</b> for %date% received! We will call you soon to confirm the details.'
+        status:
+            new: 'Booking <b>%reference%</b> is active again. We will call you to clarify the details.'
+            confirmed: '✅ Booking <b>%reference%</b> for %date% is confirmed. See you on the water!'
+            completed: 'Thank you for the trip! We hope to see you again.'
+            cancelled: '❌ Booking <b>%reference%</b> has been cancelled. If this is a mistake, just call us.'
+        paid: '💳 Payment of %amount% BYN for booking <b>%reference%</b> received. Thank you!'
+        rescheduled: '🔁 Booking <b>%reference%</b> has been moved to %date%.'
+        expired: '⌛ Booking <b>%reference%</b> was cancelled: the prepayment did not arrive in time. Please pick a new date on the site.'
+        review: '⭐ How was the trip? Leave a review, it only takes a minute.'
+        reminder: '⏰ Reminder: your trip is on %date% (booking <b>%reference%</b>).%weather%'
+    bot:
+        hello: 'Hello! This is the Choven bot. To get notifications, open your booking page on the site and tap "Telegram".'
+        invalid_link: 'The link is outdated or wrong. Please open it again from the booking page on the site.'
+        linked_order: '✅ Done! Notifications about booking %reference% will come here. To stop: /stop'
+        linked_account: '✅ Done! Notifications about all your bookings will come here. To stop: /stop'
+        stopped: 'Notifications are off. You can connect again from the booking page.'
+        help: 'I send booking notifications. To stop: /stop. Questions: call the phone on choven.by.'
+        viber_welcome: 'Hello! This is Choven, kayak trips on the rivers of Belarus. Tap the button below to get booking notifications.'
+        viber_button: 'Get notifications'
+        stopped_viber: 'Notifications are off.'
+        help_viber: 'I send booking notifications. To stop, write "stop".'
+gift:
+    status:
+        pending: 'Awaiting payment'
+        active: Valid
+        used: Used
+        cancelled: Cancelled
+    title: 'Gift certificate for a kayak trip'
+    meta_description: 'Give an adventure: a Choven e-certificate for a kayak trip on the rivers of Belarus. Pay online, get a printable PDF by email right away, valid for a year.'
+    eyebrow: 'The best gift is an experience'
+    subtitle: 'A certificate for any amount: the recipient chooses the route and the date. The printable PDF comes by email right after the payment.'
+    offline: 'Online payment is not available right now. You can buy a certificate by phone: %phone%.'
+    section:
+        certificate: Certificate
+        buyer: Buyer
+    form:
+        amount: 'Amount, BYN'
+        amount_help: 'From %min% to %max% BYN.'
+        recipient: 'For (printed on the certificate)'
+        message: 'Personal message'
+        message_placeholder: 'Happy birthday! May this year be full of adventures'
+        buyer_name: 'Your name'
+        buyer_email: 'Your email'
+        buyer_email_help: 'The PDF certificate will be sent here.'
+    submit: 'Proceed to payment'
+    after_payment: 'The certificate is emailed right after the payment.'
+    preview:
+        label: 'Gift certificate'
+        recipient: 'For the bravest paddler'
+    benefit:
+        1: 'Valid for 12 months for any trip and add-ons'
+        2: 'Can be spent in parts, the balance is kept'
+        3: 'A nice PDF to print or send in a messenger'
+    teaser: 'Give a trip: gift certificate'
+    show:
+        title: 'Certificate %code%'
+        pending: 'Waiting for the payment'
+        pending_text: 'As soon as the payment arrives, the certificate will appear here and be emailed to you. This usually takes a couple of minutes.'
+        heading: 'Your gift certificate'
+        for: 'For: %name%'
+        valid_until: 'Valid until %date%'
+        status: Status
+        balance: Balance
+        how: 'To use the certificate, enter the code in the "Promo code or gift certificate" field when booking.'
+        pdf: 'Download PDF'
+        print: Print
+        book: 'Book a trip'
+    pdf:
+        tagline: 'Kayak trips on the rivers of Belarus'
+        how: 'Enter the code when booking at'
+promo:
+    type:
+        percent: 'Percentage of the price'
+        fixed: 'Amount in BYN'
+blog:
+    title: 'Kayaking blog'
+    meta_description: 'Routes, tips and stories about kayak trips on the rivers of Belarus: where to go, what to bring, how to prepare.'
+    eyebrow: Blog
+    subtitle: 'Routes, tips for beginners and stories from our trips.'
+    empty: 'Articles are coming soon.'
+    minutes: '%count% min read|%count% min read'
+    read: Read
+    all: 'All articles'
+    more: 'Read also'
+faq:
+    title: 'Questions and answers'
+    meta_description: 'Answers to frequent questions about kayak trips: do you need experience, what to bring, can you come with children, what if it rains, how to pay and cancel.'
+    subtitle: 'Everything people usually ask before their first trip.'
+    empty: 'No questions yet.'
+    no_answer: 'Did not find an answer?'
+main:
+    blog:
+        title: 'Fresh from the blog'
+    gift:
+        title: 'Give a kayak trip'
+        text: 'An e-certificate for any amount: the recipient chooses the route and the date.'
+        button: 'Choose a certificate'
+tour:
+    prepayment: '%percent%% prepayment online, the rest on the day of the trip.'
+twofa:
+    title: 'Two-factor authentication'
+    intro: 'Protect your account: besides the password you will need a code from an authenticator app (Google Authenticator, Microsoft Authenticator, 1Password, etc.).'
+    start: 'Turn on'
+    enabled: 'Two-factor authentication is on.'
+    code: 'Code from the app'
+    disable: 'Turn off two-factor authentication'
+    disable_confirm: 'Turn off sign-in protection with a code?'
+    forget_devices: 'Forget trusted browsers'
+    backup:
+        save: 'Save your backup codes, they are shown only once:'
+        hint: 'Each code can be used once instead of the app code, e.g. if you lose your phone.'
+        left: 'Backup codes left: %count%.'
+        regenerate: 'New backup codes'
+    setup:
+        step1: 'Install an authenticator app on your phone.'
+        step2: 'Scan the QR code with the app:'
+        step3: 'Enter the six-digit code from the app:'
+        manual: 'Or enter the key manually:'
+        qr_alt: 'QR code for the authenticator app'
+        confirm: Confirm
+    login:
+        title: 'Confirm sign-in'
+        text: 'Enter the code from your authenticator app.'
+        backup_hint: 'No access to your phone? Enter one of the backup codes.'
+        trust: 'Trust this browser for 30 days'
+        submit: 'Sign in'
+        cancel: 'Cancel and sign out'
+    flash:
+        wrong_code: 'Wrong code. Check the time on your phone and try again.'
+        enabled: 'Two-factor authentication is on.'
+        disabled: 'Two-factor authentication is off.'
+        wrong_password: 'Wrong password.'
+        devices_forgotten: 'All trusted browsers have been forgotten: a code will be required on the next sign-in.'
+        admin_required: 'Turn on two-factor authentication to work in the admin panel.'
+email:
+    order_confirmation:
+        intro_prepayment: 'We have received your booking. You can pay the %amount% prepayment online right away to secure your places.'
+        intro_prepayment_required: 'We have received your booking. To confirm it, pay the %amount% prepayment online within %hours% h, otherwise it will be cancelled automatically.'
+        button_pay: 'Pay and view the booking'
+    payment_received:
+        subject: 'Payment received for booking %reference%'
+        title: '%name%, payment received!'
+        text: 'We have received %amount% for booking %reference%. Thank you!'
+        confirmed: 'Your booking is confirmed. See you on the water!'
+        receipt: 'The bank sends the electronic receipt in a separate email.'
+    order_rescheduled:
+        subject: 'Booking %reference% moved to %date%'
+        title: 'Booking %reference% rescheduled'
+        text: '%name%, your trip has been moved from %old% to %new%.'
+        calendar: 'An updated calendar event is attached.'
+    order_expired:
+        subject: 'Booking %reference% cancelled'
+        title: 'Booking %reference% cancelled'
+        text: '%name%, the prepayment for the booking did not arrive in time, so we released the places. We would be glad if you picked a new date.'
+        button: 'Book again'
+        contact: 'Already paid or need help? Call us: %phone%.'
+    waitlist_joined:
+        subject: 'You are on the waitlist for %date%'
+        title: '%name%, you are on the waitlist'
+        text: 'As soon as places become free on %date% (%days%, %people%), we will email you a booking link.'
+        hint: 'Do not want to wait? Call %phone% and we will find another date or route.'
+    waitlist_available:
+        subject: 'Places are free on %date%'
+        title: '%name%, places are free!'
+        text: 'There are places again on %date% for %people%. Book quickly: places go to whoever books first.'
+        button: 'Book now'
+        hint: 'The form is already filled in with the date and group size.'
+    gift_certificate:
+        subject: 'Your gift certificate for %amount% BYN'
+        title: '%name%, thank you for your purchase!'
+        text: 'Your Choven gift certificate for %amount% is ready.'
+        how: 'The recipient enters the code in the "Promo code or gift certificate" field when booking on the site. The certificate can be spent in parts.'
+        button: 'Open the certificate'
+        pdf: 'The printable PDF certificate is attached.'

@@ -1,0 +1,15 @@
+{# Weather forecast for the days of a trip (list of App\Model\DayForecast). #}
+{% if forecast is not empty %}
+    <div class="forecast" aria-label="{{ 'weather.title'|trans }}">
+        {% for day in forecast %}
+            <div class="forecast-day{{ day.rainy ? ' is-rainy' }}">
+                <div class="text-small text-muted">{{ day.date|format_date(pattern: 'EEE, d MMM', locale: app.request.locale) }}</div>
+                <i class="fa-solid {{ day.icon }}" aria-hidden="true"></i>
+                <div class="forecast-temp">{{ day.temperatureMax }}°<span>/{{ day.temperatureMin }}°</span></div>
+                <div class="text-small">{{ ('weather.kind.' ~ day.kind)|trans }}</div>
+                <div class="text-small text-muted"><i class="fa-solid fa-umbrella"></i> {{ day.precipitationProbability }}% · <i class="fa-solid fa-wind"></i> {{ 'weather.wind'|trans({'%speed%': day.windSpeed}) }}</div>
+            </div>
+        {% endfor %}
+    </div>
+    <p class="text-small text-muted mt-1 mb-0">{{ 'weather.source'|trans }}</p>
+{% endif %}

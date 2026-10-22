@@ -13,6 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
 use libphonenumber\PhoneNumber;
 use libphonenumber\PhoneNumberFormat;
 use libphonenumber\PhoneNumberUtil;
+use Scheb\TwoFactorBundle\Model\BackupCodeInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfiguration;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface;
+use Scheb\TwoFactorBundle\Model\TrustedDeviceInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -22,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Table(name: 'users')]
 #[UniqueEntity(fields: ['email'], message: 'user.email.already_used')]
 #[UniqueEntity(fields: ['phone'], message: 'user.phone.already_used')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TwoFactorInterface, BackupCodeInterface, TrustedDeviceInterface
 {
     public const ROLE_USER = 'ROLE_USER';
     public const ROLE_ADMIN = 'ROLE_ADMIN';
@@ -67,6 +72,21 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $lastLoginAt = null;
+
+    /** Base32 secret of the authenticator app; set while 2FA is being configured or enabled. */
+    #[ORM\Column(length: 64, nullable: true)]
+    private ?string $totpSecret = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $totpEnabled = false;
+
+    /** @var list<string> password hashes of unused backup codes */
+    #[ORM\Column(type: Types::JSON, options: ['default' => '[]'])]
+    private array $backupCodes = [];
+
+    /** Incremented to forget all "trusted" browsers that skip the 2FA code. */
+    #[ORM\Column(options: ['default' => 0])]
+    private int $trustedVersion = 0;
 
     /** @var Collection<int, Order> */
     #[ORM\OneToMany(targetEntity: Order::class, mappedBy: 'user')]
@@ -252,6 +272,104 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getOrders(): Collection
     {
         return $this->orders;
+    }
+
+    public function isTotpAuthenticationEnabled(): bool
+    {
+        return $this->totpEnabled && null !== $this->totpSecret;
+    }
+
+    public function getTotpAuthenticationUsername(): string
+    {
+        return $this->email;
+    }
+
+    public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
+    {
+        return null !== $this->totpSecret ? new TotpConfiguration($this->totpSecret, TotpConfiguration::ALGORITHM_SHA1, 30, 6) : null;
+    }
+
+    public function getTotpSecret(): ?string
+    {
+        return $this->totpSecret;
+    }
+
+    public function setTotpSecret(?string $totpSecret): static
+    {
+        $this->totpSecret = $totpSecret;
+
+        return $this;
+    }
+
+    public function enableTotp(): static
+    {
+        $this->totpEnabled = null !== $this->totpSecret;
+
+        return $this;
+    }
+
+    public function disableTotp(): static
+    {
+        $this->totpEnabled = false;
+        $this->totpSecret = null;
+        $this->backupCodes = [];
+        ++$this->trustedVersion;
+
+        return $this;
+    }
+
+    /**
+     * @param list<string> $hashes password hashes of the codes
+     */
+    public function setBackupCodes(array $hashes): static
+    {
+        $this->backupCodes = $hashes;
+
+        return $this;
+    }
+
+    public function countBackupCodes(): int
+    {
+        return \count($this->backupCodes);
+    }
+
+    public function isBackupCode(string $code): bool
+    {
+        return null !== $this->findBackupCode($code);
+    }
+
+    public function invalidateBackupCode(string $code): void
+    {
+        $index = $this->findBackupCode($code);
+        if (null !== $index) {
+            $codes = $this->backupCodes;
+            array_splice($codes, $index, 1);
+            $this->backupCodes = $codes;
+        }
+    }
+
+    private function findBackupCode(string $code): ?int
+    {
+        $code = preg_replace('/\s+|-/', '', mb_strtolower($code)) ?? '';
+        foreach ($this->backupCodes as $index => $hash) {
+            if ('' !== $code && password_verify($code, $hash)) {
+                return $index;
+            }
+        }
+
+        return null;
+    }
+
+    public function getTrustedTokenVersion(): int
+    {
+        return $this->trustedVersion;
+    }
+
+    public function forgetTrustedDevices(): static
+    {
+        ++$this->trustedVersion;
+
+        return $this;
     }
 
     #[\Deprecated]

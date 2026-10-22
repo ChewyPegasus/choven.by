@@ -1,0 +1,73 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.audit'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.audit'|trans }}</h1>
+    </div>
+    <p class="text-muted">{{ 'admin.audit.hint'|trans }}</p>
+
+    <form method="get" class="filters" data-controller="autosubmit">
+        <select name="type" class="form-select" data-action="autosubmit#submit" aria-label="{{ 'admin.audit.col.object'|trans }}">
+            <option value="">{{ 'admin.audit.all_objects'|trans }}</option>
+            {% for type in types %}
+                <option value="{{ type }}" {{ filter.type == type ? 'selected' }}>{{ type }}</option>
+            {% endfor %}
+        </select>
+        <input type="search" name="id" value="{{ filter.id }}" class="form-control" placeholder="ID" aria-label="ID" style="max-width: 110px">
+        <input type="search" name="user" value="{{ filter.user }}" class="form-control" placeholder="{{ 'admin.audit.col.user'|trans }}" aria-label="{{ 'admin.audit.col.user'|trans }}">
+        <button type="submit" class="btn btn-sm btn-outline">{{ 'admin.common.filter'|trans }}</button>
+    </form>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-solid fa-clock-rotate-left"></i>{{ 'admin.audit.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive audit-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.audit.col.when'|trans }}</th>
+                        <th>{{ 'admin.audit.col.user'|trans }}</th>
+                        <th>{{ 'admin.audit.col.action'|trans }}</th>
+                        <th>{{ 'admin.audit.col.object'|trans }}</th>
+                        <th>{{ 'admin.audit.col.changes'|trans }}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in page.items %}
+                        <tr>
+                            <td data-label="{{ 'admin.audit.col.when'|trans }}" class="nowrap">{{ entry.createdAt|date('d.m.Y H:i:s') }}<div class="text-small text-muted">{{ entry.ip }}</div></td>
+                            <td data-label="{{ 'admin.audit.col.user'|trans }}">{{ entry.userEmail ?? 'admin.audit.system'|trans }}</td>
+                            <td data-label="{{ 'admin.audit.col.action'|trans }}"><span class="badge badge-audit-{{ entry.action }}">{{ ('admin.audit.action.' ~ entry.action)|trans|default(entry.action) }}</span></td>
+                            <td data-label="{{ 'admin.audit.col.object'|trans }}">
+                                {% if entry.entityType %}
+                                    <a href="{{ path('app_admin_audit', {type: entry.entityType, id: entry.entityId}) }}">{{ entry.entityType }} #{{ entry.entityId }}</a>
+                                    {% if entry.label %}<div class="text-small text-muted">{{ entry.label|u.truncate(60, '…') }}</div>{% endif %}
+                                {% endif %}
+                            </td>
+                            <td data-label="{{ 'admin.audit.col.changes'|trans }}">
+                                {% if entry.changes %}
+                                    <ul class="changes">
+                                        {% for field, change in entry.changes %}
+                                            <li>
+                                                <strong>{{ field }}</strong>:
+                                                {% if change is iterable and change|length == 2 %}
+                                                    <del>{{ change[0] is null ? '∅' : (change[0] is same as(true) ? '✓' : (change[0] is same as(false) ? '✗' : change[0])) }}</del>
+                                                    → <ins>{{ change[1] is null ? '∅' : (change[1] is same as(true) ? '✓' : (change[1] is same as(false) ? '✗' : change[1])) }}</ins>
+                                                {% else %}
+                                                    {{ change is null ? '∅' : (change is same as(true) ? '✓' : (change is same as(false) ? '✗' : change)) }}
+                                                {% endif %}
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

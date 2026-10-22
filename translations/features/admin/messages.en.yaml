@@ -1,0 +1,191 @@
+admin:
+    twofa_hint: 'Turn on <a href="%url%">two-factor authentication</a>: without it the admin panel is protected by a password only.'
+    common:
+        filter: Show
+        markdown_help: 'Markdown is supported: **bold**, *italic*, [link](https://…), lists with "- ", headings with "## ".'
+    menu:
+        sales: Sales
+        payments: Payments
+        promo: 'Promo codes'
+        gifts: 'Gift certificates'
+        extras: Add-ons
+        posts: Blog
+        faq: FAQ
+        waitlist: Waitlist
+        audit: 'Change history'
+    orders:
+        price_breakdown: Price
+        rescheduled: 'The customer rescheduled %count% time(s), last on %date%'
+    payments:
+        month: 'Received this month'
+        all: 'All payments'
+        empty: 'No payments yet.'
+        refunded: 'refunded %amount%'
+        refund: Refund
+        refund_confirm: 'Refund the money to the customer? This cannot be undone.'
+        col:
+            date: Date
+            subject: For
+            amount: 'Amount, BYN'
+            status: Status
+            provider: Provider
+        flash:
+            refunded: 'The money has been refunded.'
+            refund_failed: 'The refund failed. See the log for details; you can also refund in the bePaid back office.'
+    promo:
+        new: 'New promo code'
+        hint: 'The code is entered in the booking form. The discount applies to the trip and add-ons.'
+        empty: 'No promo codes yet.'
+        used_times: 'Used %count% time(s).'
+        delete_confirm: 'Delete the promo code? Existing bookings keep their discount.'
+        col:
+            discount: Discount
+            period: Valid
+            used: Used
+            state: State
+        state:
+            active: Valid
+            inactive: 'Not valid'
+        field:
+            code: Code
+            code_help: 'Capital Latin letters and digits, e.g. SUMMER10.'
+            type: 'Discount type'
+            value: 'Discount (% or BYN)'
+            valid_from: 'Valid from'
+            valid_until: 'Valid until'
+            max_uses: 'Maximum uses'
+            max_uses_help: 'Empty means unlimited.'
+            note: 'Note (internal)'
+            active: Enabled
+        flash:
+            created: 'Promo code created.'
+            saved: 'Promo code saved.'
+            deleted: 'Promo code deleted.'
+    extras:
+        new: 'New add-on'
+        hint: 'Add-on services customers can choose when booking: transfer, tent rental, photographer…'
+        empty: 'No add-ons yet.'
+        delete_confirm: 'Delete the add-on? Existing bookings keep it.'
+        field:
+            name: Name
+            description: 'Short description'
+            price: 'Price, BYN'
+            unit: 'How the price is counted'
+            per_day: 'Price per day of the trip'
+            max_quantity: 'Maximum quantity'
+            max_quantity_help: 'For "per item" add-ons.'
+            icon: Icon
+            icon_help: 'Font Awesome icon name, e.g. fa-van-shuttle, fa-campground, fa-camera.'
+            active: 'Offer to customers'
+        flash:
+            created: 'Add-on created.'
+            saved: 'Add-on saved.'
+            deleted: 'Add-on deleted.'
+    posts:
+        new: 'New article'
+        hint: 'Blog articles: routes, tips, stories. Good for search engines.'
+        empty: 'No articles yet.'
+        delete_confirm: 'Delete the article?'
+        state:
+            published: Published
+            scheduled: Scheduled
+            draft: Draft
+        field:
+            title: Title
+            excerpt: Excerpt
+            excerpt_help: 'A couple of sentences for the card and search engines. Empty: the beginning of the article.'
+            body: Text
+            cover: Cover
+            tour: 'Related trip'
+            tour_help: 'A "Book" button is shown under the article.'
+            author: Author
+            published_at: 'Publication date'
+            published_at_help: 'Empty: now. A future date publishes the article at that moment.'
+            published: Publish
+        flash:
+            created: 'Article created.'
+            saved: 'Article saved.'
+            deleted: 'Article deleted.'
+    faq:
+        new: 'New question'
+        hint: 'Questions are shown on the FAQ page, in "All about trips" and (if marked) on the home page.'
+        empty: 'No questions yet.'
+        delete_confirm: 'Delete the question?'
+        home: 'Home page'
+        col:
+            where: 'Shown on'
+        field:
+            question: Question
+            answer: Answer
+            show_on_home: 'Show on the home page'
+            active: 'Show on the site'
+        flash:
+            created: 'Question added.'
+            saved: 'Question saved.'
+            deleted: 'Question deleted.'
+    gifts:
+        new: 'Issue a certificate'
+        search: 'Code, email or name'
+        all: 'All certificates'
+        empty: 'No certificates yet.'
+        resend: 'Send the email again'
+        cancel: Cancel
+        cancel_confirm: 'Cancel the certificate? It can no longer be used for payment.'
+        issue: Issue
+        issue_hint: 'A certificate sold for cash, a prize or a compensation: it is valid right away and the PDF is emailed to the given address.'
+        col:
+            code: Code
+            buyer: Buyer
+            valid: 'Valid until'
+        field:
+            buyer_name: 'Buyer name'
+            buyer_email: 'Email (the certificate is sent here)'
+            send_email: 'Email the certificate'
+        flash:
+            issued: 'Certificate issued.'
+            cancelled: 'Certificate cancelled.'
+            resent: 'The certificate email has been sent.'
+    waitlist:
+        hint: 'People who wanted sold-out dates. When places become free, they are emailed automatically.'
+        empty: 'The waitlist is empty.'
+        waiting: Waiting
+        notified: 'Notified %date%'
+        delete_confirm: 'Remove from the waitlist?'
+        col:
+            contact: Contact
+        flash:
+            deleted: 'Entry removed.'
+    audit:
+        hint: 'Who changed what and when in the admin panel. Kept for a year.'
+        empty: 'No entries.'
+        all_objects: 'All objects'
+        system: System
+        col:
+            when: When
+            user: Who
+            action: Action
+            object: Object
+            changes: Changes
+        action:
+            create: Created
+            update: Changed
+            delete: Deleted
+            login: 'Sign-in'
+            payment_refund: Refund
+            2fa_enabled: '2FA on'
+            2fa_disabled: '2FA off'
+    settings:
+        payments: 'Online payment'
+        payments_off: 'Online payment is not connected: set PAYMENT_PROVIDER=bepaid, BEPAID_SHOP_ID and BEPAID_SECRET_KEY (see README). Until then the site works without prepayment.'
+        policy: 'Rules and security'
+        field:
+            prepayment_percent: 'Prepayment, %'
+            prepayment_percent_help: '0 means no prepayment. Calculated from the booking total.'
+            prepayment_required: 'Confirm bookings only after the prepayment'
+            prepayment_required_help: 'Otherwise paying online is optional.'
+            prepayment_hold_hours: 'Hours to wait for the payment'
+            free_change_days: 'Free cancellation and rescheduling up to N days before the trip'
+            free_change_days_help: 'Later the customer can still cancel, but the prepayment is kept and the date can only be changed by phone.'
+            gift_certificates_enabled: 'Sell gift certificates on the site'
+            admin_2fa_required: 'Require two-factor authentication for administrators'
+            admin_2fa_required_help: 'An administrator without 2FA cannot open the admin panel until they turn it on.'

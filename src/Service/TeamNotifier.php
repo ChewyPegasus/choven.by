@@ -6,7 +6,9 @@ namespace App\Service;
 
 use App\Entity\ContactRequest;
 use App\Entity\Order;
+use App\Entity\Payment;
 use App\Entity\Review;
+use App\Entity\WaitlistEntry;
 use App\Mailer\AppMailer;
 use App\Message\SendTelegramMessage;
 use Psr\Log\LoggerInterface;
@@ -34,14 +36,25 @@ class TeamNotifier
     public function newOrder(Order $order): void
     {
         $this->mailer->sendNewOrderNotification($order);
+        $extras = [];
+        foreach ($order->getExtras() as $extra) {
+            $extras[] = $extra->getLocalizedName('ru').($extra->getUnit()->hasQuantity() ? ' ×'.$extra->getQuantity() : '');
+        }
+
         $this->telegram(\sprintf(
-            "🛶 <b>Новая бронь %s</b>\n%s — %s, %d чел.\n%s · %s\n%s, %s%s\n%s",
+            "🛶 <b>Новая бронь %s</b>\n%s — %s, %d чел.\n%s · %s%s%s\n%s, %s%s\n%s",
             $order->getReference(),
             $order->getStartDate()?->format('d.m.Y'),
             $this->translator->trans('tour.days', ['%count%' => (int) $order->getDurationDays()], 'messages', 'ru'),
             (int) $order->getAmountOfPeople(),
             $order->getRiver()?->trans($this->translator, 'ru'),
             $order->getPackage()?->trans($this->translator, 'ru'),
+            [] !== $extras ? "\n➕ ".$this->escape(implode(', ', $extras)) : '',
+            null !== $order->getEstimatedPrice()
+                ? "\n💰 ".$order->getEstimatedPrice().' BYN'
+                    .($order->getDiscount() > 0 ? ' (промокод '.$order->getPromoCode()?->getCode().': −'.$order->getDiscount().')' : '')
+                    .($order->getGiftAmount() > 0 ? ' (сертификат −'.$order->getGiftAmount().')' : '')
+                : '',
             $this->escape($order->getName()),
             $order->getPhoneFormatted() ?? '',
             null !== $order->getDescription() ? "\n💬 ".$this->escape($order->getDescription()) : '',
@@ -49,16 +62,87 @@ class TeamNotifier
         ));
     }
 
-    public function orderCancelled(Order $order): void
+    /**
+     * @param bool $refundable cancelled in time: the prepayment has to be returned
+     */
+    public function orderCancelled(Order $order, bool $refundable = false): void
     {
-        $this->mailer->sendOrderCancelledNotification($order);
+        $this->mailer->sendOrderCancelledNotification($order, $refundable);
         $this->telegram(\sprintf(
-            "❌ <b>Отмена брони %s</b>\n%s, %d чел. — %s\n%s",
+            "❌ <b>Отмена брони %s</b>\n%s, %d чел. — %s%s\n%s",
+            $order->getReference(),
+            $order->getStartDate()?->format('d.m.Y'),
+            (int) $order->getAmountOfPeople(),
+            $this->escape($order->getName()),
+            $order->getPaidAmount() > 0
+                ? ($refundable ? "\n💸 Вернуть предоплату: ".$order->getPaidAmount().' BYN' : "\n💰 Предоплата ".$order->getPaidAmount().' BYN не возвращается (поздняя отмена)')
+                : '',
+            $this->adminUrl('app_admin_order_edit', ['id' => $order->getId()]),
+        ));
+    }
+
+    public function orderRescheduled(Order $order, ?\DateTimeImmutable $previousStart): void
+    {
+        $this->telegram(\sprintf(
+            "🔁 <b>Перенос брони %s</b>\n%s → %s, %d чел. — %s\n%s",
+            $order->getReference(),
+            $previousStart?->format('d.m.Y') ?? '?',
+            $order->getStartDate()?->format('d.m.Y'),
+            (int) $order->getAmountOfPeople(),
+            $this->escape($order->getName()),
+            $this->adminUrl('app_admin_order_edit', ['id' => $order->getId()]),
+        ));
+    }
+
+    public function orderExpired(Order $order): void
+    {
+        $this->telegram(\sprintf(
+            "⌛ <b>Бронь %s отменена автоматически</b>: не поступила предоплата\n%s, %d чел. — %s\n%s",
             $order->getReference(),
             $order->getStartDate()?->format('d.m.Y'),
             (int) $order->getAmountOfPeople(),
             $this->escape($order->getName()),
             $this->adminUrl('app_admin_order_edit', ['id' => $order->getId()]),
+        ));
+    }
+
+    public function paymentReceived(Payment $payment): void
+    {
+        $order = $payment->getOrder();
+        $gift = $payment->getGiftCertificate();
+
+        $this->telegram(match (true) {
+            null !== $order => \sprintf(
+                "💳 <b>Оплата %d BYN</b> по брони %s (%s, %s)%s\n%s",
+                $payment->getAmount(),
+                $order->getReference(),
+                $order->getStartDate()?->format('d.m.Y'),
+                $this->escape($order->getName()),
+                $payment->isTest() ? ' — тестовый платёж' : '',
+                $this->adminUrl('app_admin_order_edit', ['id' => $order->getId()]),
+            ),
+            null !== $gift => \sprintf(
+                "🎁 <b>Куплен сертификат на %d BYN</b>: %s (%s)%s\n%s",
+                $gift->getAmount(),
+                $gift->getCode(),
+                $this->escape($gift->getBuyerName()),
+                $payment->isTest() ? ' — тестовый платёж' : '',
+                $this->adminUrl('app_admin_gift_certificates'),
+            ),
+            default => \sprintf('💳 Оплата %d BYN', $payment->getAmount()),
+        });
+    }
+
+    public function waitlistJoined(WaitlistEntry $entry): void
+    {
+        $this->telegram(\sprintf(
+            "⏳ <b>Лист ожидания</b>: %s, %s, %d чел. — %s %s\n%s",
+            $entry->getStartDate()?->format('d.m.Y'),
+            $this->translator->trans('tour.days', ['%count%' => $entry->getDurationDays()], 'messages', 'ru'),
+            $entry->getPeople(),
+            $this->escape($entry->getName()),
+            $entry->getPhoneFormatted() ?? $entry->getEmail(),
+            $this->adminUrl('app_admin_waitlist'),
         ));
     }
 

@@ -3,6 +3,13 @@
 {% block content %}
     <h1 style="margin:0 0 12px;font-size:20px;color:#1b2a3a;">Клиент отменил бронь {{ order.reference }}</h1>
     <p>Бронь отменена клиентом {{ order.cancelledAt ? order.cancelledAt|date('d.m.Y H:i') }}. Места на эти даты освободились.</p>
+    {% if order.paidAmount > 0 %}
+        {% if refundable %}
+            <p style="padding:12px 14px;background:#fff6e5;border-radius:8px;color:#b45309;"><strong>Нужно вернуть предоплату {{ order.paidAmount }} BYN</strong>: клиент отменил вовремя. Кнопка возврата — на странице брони в админке.</p>
+        {% else %}
+            <p style="padding:12px 14px;background:#f5f8fb;border-radius:8px;">Предоплата {{ order.paidAmount }} BYN по правилам не возвращается: поздняя отмена.</p>
+        {% endif %}
+    {% endif %}
     {% include 'emails/_order_details.html.twig' with {show_contacts: true, email_locale: 'ru'} %}
     {% include 'emails/_button.html.twig' with {href: admin_url, label: 'Открыть в админке', color: '#1b2a3a'} %}
 {% endblock %}

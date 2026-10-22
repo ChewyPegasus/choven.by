@@ -1,0 +1,71 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.gifts'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.gifts'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_gift_certificate_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.gifts.new'|trans }}</a>
+    </div>
+
+    <form method="get" class="filters" data-controller="autosubmit">
+        <input type="search" name="q" value="{{ q }}" class="form-control" placeholder="{{ 'admin.gifts.search'|trans }}" aria-label="{{ 'admin.gifts.search'|trans }}">
+        <select name="status" class="form-select" data-action="autosubmit#submit" aria-label="{{ 'gift.show.status'|trans }}">
+            <option value="">{{ 'admin.gifts.all'|trans }}</option>
+            {% for case in enum_cases('App\\Enum\\GiftCertificateStatus') %}
+                <option value="{{ case.value }}" {{ status == case ? 'selected' }}>{{ case|trans }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="btn btn-sm btn-outline">{{ 'admin.common.filter'|trans }}</button>
+    </form>
+
+    {% if page.items is empty %}
+        <div class="empty"><i class="fa-solid fa-gift"></i>{{ 'admin.gifts.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th>{{ 'admin.gifts.col.code'|trans }}</th>
+                        <th class="num">{{ 'gift.form.amount'|trans }}</th>
+                        <th class="num">{{ 'gift.show.balance'|trans }}</th>
+                        <th>{{ 'admin.gifts.col.buyer'|trans }}</th>
+                        <th>{{ 'gift.show.status'|trans }}</th>
+                        <th>{{ 'admin.gifts.col.valid'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for gift in page.items %}
+                        <tr>
+                            <td data-label="{{ 'admin.gifts.col.code'|trans }}"><strong class="mono">{{ gift.code }}</strong>{% if gift.recipientName %}<div class="text-small text-muted">→ {{ gift.recipientName }}</div>{% endif %}</td>
+                            <td data-label="{{ 'gift.form.amount'|trans }}" class="num">{{ gift.amount|byn }}</td>
+                            <td data-label="{{ 'gift.show.balance'|trans }}" class="num">{{ gift.balance|byn }}</td>
+                            <td data-label="{{ 'admin.gifts.col.buyer'|trans }}">{{ gift.buyerName }}<div class="text-small text-muted">{{ gift.buyerEmail }}</div></td>
+                            <td data-label="{{ 'gift.show.status'|trans }}"><span class="badge badge-status-{{ gift.status.value }}">{{ gift.status|trans }}</span></td>
+                            <td data-label="{{ 'admin.gifts.col.valid'|trans }}">{{ gift.expiresAt|date('d.m.Y') }}</td>
+                            <td>
+                                <div class="table-actions">
+                                    {% if gift.status.value != 'pending' %}
+                                        <a class="btn btn-sm btn-ghost" href="{{ path('app_gift_show', {token: gift.token}) }}" target="_blank" rel="noopener" title="{{ 'admin.common.view_on_site'|trans }}"><i class="fa-solid fa-eye"></i></a>
+                                        <form method="post" action="{{ path('app_admin_gift_certificate_resend', {id: gift.id}) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('resend-gift-' ~ gift.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-ghost" title="{{ 'admin.gifts.resend'|trans }}"><i class="fa-solid fa-envelope"></i></button>
+                                        </form>
+                                    {% endif %}
+                                    {% if gift.status.value in ['active', 'pending'] %}
+                                        <form method="post" action="{{ path('app_admin_gift_certificate_cancel', {id: gift.id}) }}" data-turbo-confirm="{{ 'admin.gifts.cancel_confirm'|trans }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('cancel-gift-' ~ gift.id) }}">
+                                            <button type="submit" class="btn btn-sm btn-ghost text-danger" title="{{ 'admin.gifts.cancel'|trans }}"><i class="fa-solid fa-ban"></i></button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% include '_partials/pagination.html.twig' with {page: page} %}
+    {% endif %}
+{% endblock %}

@@ -11,3 +11,4 @@ framework:
             - submit
             - authenticate
             - logout
+            - two_factor

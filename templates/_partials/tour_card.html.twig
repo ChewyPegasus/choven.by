@@ -1,8 +1,8 @@
-{% set image = image_url(tour.image) %}
+{% set image = picture(tour.image, '', {sizes: '(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 380px'}) %}
 <article class="tour-card">
     <a class="tour-media" href="{{ path('app_tour_show', {slug: tour.slug}) }}" tabindex="-1" aria-hidden="true">
         {% if image %}
-            <img src="{{ image }}" alt="" loading="lazy" decoding="async" width="640" height="400">
+            {{ image }}
         {% else %}
             <div class="img-placeholder"><i class="fa-solid fa-water"></i></div>
         {% endif %}

@@ -9,6 +9,8 @@ use App\Enum\Package;
 use App\Enum\River;
 use App\Repository\OrderRepository;
 use App\Validator\PhoneNumber as PhoneNumberConstraint;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use libphonenumber\PhoneNumber;
@@ -102,7 +104,10 @@ class Order
     #[ORM\Column(length: 20, enumType: OrderStatus::class, options: ['default' => 'new'])]
     private OrderStatus $status = OrderStatus::NEW;
 
-    /** Rough price in BYN calculated at booking time from the tour price; the final price is agreed by phone. */
+    /**
+     * Total in BYN calculated at booking time: trip + add-ons − promo discount − gift certificate.
+     * The final price is agreed by phone; administrators may correct it.
+     */
     #[ORM\Column(nullable: true)]
     private ?int $estimatedPrice = null;
 
@@ -122,12 +127,61 @@ class Order
     #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
     private ?\DateTimeImmutable $reminderSentAt = null;
 
+    /** Price of the trip itself (tour price × people) before add-ons and discounts. */
+    #[ORM\Column(nullable: true)]
+    private ?int $basePrice = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $extrasPrice = 0;
+
+    #[ORM\ManyToOne(targetEntity: PromoCode::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?PromoCode $promoCode = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $discount = 0;
+
+    #[ORM\ManyToOne(targetEntity: GiftCertificate::class)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?GiftCertificate $giftCertificate = null;
+
+    /** Part of the price covered by the gift certificate. */
+    #[ORM\Column(options: ['default' => 0])]
+    private int $giftAmount = 0;
+
+    /** Online prepayment asked for this booking; null when no prepayment is needed. */
+    #[ORM\Column(nullable: true)]
+    private ?int $depositAmount = null;
+
+    #[ORM\Column(options: ['default' => 0])]
+    private int $paidAmount = 0;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $paidAt = null;
+
+    #[ORM\Column(type: Types::SMALLINT, options: ['default' => 0])]
+    private int $rescheduleCount = 0;
+
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $rescheduledAt = null;
+
+    /** @var Collection<int, OrderExtra> */
+    #[ORM\OneToMany(targetEntity: OrderExtra::class, mappedBy: 'order', cascade: ['persist', 'remove'], orphanRemoval: true)]
+    private Collection $extras;
+
+    /** @var Collection<int, Payment> */
+    #[ORM\OneToMany(targetEntity: Payment::class, mappedBy: 'order')]
+    #[ORM\OrderBy(['createdAt' => 'ASC'])]
+    private Collection $payments;
+
     public function __construct()
     {
         $this->reference = self::generateReference();
         $this->accessToken = bin2hex(random_bytes(32));
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = $this->createdAt;
+        $this->extras = new ArrayCollection();
+        $this->payments = new ArrayCollection();
     }
 
     /**
@@ -418,5 +472,188 @@ class Order
         $this->reminderSentAt = new \DateTimeImmutable();
 
         return $this;
+    }
+
+    /**
+     * Whole days from $today to the start of the trip (negative when it has started).
+     */
+    public function getDaysUntilStart(\DateTimeImmutable $today): int
+    {
+        if (null === $this->startDate) {
+            return 0;
+        }
+
+        $diff = $today->setTime(0, 0)->diff($this->startDate);
+
+        return (int) $diff->days * ($diff->invert ? -1 : 1);
+    }
+
+    public function reschedule(\DateTimeImmutable $startDate): static
+    {
+        $this->setStartDate($startDate);
+        $this->reminderSentAt = null;
+        $this->rescheduledAt = new \DateTimeImmutable();
+        ++$this->rescheduleCount;
+
+        return $this;
+    }
+
+    public function getRescheduleCount(): int
+    {
+        return $this->rescheduleCount;
+    }
+
+    public function getRescheduledAt(): ?\DateTimeImmutable
+    {
+        return $this->rescheduledAt;
+    }
+
+    public function getBasePrice(): ?int
+    {
+        return $this->basePrice;
+    }
+
+    public function setBasePrice(?int $basePrice): static
+    {
+        $this->basePrice = $basePrice;
+
+        return $this;
+    }
+
+    public function getExtrasPrice(): int
+    {
+        return $this->extrasPrice;
+    }
+
+    public function setExtrasPrice(int $extrasPrice): static
+    {
+        $this->extrasPrice = $extrasPrice;
+
+        return $this;
+    }
+
+    public function getPromoCode(): ?PromoCode
+    {
+        return $this->promoCode;
+    }
+
+    public function setPromoCode(?PromoCode $promoCode): static
+    {
+        $this->promoCode = $promoCode;
+
+        return $this;
+    }
+
+    public function getDiscount(): int
+    {
+        return $this->discount;
+    }
+
+    public function setDiscount(int $discount): static
+    {
+        $this->discount = $discount;
+
+        return $this;
+    }
+
+    public function getGiftCertificate(): ?GiftCertificate
+    {
+        return $this->giftCertificate;
+    }
+
+    public function setGiftCertificate(?GiftCertificate $giftCertificate): static
+    {
+        $this->giftCertificate = $giftCertificate;
+
+        return $this;
+    }
+
+    public function getGiftAmount(): int
+    {
+        return $this->giftAmount;
+    }
+
+    public function setGiftAmount(int $giftAmount): static
+    {
+        $this->giftAmount = $giftAmount;
+
+        return $this;
+    }
+
+    public function getDepositAmount(): ?int
+    {
+        return $this->depositAmount;
+    }
+
+    public function setDepositAmount(?int $depositAmount): static
+    {
+        $this->depositAmount = $depositAmount > 0 ? $depositAmount : null;
+
+        return $this;
+    }
+
+    public function getPaidAmount(): int
+    {
+        return $this->paidAmount;
+    }
+
+    public function getPaidAt(): ?\DateTimeImmutable
+    {
+        return $this->paidAt;
+    }
+
+    public function addPaid(int $amount): static
+    {
+        $this->paidAmount = max(0, $this->paidAmount + $amount);
+        if ($amount > 0) {
+            $this->paidAt = new \DateTimeImmutable();
+        }
+
+        return $this;
+    }
+
+    /**
+     * Prepayment that still has to be paid online.
+     */
+    public function getDepositDue(): int
+    {
+        return null === $this->depositAmount ? 0 : max(0, $this->depositAmount - $this->paidAmount);
+    }
+
+    public function isDepositPaid(): bool
+    {
+        return null !== $this->depositAmount && $this->paidAmount >= $this->depositAmount;
+    }
+
+    /**
+     * @return Collection<int, OrderExtra>
+     */
+    public function getExtras(): Collection
+    {
+        return $this->extras;
+    }
+
+    public function addExtra(OrderExtra $extra): static
+    {
+        if (!$this->extras->contains($extra)) {
+            $this->extras->add($extra);
+        }
+
+        return $this;
+    }
+
+    public function clearExtras(): static
+    {
+        $this->extras->clear();
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Payment>
+     */
+    public function getPayments(): Collection
+    {
+        return $this->payments;
     }
 }

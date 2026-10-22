@@ -41,6 +41,15 @@ framework:
             policy: sliding_window
             limit: 3
             interval: '1 hour'
+        # Checking promo / gift codes from the booking form (stops guessing codes).
+        promo:
+            policy: sliding_window
+            limit: 20
+            interval: '10 minutes'
+        gift:
+            policy: sliding_window
+            limit: 5
+            interval: '1 hour'
 
 when@test:
     services:

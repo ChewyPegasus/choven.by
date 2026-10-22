@@ -2,5 +2,6 @@
 <nav class="profile-nav" aria-label="{{ 'profile.nav'|trans }}">
     <a class="btn btn-sm {{ current_route == 'app_profile_orders' ? '' : 'btn-ghost' }}" href="{{ path('app_profile_orders') }}"><i class="fa-solid fa-calendar-check"></i> {{ 'nav.my_bookings'|trans }}</a>
     <a class="btn btn-sm {{ current_route == 'app_profile_settings' ? '' : 'btn-ghost' }}" href="{{ path('app_profile_settings') }}"><i class="fa-solid fa-gear"></i> {{ 'nav.settings'|trans }}</a>
+    <a class="btn btn-sm {{ current_route == 'app_profile_security' ? '' : 'btn-ghost' }}" href="{{ path('app_profile_security') }}"><i class="fa-solid fa-shield-halved"></i> {{ 'nav.security'|trans }}</a>
     <a class="btn btn-sm btn-ghost" href="{{ path('app_order_new') }}"><i class="fa-solid fa-plus"></i> {{ 'profile.new_booking'|trans }}</a>
 </nav>

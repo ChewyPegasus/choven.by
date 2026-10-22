@@ -4,11 +4,7 @@
 {% block meta_description %}{{ 'info.meta_description'|trans }}{% endblock %}
 
 {% block structured_data %}
-    {% set faq = [] %}
-    {% for i in 1..7 %}
-        {% set faq = faq|merge([{'@type': 'Question', name: ('info.faq.' ~ i ~ '.question')|trans, acceptedAnswer: {'@type': 'Answer', text: ('info.faq.' ~ i ~ '.answer')|trans}}]) %}
-    {% endfor %}
-    <script type="application/ld+json">{{ {'@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faq}|json_encode(constant('JSON_UNESCAPED_UNICODE') b-or constant('JSON_UNESCAPED_SLASHES') b-or constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
+    {% include 'faq/_structured_data.html.twig' with {items: faq} %}
 {% endblock %}
 
 {% block body %}
@@ -94,26 +90,12 @@
             <div class="section-header">
                 <h2 class="section-title">{{ 'info.faq.title'|trans }}</h2>
             </div>
-            <div class="accordion">
-                {% for i in 1..7 %}
-                    <details {{ loop.first ? 'open' }}>
-                        <summary>{{ ('info.faq.' ~ i ~ '.question')|trans }}</summary>
-                        <div class="accordion-body">
-                            <p>{{ ('info.faq.' ~ i ~ '.answer')|trans }}</p>
-                            {% if i == 5 %}
-                                <ul class="check-list">
-                                    {% for j in 1..5 %}
-                                        <li>{{ ('info.faq.5.list.' ~ j)|trans }}</li>
-                                    {% endfor %}
-                                </ul>
-                                <a class="btn btn-outline btn-sm" href="{{ asset('files/' ~ ('files.checklist'|trans) ~ '.docx') }}" download>
-                                    <i class="fa-solid fa-download"></i> {{ 'info.faq.5.download'|trans }}
-                                </a>
-                            {% endif %}
-                        </div>
-                    </details>
-                {% endfor %}
-            </div>
+            {% include 'faq/_list.html.twig' with {items: faq, open_first: true} %}
+            <p class="text-center mt-3">
+                <a class="btn btn-outline btn-sm" href="{{ asset('files/' ~ ('files.checklist'|trans) ~ '.docx') }}" download>
+                    <i class="fa-solid fa-download"></i> {{ 'info.faq.5.download'|trans }}
+                </a>
+            </p>
         </div>
     </section>
 {% endblock %}

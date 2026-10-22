@@ -1,0 +1,41 @@
+{% extends 'admin/layout.html.twig' %}
+
+{% block title %}{{ 'admin.menu.faq'|trans }}{% endblock %}
+
+{% block admin_body %}
+    <div class="admin-head">
+        <h1>{{ 'admin.menu.faq'|trans }}</h1>
+        <a class="btn btn-sm" href="{{ path('app_admin_faq_new') }}"><i class="fa-solid fa-plus"></i> {{ 'admin.faq.new'|trans }}</a>
+    </div>
+    <p class="text-muted">{{ 'admin.faq.hint'|trans }}</p>
+
+    {% if items is empty %}
+        <div class="empty"><i class="fa-regular fa-circle-question"></i>{{ 'admin.faq.empty'|trans }}</div>
+    {% else %}
+        <div class="table-wrap">
+            <table class="table table-responsive">
+                <thead>
+                    <tr>
+                        <th class="num">{{ 'admin.common.position'|trans }}</th>
+                        <th>{{ 'admin.faq.field.question'|trans }}</th>
+                        <th>{{ 'admin.faq.col.where'|trans }}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            <td data-label="{{ 'admin.common.position'|trans }}" class="num">{{ item.position }}</td>
+                            <td data-label="{{ 'admin.faq.field.question'|trans }}"><a href="{{ path('app_admin_faq_edit', {id: item.id}) }}"><strong>{{ item.question|localized }}</strong></a></td>
+                            <td data-label="{{ 'admin.faq.col.where'|trans }}">
+                                {% if not item.active %}<span class="badge">{{ 'admin.tours.hidden'|trans }}</span>
+                                {% else %}<span class="badge badge-success">FAQ</span>{% if item.showOnHome %} <span class="badge badge-primary">{{ 'admin.faq.home'|trans }}</span>{% endif %}{% endif %}
+                            </td>
+                            <td><div class="table-actions"><a class="btn btn-sm btn-outline" href="{{ path('app_admin_faq_edit', {id: item.id}) }}">{{ 'admin.common.edit'|trans }}</a></div></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}
