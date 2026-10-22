@@ -4,6 +4,10 @@ framework:
         # Filesystem cache locally; Redis in production (shared by all PHP containers).
         app: cache.adapter.filesystem
         system: cache.adapter.system
+        pools:
+            # Worker heartbeat read by /health/worker (shared between the web and the worker processes).
+            monitoring.cache:
+                adapter: cache.app
 
 when@prod:
     framework:
@@ -21,3 +25,7 @@ when@test:
         cache:
             # Tests roll back the database after each test; a persistent cache would leak state between them.
             app: cache.adapter.array
+            pools:
+                # Must survive between requests of a test (the array cache is reset); tests clear it.
+                monitoring.cache:
+                    adapter: cache.adapter.filesystem

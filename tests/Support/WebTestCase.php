@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
+use App\Service\SiteSettings;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as BaseWebTestCase;
@@ -19,6 +20,7 @@ abstract class WebTestCase extends BaseWebTestCase
 
     protected function setUp(): void
     {
+        RecordingHttpClient::reset();
         $this->client = static::createClient();
         // Modern browsers send this header; the stateless CSRF protection relies on it (or on the JS double-submit cookie).
         $this->client->disableReboot();
@@ -58,6 +60,36 @@ abstract class WebTestCase extends BaseWebTestCase
         $form = $crawler->selectButton($button)->form();
 
         return $this->client->submit($form, $values);
+    }
+
+    /**
+     * Changes site settings for the current test (stored in the database, rolled back after the test).
+     *
+     * @param array<string, mixed> $values
+     */
+    protected function settings(array $values): void
+    {
+        $settings = static::getContainer()->get(SiteSettings::class);
+        $settings->save($values + $settings->all());
+    }
+
+    /**
+     * @return list<Email>
+     */
+    protected function emails(): array
+    {
+        return array_values(array_filter(self::getMailerMessages(), static fn ($m): bool => $m instanceof Email));
+    }
+
+    protected function emailWithSubject(string $text): Email
+    {
+        foreach ($this->emails() as $email) {
+            if (str_contains((string) $email->getSubject(), $text)) {
+                return $email;
+            }
+        }
+
+        self::fail(\sprintf('No email with "%s" in the subject. Subjects: %s', $text, implode(' | ', array_map(static fn (Email $e): string => (string) $e->getSubject(), $this->emails()))));
     }
 
     protected function email(int $index = 0): Email

@@ -51,6 +51,14 @@ framework:
             limit: 5
             interval: '1 hour'
 
+when@prod:
+    framework:
+        # Full-page cache for anonymous visitors of public pages (App\HttpCache\AppHttpCache).
+        http_cache:
+            enabled: true
+            trace_level: short
+            stale_if_error: 600
+
 when@test:
     services:
         App\Tests\Support\RecordingHttpClient: ~

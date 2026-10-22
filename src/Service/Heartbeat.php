@@ -18,22 +18,22 @@ class Heartbeat
     private const KEY = 'app.worker_heartbeat';
 
     public function __construct(
-        private readonly CacheItemPoolInterface $cacheApp,
+        private readonly CacheItemPoolInterface $monitoringCache,
         private readonly ClockInterface $clock,
     ) {
     }
 
     public function __invoke(RecordHeartbeat $message): void
     {
-        $item = $this->cacheApp->getItem(self::KEY);
+        $item = $this->monitoringCache->getItem(self::KEY);
         $item->set($this->clock->now()->getTimestamp());
         $item->expiresAfter(86400);
-        $this->cacheApp->save($item);
+        $this->monitoringCache->save($item);
     }
 
     public function getLastBeat(): ?\DateTimeImmutable
     {
-        $item = $this->cacheApp->getItem(self::KEY);
+        $item = $this->monitoringCache->getItem(self::KEY);
 
         return $item->isHit() && \is_int($item->get()) ? (new \DateTimeImmutable())->setTimestamp($item->get()) : null;
     }

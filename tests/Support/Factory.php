@@ -4,10 +4,16 @@ declare(strict_types=1);
 
 namespace App\Tests\Support;
 
+use App\Entity\Extra;
+use App\Entity\GiftCertificate;
 use App\Entity\Order;
+use App\Entity\PromoCode;
+use App\Entity\Tour;
 use App\Entity\User;
+use App\Enum\ExtraUnit;
 use App\Enum\OrderStatus;
 use App\Enum\Package;
+use App\Enum\PromoType;
 use App\Enum\River;
 use Doctrine\ORM\EntityManagerInterface;
 use libphonenumber\PhoneNumberUtil;
@@ -73,5 +79,46 @@ final class Factory
         $this->em->flush();
 
         return $order;
+    }
+
+    public function extra(string $name, int $price, ExtraUnit $unit, bool $perDay = false): Extra
+    {
+        $extra = (new Extra())->setName(['ru' => $name])->setPrice($price)->setUnit($unit)->setPerDay($perDay);
+        $this->em->persist($extra);
+        $this->em->flush();
+
+        return $extra;
+    }
+
+    public function promo(string $code = 'SUMMER10', int $value = 10, PromoType $type = PromoType::PERCENT, ?int $maxUses = null): PromoCode
+    {
+        $promo = (new PromoCode())->setCode($code)->setType($type)->setValue($value)->setMaxUses($maxUses);
+        $this->em->persist($promo);
+        $this->em->flush();
+
+        return $promo;
+    }
+
+    public function gift(int $amount = 100): GiftCertificate
+    {
+        $gift = (new GiftCertificate())
+            ->setAmount($amount)
+            ->setBuyerName('Ольга')
+            ->setBuyerEmail('olga@example.com')
+            ->activate();
+        $this->em->persist($gift);
+        $this->em->flush();
+
+        return $gift;
+    }
+
+    public function tour(string $slug = 'isloch-overnight'): Tour
+    {
+        $tour = $this->em->getRepository(Tour::class)->findOneBy(['slug' => $slug]);
+        if (!$tour instanceof Tour) {
+            throw new \RuntimeException(\sprintf('Tour "%s" is created by the migrations.', $slug));
+        }
+
+        return $tour;
     }
 }

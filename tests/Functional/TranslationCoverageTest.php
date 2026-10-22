@@ -4,9 +4,14 @@ declare(strict_types=1);
 
 namespace App\Tests\Functional;
 
+use App\Entity\Payment;
+use App\Entity\Post;
 use App\Entity\Review;
+use App\Entity\WaitlistEntry;
+use App\Enum\ExtraUnit;
 use App\Enum\OrderStatus;
 use App\Enum\ReviewStatus;
+use App\Service\SiteSettings;
 use App\Tests\Support\WebTestCase;
 
 /**
@@ -15,24 +20,39 @@ use App\Tests\Support\WebTestCase;
  */
 final class TranslationCoverageTest extends WebTestCase
 {
-    private const KEY_PATTERN = '/(?<![\w\/.#@-])(?:a11y|about|admin|booking|contact|email|error|footer|form|ics|info|legal|locale|login|main|map|nav|order|package|pagination|phone|profile|registration|reset_password|review|river|route|seo|tour|user|verification|flash)\.[a-z0-9_]+(?:\.[a-z0-9_]+)*(?![\w\/-])/';
+    private const KEY_PATTERN = '/(?<![\w\/.#@-])(?:a11y|about|admin|blog|booking|contact|email|error|extra|faq|footer|form|gift|ics|info|legal|locale|login|main|map|messenger|nav|order|package|pagination|payment|phone|policy|price|profile|promo|registration|reschedule|reset_password|review|river|route|seo|tour|twofa|user|verification|waitlist|weather|flash)\.[a-z0-9_]+(?:\.[a-z0-9_]+)*(?![\w\/-])/';
 
     public function testNoUntranslatedKeysOnPublicAndAdminPages(): void
     {
+        $this->settings([SiteSettings::PREPAYMENT_PERCENT => 30]);
         $admin = $this->factory->admin();
-        $order = $this->factory->order('+4 days', days: 2, status: OrderStatus::CONFIRMED, user: $admin);
+        $this->factory->extra('Трансфер', 25, ExtraUnit::PER_PERSON);
+        $this->factory->extra('Палатка', 15, ExtraUnit::PER_ITEM, perDay: true);
+        $this->factory->promo();
+        $gift = $this->factory->gift();
+        $order = $this->factory->order('+8 days', days: 2, status: OrderStatus::CONFIRMED, user: $admin);
+        $order->setDepositAmount(100);
         $past = $this->factory->order('-4 days', status: OrderStatus::COMPLETED, user: $admin);
         $review = (new Review())->setAuthorName('Ольга')->setRating(4)->setText('Очень понравилось, приедем ещё!')->setStatus(ReviewStatus::APPROVED);
-        $this->em->persist($review);
+        $post = (new Post())->setSlug('first-trip')->setTitle(['ru' => 'Первый сплав'])->setBody(['ru' => "## Советы\n\nТекст"])->setIsPublished(true);
+        $payment = (new Payment('demo', 100))->setOrder($order);
+        $waiting = (new WaitlistEntry())->setStartDate(new \DateTimeImmutable('+9 days'))->setName('Иван')->setEmail('ivan@example.com');
+        foreach ([$review, $post, $payment, $waiting] as $entity) {
+            $this->em->persist($entity);
+        }
         $this->em->flush();
 
         $public = ['/', '/info', '/about', '/booking', '/booking?tour=isloch-overnight', '/tours/isloch-overnight', '/contact', '/privacy', '/terms',
-            '/login', '/register', '/register/check-email', '/reset-password', '/verify/resend',
-            '/booking/'.$order->getAccessToken(), '/booking/'.$past->getAccessToken(), '/booking/'.$past->getAccessToken().'/review'];
-        $private = ['/profile/orders', '/profile/settings', '/admin', '/admin/orders', '/admin/orders/new', '/admin/orders/'.$order->getId().'/edit',
+            '/login', '/register', '/register/check-email', '/reset-password', '/verify/resend', '/faq', '/blog', '/blog/first-trip', '/gift',
+            '/gift/'.$gift->getToken(), '/payment/demo/'.$payment->getPublicId(),
+            '/booking/'.$order->getAccessToken(), '/booking/'.$order->getAccessToken().'/reschedule',
+            '/booking/'.$past->getAccessToken(), '/booking/'.$past->getAccessToken().'/review'];
+        $private = ['/profile/orders', '/profile/settings', '/profile/security', '/admin', '/admin/orders', '/admin/orders/new', '/admin/orders/'.$order->getId().'/edit',
             '/admin/orders/calendar', '/admin/orders/day/'.$order->getStartDate()?->format('Y-m-d'), '/admin/users', '/admin/users/new', '/admin/users/'.$admin->getId().'/edit', '/admin/tours', '/admin/tours/new',
             '/admin/tours/1/edit', '/admin/routes', '/admin/routes/new', '/admin/routes/1/edit', '/admin/reviews?status=all', '/admin/requests',
-            '/admin/settings', '/admin/emails', '/admin/logs'];
+            '/admin/settings', '/admin/emails', '/admin/logs', '/admin/payments', '/admin/promo-codes', '/admin/promo-codes/new',
+            '/admin/gift-certificates', '/admin/gift-certificates/new', '/admin/extras', '/admin/extras/new', '/admin/posts', '/admin/posts/new',
+            '/admin/posts/'.$post->getId().'/edit', '/admin/faq', '/admin/faq/new', '/admin/faq/1/edit', '/admin/waitlist', '/admin/audit'];
 
         $problems = [];
         foreach (['ru', 'be', 'en'] as $locale) {
