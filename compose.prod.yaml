@@ -29,6 +29,20 @@ x-php-env: &php-env
     BOOKING_DAILY_CAPACITY: ${BOOKING_DAILY_CAPACITY:-60}
     TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN:-}
     TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
+    TELEGRAM_BOT_USERNAME: ${TELEGRAM_BOT_USERNAME:-}
+    TELEGRAM_WEBHOOK_SECRET: ${TELEGRAM_WEBHOOK_SECRET:-}
+    VIBER_AUTH_TOKEN: ${VIBER_AUTH_TOKEN:-}
+    VIBER_BOT_URI: ${VIBER_BOT_URI:-}
+    VIBER_BOT_NAME: ${VIBER_BOT_NAME:-Choven.by}
+    PAYMENT_PROVIDER: ${PAYMENT_PROVIDER:-none}
+    BEPAID_SHOP_ID: ${BEPAID_SHOP_ID:-}
+    BEPAID_SECRET_KEY: ${BEPAID_SECRET_KEY:-}
+    BEPAID_TEST: ${BEPAID_TEST:-false}
+    BEPAID_ERIP_SERVICE_NO: ${BEPAID_ERIP_SERVICE_NO:-}
+    SENTRY_DSN: ${SENTRY_DSN:-}
+    SENTRY_ENVIRONMENT: ${SENTRY_ENVIRONMENT:-production}
+    SENTRY_TRACES_SAMPLE_RATE: ${SENTRY_TRACES_SAMPLE_RATE:-0}
+    APP_RELEASE: ${IMAGE_TAG:-latest}
 
 services:
     app:
@@ -66,6 +80,8 @@ services:
         healthcheck:
             disable: true
         volumes:
+            # The worker builds the AVIF/WebP variants of uploaded photos.
+            - uploads:/app/public/uploads
             - logs:/app/var/log
         depends_on:
             app:

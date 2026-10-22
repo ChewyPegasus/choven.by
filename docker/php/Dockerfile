@@ -104,6 +104,8 @@ RUN set -eux; \
     php bin/console asset-map:compile; \
     # Fail the build if precompression silently did not happen.
     for ext in br zst gz; do ls public/assets/styles/*.css.$ext > /dev/null; done; \
+    # Responsive AVIF/WebP variants of the photos in assets/images (public/media); uploads get theirs at runtime.
+    php bin/console app:images:optimize --no-interaction; \
     chmod +x bin/console; \
     chown -R www-data:www-data var public/uploads public/media /data/caddy /config/caddy; \
     sync

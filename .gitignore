@@ -9,6 +9,7 @@
 /vendor/
 /public/bundles/
 /public/assets/
+/public/media/
 /assets/vendor/
 /public/uploads/*
 !/public/uploads/.gitkeep
@@ -26,7 +27,8 @@
 /compose.override.yml
 /docker/data/
 
-# IDEs and OS files
+# IDEs, AI assistants and OS files
+/.claude/
 .idea/
 .vscode/
 *.sublime-project

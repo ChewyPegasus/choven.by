@@ -22,7 +22,7 @@ final class PublicPageCacheSubscriber implements EventSubscriberInterface
     /** Pages that look the same for every anonymous visitor. */
     private const ROUTES = [
         'app_main', 'app_info', 'app_about', 'app_privacy', 'app_terms', 'app_tour_show',
-        'app_faq', 'app_blog', 'app_blog_post', 'app_gift',
+        'app_faq', 'app_blog', 'app_blog_post', 'app_gift', 'app_sitemap', 'app_robots',
     ];
     private const SHARED_MAX_AGE = 600;
 

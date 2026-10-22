@@ -164,7 +164,7 @@
                 {% for i in 1..4 %}
                     <div class="step">
                         <h3>{{ ('main.steps.' ~ i ~ '.title')|trans }}</h3>
-                        <p>{{ ('main.steps.' ~ i ~ '.text')|trans }}</p>
+                        <p>{{ ('main.steps.' ~ i ~ (i == 2 and prepayment_percent > 0 ? '.text_prepayment' : '.text'))|trans }}</p>
                     </div>
                 {% endfor %}
             </div>

@@ -214,8 +214,15 @@ demote: ## Remove admin rights: make demote email=...
 	$(CONSOLE) app:user:role $(email) user
 
 ## Background jobs and emails
-jobs: ## Run scheduled jobs now (job=reminders|complete|purge, all by default)
+jobs: ## Run scheduled jobs now (job=reminders|complete|unpaid|waitlist|purge, all by default)
 	$(CONSOLE) app:jobs:run $(job)
+
+telegram-poll: ## Receive messages to the Telegram bot without a webhook (development)
+	$(CONSOLE) app:telegram:poll
+
+bot-webhook: ## Register the bot webhook (needs a public HTTPS DEFAULT_URI): make bot-webhook bot=telegram|viber
+	@test -n "$(bot)" || { echo "usage: make bot-webhook bot=telegram|viber"; exit 1; }
+	$(CONSOLE) app:bot:webhook $(bot)
 
 failed: ## Emails that could not be sent
 	$(CONSOLE) messenger:failed:show
@@ -238,6 +245,9 @@ assets: ## Compile assets into public/assets (production build)
 
 assets-clean: ## Remove compiled assets (development serves them on the fly)
 	rm -rf public/assets
+
+images: ## Build responsive AVIF/WebP variants of all photos (assets/images and uploads)
+	$(CONSOLE) app:images:optimize
 
 routes: ## List all routes
 	$(CONSOLE) debug:router
@@ -314,8 +324,8 @@ prod-admin: ## Create an administrator in production: make prod-admin email=...
 prod-deploy: prod-build prod-up ## Rebuild and restart production after `git pull`
 
 ## Housekeeping
-clean: ## Remove cache, logs and compiled assets
-	rm -rf var/cache/* var/log/* public/assets
+clean: ## Remove cache, logs, compiled assets and image variants
+	rm -rf var/cache/* var/log/* public/assets public/media public/uploads/_v
 
 git-log: ## Commit history as a graph
 	git log --graph --oneline --decorate -30

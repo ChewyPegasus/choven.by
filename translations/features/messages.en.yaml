@@ -207,6 +207,9 @@ faq:
     empty: 'No questions yet.'
     no_answer: 'Did not find an answer?'
 main:
+    steps:
+        2:
+            text_prepayment: 'Online in a minute, prepayment by card or via ERIP. The email with the details arrives right away.'
     blog:
         title: 'Fresh from the blog'
     gift:
@@ -290,3 +293,6 @@ email:
         how: 'The recipient enters the code in the "Promo code or gift certificate" field when booking on the site. The certificate can be spent in parts.'
         button: 'Open the certificate'
         pdf: 'The printable PDF certificate is attached.'
+info:
+    promo:
+        text_prepayment: 'Book your trip now: an online prepayment takes a minute, the rest is paid on the day.'

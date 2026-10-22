@@ -46,13 +46,17 @@ final class MainController extends AbstractController
             'faq' => $faq->findActive(homeOnly: true),
             'posts' => $posts->findLatest(3),
             'gifts_available' => $settings->isGiftCertificatesEnabled() && $payments->isEnabled(),
+            'prepayment_percent' => $payments->isEnabled() ? $settings->getPrepaymentPercent() : 0,
         ]);
     }
 
     #[Route('/info', name: 'app_info', methods: ['GET'])]
-    public function info(FaqItemRepository $faq): Response
+    public function info(FaqItemRepository $faq, SiteSettings $settings, PaymentGateways $payments): Response
     {
-        return $this->render('info/index.html.twig', ['faq' => $faq->findActive()]);
+        return $this->render('info/index.html.twig', [
+            'faq' => $faq->findActive(),
+            'prepayment_percent' => $payments->isEnabled() ? $settings->getPrepaymentPercent() : 0,
+        ]);
     }
 
     #[Route('/about', name: 'app_about', methods: ['GET'])]
