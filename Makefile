@@ -51,9 +51,9 @@ help: ## Show all commands
 init: ## First start: dependencies, services, database with demo data, then run the site
 ifeq ($(MODE),docker)
 	$(DOCKER_COMP) up -d --build --wait
-	$(MAKE) --no-print-directory fixtures
+	$(MAKE) --no-print-directory demo-data
 else
-	$(MAKE) --no-print-directory services install db fixtures start
+	$(MAKE) --no-print-directory services install db demo-data start
 endif
 	@echo ""
 	@echo "  Site:   $(APP_URL)/ru/"
@@ -171,6 +171,13 @@ rollback: ## Revert the last migration
 
 fixtures: ## Add demo data (users, bookings, reviews)
 	$(CONSOLE) doctrine:fixtures:load --append -n
+
+demo-data: # Demo data only into an empty database (so `make init` can be run again)
+	@if $(CONSOLE) dbal:run-sql "SELECT 1 FROM users LIMIT 1" | grep -q "empty result set"; then \
+		$(MAKE) --no-print-directory fixtures; \
+	else \
+		echo "  demo data: the database already has users, skipped"; \
+	fi
 
 reset: ## Drop the database and recreate it with demo data
 	$(CONSOLE) doctrine:database:drop --force --if-exists
