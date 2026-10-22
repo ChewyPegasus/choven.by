@@ -45,3 +45,4 @@
 - Kafka/Zookeeper/cron заменены на Symfony Messenger (PostgreSQL-транспорт) и Scheduler.
 - JSON-API админки и модалки на чистом JS заменены серверными формами (Symfony Forms + Turbo + Stimulus).
 - Удалены неиспользуемые зависимости (enqueue/rdkafka, notifier, Platform.sh, Blackfire).
+- Продакшен: php-fpm + nginx заменены одним контейнером FrankenPHP в worker-режиме (Caddy, HTTP/2 и HTTP/3, при `SERVER_NAME=домен` — сертификаты Let's Encrypt без отдельного прокси); ассеты заранее сжимаются в brotli/zstd/gzip. Разработка по-прежнему на php-fpm + nginx.

@@ -74,7 +74,7 @@ jobs:
         steps:
             - uses: actions/checkout@v4
             - uses: docker/setup-buildx-action@v3
-            - name: Build production images
+            - name: Build production image
               run: |
-                  docker build -f docker/php/Dockerfile --target php_prod -t choven-php:ci .
-                  docker build -f docker/php/Dockerfile --target nginx_prod -t choven-nginx:ci .
+                  docker build -f docker/php/Dockerfile --target app_prod -t choven-app:ci .
+                  docker run --rm choven-app:ci frankenphp validate --config /etc/frankenphp/Caddyfile --adapter caddyfile

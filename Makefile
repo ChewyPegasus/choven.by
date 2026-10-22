@@ -290,8 +290,8 @@ prod-env: ## Create .env.prod.local from the example (fill in the secrets afterw
 prod-build: ## Build production images
 	$(PROD_COMP) build --pull
 
-prod-up: ## Start or update production (migrations run automatically)
-	$(PROD_COMP) up -d --wait
+prod-up: ## Start or update production (migrations run automatically, old php/nginx containers are removed)
+	$(PROD_COMP) up -d --wait --remove-orphans
 
 prod-down: ## Stop production
 	$(PROD_COMP) down
@@ -299,17 +299,17 @@ prod-down: ## Stop production
 prod-ps: ## Production containers
 	$(PROD_COMP) ps
 
-prod-logs: ## Follow production logs (s=php to pick a container)
+prod-logs: ## Follow production logs (s=app|worker to pick a container)
 	$(PROD_COMP) logs -f --tail=200 $(s)
 
-prod-sh: ## Shell in the production PHP container
-	$(PROD_COMP) exec php bash
+prod-sh: ## Shell in the production app container
+	$(PROD_COMP) exec app bash
 
 prod-console: ## Run a console command in production: make prod-console c="app:jobs:run"
-	$(PROD_COMP) exec php bin/console $(c)
+	$(PROD_COMP) exec app bin/console $(c)
 
 prod-admin: ## Create an administrator in production: make prod-admin email=...
-	$(PROD_COMP) exec php bin/console app:user:create $(email) --admin
+	$(PROD_COMP) exec app bin/console app:user:create $(email) --admin
 
 prod-deploy: prod-build prod-up ## Rebuild and restart production after `git pull`
 

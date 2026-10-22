@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1.7
 #
 # Targets:
-#   php_dev    – development image, the source code is mounted as a volume
-#   php_prod   – self-contained production image (code, vendor and compiled assets baked in)
-#   nginx_prod – nginx serving public/ of php_prod and proxying PHP requests to it
+#   php_dev  – development image (PHP-FPM behind nginx, see compose.yaml), the source code is mounted as a volume
+#   app_prod – self-contained production image: FrankenPHP (Caddy + PHP in worker mode) with the code, vendor and
+#              precompressed assets baked in; the same image runs the queue worker (see compose.prod.yaml)
 
 ARG PHP_VERSION=8.3
 
@@ -54,12 +54,40 @@ RUN set -eux; \
     { echo 'xdebug.mode=off'; echo 'xdebug.client_host=host.docker.internal'; } > /usr/local/etc/php/app.conf.d/20-xdebug.ini
 
 # ---------------------------------------------------------------------------
-FROM php_base AS php_prod
+FROM dunglas/frankenphp:1-php${PHP_VERSION}-bookworm AS app_prod
 
-ENV APP_ENV=prod
+ENV APP_ENV=prod \
+    COMPOSER_ALLOW_SUPERUSER=1
 
-RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
-COPY docker/php/conf.d/app.prod.ini /usr/local/etc/php/app.conf.d/20-app.prod.ini
+# brotli and zstd are only used by asset-map:compile to precompress the assets that Caddy then serves as they are.
+RUN set -eux; \
+    install-php-extensions \
+        apcu \
+        brotli \
+        gd \
+        intl \
+        opcache \
+        pdo_pgsql \
+        redis \
+        zip \
+        zstd \
+    ; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends libcap2-bin; \
+    # The server runs as www-data and still binds ports 80/443.
+    setcap CAP_NET_BIND_SERVICE=+eip /usr/local/bin/frankenphp; \
+    apt-get purge -y --auto-remove libcap2-bin; \
+    rm -rf /var/lib/apt/lists/*; \
+    mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY --from=composer/composer:2-bin /composer /usr/bin/composer
+COPY docker/php/conf.d/app.ini $PHP_INI_DIR/conf.d/10-app.ini
+COPY docker/php/conf.d/app.prod.ini $PHP_INI_DIR/conf.d/20-app.prod.ini
+COPY docker/frankenphp/Caddyfile /etc/frankenphp/Caddyfile
+COPY --chmod=755 docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
+COPY --chmod=755 docker/frankenphp/healthcheck.sh /usr/local/bin/app-healthcheck
+
+WORKDIR /app
 
 # Dependencies first, for better layer caching.
 COPY composer.json composer.lock symfony.lock ./
@@ -69,17 +97,20 @@ RUN set -eux; \
 COPY . ./
 RUN set -eux; \
     rm -rf tests; \
-    mkdir -p var/cache var/log public/uploads; \
+    mkdir -p var/cache var/log public/uploads public/media; \
     composer dump-autoload --classmap-authoritative --no-dev; \
     composer dump-env prod; \
     composer run-script --no-dev post-install-cmd; \
     php bin/console asset-map:compile; \
+    # Fail the build if precompression silently did not happen.
+    for ext in br zst gz; do ls public/assets/styles/*.css.$ext > /dev/null; done; \
     chmod +x bin/console; \
-    chown -R www-data:www-data var public/uploads; \
+    chown -R www-data:www-data var public/uploads public/media /data/caddy /config/caddy; \
     sync
 
-# ---------------------------------------------------------------------------
-FROM nginx:1.27-alpine AS nginx_prod
+USER www-data
 
-COPY docker/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=php_prod /app/public /app/public
+HEALTHCHECK --interval=10s --timeout=5s --retries=3 --start-period=180s --start-interval=3s CMD ["app-healthcheck"]
+
+ENTRYPOINT ["docker-entrypoint"]
+CMD ["frankenphp", "run", "--config", "/etc/frankenphp/Caddyfile", "--adapter", "caddyfile"]

@@ -32,7 +32,7 @@
 
 **Автоматика:** все письма уходят в фоне через очередь с повторными попытками; новые брони, отмены, звонки и отзывы дублируются в Telegram-чат команды; раз в сутки клиентам приходят напоминания о поездке, а прошедшие подтверждённые сплавы закрываются с приглашением оставить отзыв.
 
-**Защита:** ограничение частоты входа и форм, honeypot от ботов, CSRF, проверка `Host` и прокси-заголовков, блокировка при одновременном бронировании последних мест, защита CSV от формул, автоудаление неподтверждённых аккаунтов, подписанные ссылки подтверждения, хэширование паролей, никакого перебора броней по id, заголовки безопасности в nginx.
+**Защита:** ограничение частоты входа и форм, honeypot от ботов, CSRF, проверка `Host` и прокси-заголовков, блокировка при одновременном бронировании последних мест, защита CSV от формул, автоудаление неподтверждённых аккаунтов, подписанные ссылки подтверждения, хэширование паролей, никакого перебора броней по id, заголовки безопасности на веб-сервере.
 
 ---
 
@@ -84,17 +84,21 @@ make open      # открыть сайт в браузере
 
 ## Продакшен
 
-1. `cp .env.prod.example .env.prod.local` и заполните секреты (`APP_SECRET`, пароль БД, `MAILER_DSN`, `DEFAULT_URI`, `TRUSTED_HOSTS`).
-2. `make prod-build prod-up` — собираются самодостаточные образы (код, зависимости и скомпилированные ассеты внутри, OPcache с preload), миграции применяются при старте.
-3. Поставьте перед стеком прокси с TLS (Caddy, Traefik, nginx или Cloudflare). Прокси в частной сети/на том же хосте доверяются автоматически (`TRUSTED_PROXIES=private_ranges`); для внешнего (Cloudflare) добавьте его диапазоны IP.
-4. Создайте администратора: `docker compose -f compose.prod.yaml exec php bin/console app:user:create you@example.com --admin`.
+1. `make prod-env` (копирует `.env.prod.example` в `.env.prod.local`) и заполните секреты (`APP_SECRET`, пароль БД, `MAILER_DSN`, `DEFAULT_URI`, `TRUSTED_HOSTS`).
+2. `make prod-build prod-up` — собирается самодостаточный образ на [FrankenPHP](https://frankenphp.dev) (Caddy + PHP в worker-режиме: ядро Symfony живёт в памяти между запросами, страница отдаётся за ~10 мс). Внутри код, зависимости, OPcache с preload и ассеты, заранее сжатые в brotli/zstd/gzip. Миграции применяются при старте контейнера `app`; контейнер `worker` из того же образа отправляет письма и выполняет задачи по расписанию.
+3. HTTPS — один из двух вариантов:
+   - **Caddy сам получает сертификаты Let's Encrypt:** `SERVER_NAME="choven.by, www.choven.by"`, порты 80 и 443 (TCP и UDP для HTTP/3) открыты наружу, `TRUSTED_PROXIES=127.0.0.1` (перед сайтом никого нет, заголовкам `X-Forwarded-*` не верим). Сертификаты хранятся в томе `caddy_data`.
+   - **Свой прокси с TLS** (nginx, Traefik, Cloudflare): `SERVER_NAME` пустой, сайт отвечает по HTTP на `HTTP_PORT`. Прокси в частной сети или на том же хосте доверяются автоматически (`TRUSTED_PROXIES=private_ranges`); для внешнего (Cloudflare) добавьте его диапазоны IP.
+4. Создайте администратора: `make prod-admin email=you@example.com`.
 5. Резервная копия базы: `make backup PROD_MODE=1` (кладите в cron); восстановление — `make restore file=…`.
+
+Число PHP-воркеров — `FRANKENPHP_WORKERS` (по умолчанию 4, у каждого своё соединение с базой), после `FRANKENPHP_LOOP_MAX` запросов (500) воркер перезапускается. Обновление со старой схемы (php-fpm + nginx): `make prod-deploy` — контейнеры `php` и `nginx` удаляются, тома `uploads`, `logs` и база остаются.
 
 **Уведомления в Telegram:** создайте бота у [@BotFather](https://t.me/BotFather), добавьте его в чат команды, узнайте `chat_id` (например, через [@getidsbot](https://t.me/getidsbot)) и задайте `TELEGRAM_BOT_TOKEN` и `TELEGRAM_CHAT_ID`.
 
 Проверка здоровья: `GET /health` (200 — всё в порядке, 503 — нет связи с базой).
 
-**Масштабирование:** сессии, кэш и блокировки в Redis, поэтому PHP-контейнеров может быть несколько. Загруженные фото лежат в томе `uploads`.
+**Масштабирование:** сессии, кэш и блокировки в Redis, поэтому контейнеров `app` может быть несколько. Загруженные фото лежат в томе `uploads`.
 
 ---
 
@@ -144,7 +148,7 @@ templates/             Twig; emails/ — письма; admin/ — админка
 assets/                controllers/ (Stimulus), styles/
 translations/          messages, validators, security (+ admin/)
 migrations/            миграции, включая перенос данных со старой схемы
-docker/                Dockerfile (dev/prod), nginx, php.ini
+docker/                Dockerfile (dev: PHP-FPM + nginx, prod: FrankenPHP), Caddyfile, php.ini
 ```
 
 ### Почему без Kafka

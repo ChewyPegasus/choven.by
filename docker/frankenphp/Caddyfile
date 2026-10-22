@@ -1,0 +1,114 @@
+# Production web server: Caddy + FrankenPHP, the Symfony kernel stays in memory between requests (worker mode).
+#
+#   SERVER_NAME         site address. Default ":80" = plain HTTP on any host name, no certificates (put a TLS proxy
+#                       in front). A real domain ("choven.by, www.choven.by") makes Caddy obtain and renew
+#                       Let's Encrypt certificates itself, redirect HTTP to HTTPS and serve HTTP/3.
+#   FRANKENPHP_WORKERS  number of PHP workers (each keeps its own database connection). Default 4.
+#   FRANKENPHP_LOOP_MAX requests a worker handles before it is restarted (read by symfony/runtime). Default 500.
+#
+# Host names are validated by Symfony (TRUSTED_HOSTS): requests for other hosts get HTTP 400.
+{
+	skip_install_trust
+
+	frankenphp {
+		worker {
+			file /app/public/index.php
+			num {$FRANKENPHP_WORKERS:4}
+		}
+	}
+
+	{$CADDY_GLOBAL_OPTIONS}
+}
+
+(security_headers) {
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+	}
+	header -Server
+	header -X-Powered-By
+}
+
+# Long-lived caching for successful responses only (a 404 must not be cached for a year).
+(cache) {
+	header {
+		Cache-Control "{args[0]}"
+		match status 2xx 304
+	}
+}
+
+(app) {
+	root /app/public
+
+	request_body {
+		max_size 12MB
+	}
+
+	# Client IP: PHP gets the TCP peer as REMOTE_ADDR, X-Forwarded-* are passed through untouched and Symfony
+	# only believes them when the peer is a trusted proxy (TRUSTED_PROXIES). X-Forwarded-Host is never trusted.
+	request_header -X-Forwarded-Host
+
+	encode zstd br gzip
+
+	import security_headers
+
+	# Only when this server itself speaks HTTPS (SERVER_NAME is a domain); a TLS proxy in front sets its own.
+	@https protocol https
+	header @https Strict-Transport-Security "max-age=31536000"
+
+	# Fingerprinted files from AssetMapper (public/assets/*-<hash>.*) never change; .br/.zst/.gz siblings are
+	# produced by asset-map:compile and sent as they are.
+	handle /assets/* {
+		import cache "public, max-age=31536000, immutable"
+		log_skip
+		file_server {
+			precompressed br zstd gzip
+		}
+	}
+
+	# Responsive image variants, file names change with the content.
+	handle /media/* {
+		import cache "public, max-age=31536000, immutable"
+		log_skip
+		file_server
+	}
+
+	# User uploads: static files only, nothing here is ever executed.
+	handle /uploads/* {
+		@php path *.php
+		respond @php 404
+		import cache "public, max-age=2592000"
+		log_skip
+		file_server
+	}
+
+	handle {
+		# index.php is the only PHP entry point.
+		@otherPhp {
+			path *.php
+			not path /index.php
+		}
+		respond @otherPhp 404
+
+		php_server
+	}
+
+	# Errors raised by Caddy itself (missing static file, body too large).
+	handle_errors {
+		import security_headers
+		respond "{err.status_code} {err.status_text}"
+	}
+}
+
+{$SERVER_NAME::80} {
+	log
+	import app
+}
+
+# Internal listener for the container health check (docker/frankenphp/healthcheck.sh), not published.
+http://:2080 {
+	bind 127.0.0.1
+	import app
+}

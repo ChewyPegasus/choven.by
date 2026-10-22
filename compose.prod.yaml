@@ -3,7 +3,9 @@
 #   cp .env.prod.example .env.prod.local   # and fill in the secrets
 #   docker compose -f compose.prod.yaml --env-file .env.prod.local up -d --build
 #
-# Put a TLS-terminating reverse proxy (Caddy, Traefik, nginx, Cloudflare) in front of port ${HTTP_PORT:-80}.
+# The app container is FrankenPHP (Caddy + PHP in worker mode, docker/frankenphp/Caddyfile). By default it serves
+# plain HTTP on ${HTTP_PORT:-80} behind a TLS proxy; with SERVER_NAME=choven.by it obtains Let's Encrypt
+# certificates itself (ports 80 and 443 must then be reachable from the internet).
 
 x-php-env: &php-env
     APP_ENV: prod
@@ -29,17 +31,27 @@ x-php-env: &php-env
     TELEGRAM_CHAT_ID: ${TELEGRAM_CHAT_ID:-}
 
 services:
-    php:
+    app:
         build:
             context: .
             dockerfile: docker/php/Dockerfile
-            target: php_prod
-        image: choven-php:${IMAGE_TAG:-latest}
+            target: app_prod
+        image: choven-app:${IMAGE_TAG:-latest}
         restart: always
-        environment: *php-env
+        environment:
+            <<: *php-env
+            SERVER_NAME: ${SERVER_NAME:-:80}
+            FRANKENPHP_WORKERS: ${FRANKENPHP_WORKERS:-4}
+            FRANKENPHP_LOOP_MAX: ${FRANKENPHP_LOOP_MAX:-500}
+        ports:
+            - "${HTTP_PORT:-80}:80"
+            - "${HTTPS_PORT:-443}:443"
+            - "${HTTPS_PORT:-443}:443/udp" # HTTP/3
         volumes:
             - uploads:/app/public/uploads
             - logs:/app/var/log
+            - caddy_data:/data/caddy # certificates
+            - caddy_config:/config/caddy
         depends_on:
             database:
                 condition: service_healthy
@@ -47,7 +59,7 @@ services:
                 condition: service_healthy
 
     worker:
-        image: choven-php:${IMAGE_TAG:-latest}
+        image: choven-app:${IMAGE_TAG:-latest}
         restart: always
         environment: *php-env
         command: ["php", "bin/console", "messenger:consume", "async", "scheduler_default", "--time-limit=3600", "--memory-limit=192M"]
@@ -56,22 +68,7 @@ services:
         volumes:
             - logs:/app/var/log
         depends_on:
-            php:
-                condition: service_healthy
-
-    nginx:
-        build:
-            context: .
-            dockerfile: docker/php/Dockerfile
-            target: nginx_prod
-        image: choven-nginx:${IMAGE_TAG:-latest}
-        restart: always
-        ports:
-            - "${HTTP_PORT:-80}:80"
-        volumes:
-            - uploads:/app/public/uploads:ro
-        depends_on:
-            php:
+            app:
                 condition: service_healthy
 
     database:
@@ -106,3 +103,5 @@ volumes:
     redis_data:
     uploads:
     logs:
+    caddy_data:
+    caddy_config:

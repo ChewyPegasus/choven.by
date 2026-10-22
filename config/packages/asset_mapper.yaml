@@ -10,3 +10,7 @@ when@prod:
     framework:
         asset_mapper:
             missing_import_mode: warn
+            # asset-map:compile also writes .br/.zst/.gz next to text assets; Caddy (docker/frankenphp/Caddyfile)
+            # sends them as they are. Formats are those the system supports (the prod image has the brotli and
+            # zstd extensions, gzip is always available).
+            precompress: true

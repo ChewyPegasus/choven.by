@@ -1,8 +1,8 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
-    # nginx (docker/nginx/default.conf) appends the real client IP to X-Forwarded-For; only private networks
-    # (nginx itself, a reverse proxy on the same host) are trusted, so spoofed values from clients are ignored.
+    # X-Forwarded-* are only believed when the TCP peer is a trusted proxy: by default private networks (dev nginx,
+    # a TLS proxy on the same host in front of FrankenPHP), so spoofed values sent by clients directly are ignored.
     trusted_proxies: '%env(TRUSTED_PROXIES)%'
     trusted_headers: ['x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port']
     # Requests with any other Host header are rejected (protects links in emails). Empty = any host (development).
