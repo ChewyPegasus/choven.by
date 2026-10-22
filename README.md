@@ -36,39 +36,49 @@
 
 ---
 
-## Быстрый старт (Docker)
+## Быстрый старт
 
-Нужны Docker Desktop (или Docker Engine + Compose v2) и `make`.
+Нужны Docker Desktop (или Docker Engine + Compose v2) и GNU Make. Всё запускается через `make`; полный список команд с описаниями — `make help`.
 
 ```bash
 git clone https://github.com/ChewyPegasus/choven.by.git && cd choven.by
-make init
+make init      # первый запуск: зависимости, сервисы, база с демо-данными, сайт
+make open      # открыть сайт в браузере
 ```
+
+Режим выбирается автоматически:
+
+- **Linux / macOS (`MODE=docker`)**: всё работает в контейнерах (PHP-FPM, nginx, воркер, PostgreSQL, Redis, Mailpit). Сайт открывается на http://localhost:8080.
+- **Windows (`MODE=local`)**: PHP запускается прямо в Windows, а в Docker остаются только PostgreSQL, Redis и Mailpit. Docker Desktop медленно монтирует файлы с диска Windows, так что в контейнере страница грузилась бы несколько секунд, а так — меньше 0,3 с. Сайт открывается на http://127.0.0.1:8000. Нужны PHP 8.2+ (`intl`, `pdo_pgsql`, `gd`, `mbstring`, `sodium`), Composer, Git for Windows и GNU Make 4+ (`choco install make`; Git Bash используется как shell автоматически).
+
+Режим можно сменить на один запуск (`make start MODE=docker`) или навсегда, записав `MODE=docker` в файл `.make.local`.
 
 | Что | Адрес |
 |---|---|
-| Сайт | http://localhost:8080 |
-| Письма (Mailpit) | http://localhost:8025 |
-| Админка | http://localhost:8080/ru/admin — `admin@choven.local` / `admin12345` |
+| Сайт | http://127.0.0.1:8000 (Windows) / http://localhost:8080 (Docker) |
+| Админка | `/ru/admin`: `admin@choven.local` / `admin12345` |
 | Клиент | `user@choven.local` / `user12345` |
+| Письма (Mailpit) | http://localhost:8025 |
 
-`make init` поднимает контейнеры (PHP-FPM, nginx, воркер очереди, PostgreSQL, Redis, Mailpit), ставит зависимости, применяет миграции и загружает демо-данные. Команды: `make help`.
+### Основные команды
 
-> **Windows:** Docker Desktop монтирует файлы с диска Windows медленно, и в dev-режиме страницы открываются по несколько секунд. Держите проект внутри WSL2 (`\\wsl$\Ubuntu\home\…`) или запускайте PHP прямо в Windows, как описано ниже, — тогда в Docker нужны только база, Redis и Mailpit.
+| Команда | Что делает |
+|---|---|
+| `make start` / `make stop` / `make restart` | запустить / остановить / перезапустить сайт и воркер (в фоне) |
+| `make status` | что запущено |
+| `make logs` | логи сервера, воркера и приложения в реальном времени |
+| `make mail` / `make admin-open` | открыть Mailpit / админку |
+| `make migrate`, `make migration` | применить миграции / создать новую по изменениям в сущностях |
+| `make reset` | пересоздать базу с демо-данными |
+| `make backup`, `make restore file=…` | дамп и восстановление базы |
+| `make admin email=…` | создать администратора |
+| `make jobs [job=reminders\|complete\|purge]` | запустить фоновые задачи вручную (напоминания, завершение прошедших заказов, очистка) |
+| `make failed` / `make retry-failed` | письма, которые не удалось отправить, и повторная отправка |
+| `make cache` | очистить кэш |
+| `make sql q="select …"`, `make psql` | запрос или консоль PostgreSQL |
+| `make down` | остановить всё, включая контейнеры |
 
-### Без Docker (например, Windows)
-
-Нужны PHP 8.2+ с расширениями `intl`, `pdo_pgsql`, `gd`, `mbstring`, `sodium`, Composer и PostgreSQL (можно поднять только сервисы: `docker compose up -d database redis mailer`).
-
-```bash
-composer install
-php bin/console doctrine:migrations:migrate -n
-php bin/console doctrine:fixtures:load --append -n
-php -S 127.0.0.1:8000 -t public public/index.php      # сайт
-php bin/console messenger:consume async scheduler_default -vv   # письма (в отдельном окне)
-```
-
-Настройки по умолчанию лежат в `.env`; свои значения — в `.env.local` (не коммитится). Чтобы письма отправлялись сразу без воркера, задайте `MESSENGER_TRANSPORT_DSN=sync://`.
+Настройки по умолчанию лежат в `.env`; свои значения — в `.env.local` (в git не попадает). Чтобы письма отправлялись сразу, без воркера, задайте `MESSENGER_TRANSPORT_DSN=sync://`.
 
 ---
 
@@ -106,10 +116,14 @@ php bin/console messenger:consume async scheduler_default -vv   # письма (
 ## Разработка
 
 ```bash
-make test        # все тесты (unit, integration, functional) на реальном PostgreSQL
-make phpstan     # статический анализ, уровень 8
-make cs-fix      # код-стайл (@Symfony)
-make quality     # всё, что гоняет CI
+make test                 # все тесты (unit, integration, functional) на реальном PostgreSQL
+make test-unit            # только unit (также test-integration, test-functional)
+make test-filter t=Booking  # тесты по имени
+make coverage             # отчёт о покрытии в var/coverage (нужен Xdebug или PCOV)
+make phpstan              # статический анализ, уровень 8
+make cs-fix               # код-стайл (@Symfony)
+make lint                 # проверка Twig, YAML, контейнера, схемы Doctrine, composer.json
+make quality              # всё, что гоняет CI
 ```
 
 Тестовая база пересоздаётся миграциями при каждом запуске (`SKIP_DB_RESET=1` — пропустить), каждый тест изолирован транзакцией. Отдельный тест рендерит все страницы на трёх языках и падает, если где-то остался непереведённый ключ.

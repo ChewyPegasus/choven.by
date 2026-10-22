@@ -1,0 +1,163 @@
+#!/usr/bin/env bash
+# Local development processes without Docker for PHP (the fast way on Windows and macOS):
+# the PHP built-in web server and the queue worker run in the background.
+#
+#   bin/dev start | stop | restart | status | logs
+#
+# Settings (environment variables): PHP (php binary), PORT (8000), HOST (127.0.0.1)
+
+set -euo pipefail
+cd "$(dirname "$0")/.."
+
+PHP=${PHP:-php}
+PORT=${PORT:-8000}
+HOST=${HOST:-127.0.0.1}
+RUN_DIR=var/run
+LOG_DIR=var/log
+SERVER_LOG=$LOG_DIR/server.log
+WORKER_LOG=$LOG_DIR/worker.log
+WORKER_PID=$RUN_DIR/worker.pid
+
+mkdir -p "$RUN_DIR" "$LOG_DIR"
+
+is_windows() { [[ "${OS:-}" == "Windows_NT" ]]; }
+
+win_path() { cygpath -w "$1"; }
+
+# Starts a detached background process and prints its PID (a Windows PID on Windows).
+# On Windows the process is created through WMI: a child created by this shell would inherit its
+# handles (including the pipe to the calling `make`), and the caller would wait for it forever.
+spawn() {
+    local log=$1
+    shift
+    if is_windows; then
+        local cmdline arg
+        cmdline="\"$(win_path "$(command -v "$1")")\""
+        shift
+        for arg in "$@"; do cmdline+=" \"$arg\""; done
+        SPAWN_CMD="cmd.exe /d /s /c \"set \"PATH=$(cygpath -wp "$PATH")\" && $cmdline >>\"$(win_path "$log")\" 2>&1\"" \
+        SPAWN_DIR=$(win_path "$PWD") \
+        powershell.exe -NoProfile -NonInteractive -Command '
+            $startup = New-CimInstance -ClassName Win32_ProcessStartup -ClientOnly -Property @{ ShowWindow = [uint16]0 }
+            $r = Invoke-CimMethod -ClassName Win32_Process -MethodName Create -Arguments @{
+                CommandLine = $env:SPAWN_CMD; CurrentDirectory = $env:SPAWN_DIR; ProcessStartupInformation = $startup }
+            if ($r.ReturnValue -ne 0) { exit 1 }
+            $r.ProcessId' </dev/null | tr -d '\r'
+    else
+        nohup "$@" >>"$log" 2>&1 </dev/null &
+        echo $!
+    fi
+}
+
+pid_alive() {
+    local pid=$1
+    [[ -n "$pid" ]] || return 1
+    if is_windows; then
+        tasklist //FI "PID eq $pid" //NH 2>/dev/null | grep -q " $pid "
+    else
+        kill -0 "$pid" 2>/dev/null
+    fi
+}
+
+kill_tree() {
+    if is_windows; then
+        taskkill //F //T //PID "$1" >/dev/null 2>&1 || true
+    else
+        pkill -P "$1" 2>/dev/null || true
+        kill "$1" 2>/dev/null || true
+    fi
+}
+
+# PID of the process listening on $PORT (empty when nothing listens).
+server_pid() {
+    if is_windows; then
+        netstat -ano 2>/dev/null | tr -d '\r' | awk -v p=":$PORT" '$1 == "TCP" && $2 ~ p"$" && $4 == "LISTENING" { print $5; exit }'
+    elif command -v lsof >/dev/null 2>&1; then
+        lsof -t -iTCP:"$PORT" -sTCP:LISTEN 2>/dev/null | head -1 || true
+    else
+        (ss -ltnp 2>/dev/null || true) | awk -v p=":$PORT" '$4 ~ p"$" { match($0, /pid=[0-9]+/); print substr($0, RSTART + 4, RLENGTH - 4); exit }'
+    fi
+}
+
+worker_running() {
+    [[ -f "$WORKER_PID" ]] && pid_alive "$(cat "$WORKER_PID")"
+}
+
+start_server() {
+    if [[ -n "$(server_pid)" ]]; then
+        echo "  web server   already running on http://$HOST:$PORT"
+        return
+    fi
+    if is_windows; then
+        spawn "$SERVER_LOG" "$PHP" -S "$HOST:$PORT" -t public public/index.php >/dev/null
+    else
+        # Several parallel requests (not supported by the built-in server on Windows).
+        PHP_CLI_SERVER_WORKERS=4 spawn "$SERVER_LOG" "$PHP" -S "$HOST:$PORT" -t public public/index.php >/dev/null
+    fi
+    for _ in $(seq 1 40); do
+        [[ -n "$(server_pid)" ]] && break
+        sleep 0.25
+    done
+    if [[ -z "$(server_pid)" ]]; then
+        echo "  web server   failed to start, see $SERVER_LOG" >&2
+        tail -n 20 "$SERVER_LOG" "$SERVER_LOG.err" 2>/dev/null >&2 || true
+        exit 1
+    fi
+    echo "  web server   http://$HOST:$PORT  (log: $SERVER_LOG)"
+}
+
+start_worker() {
+    if worker_running; then
+        echo "  worker       already running"
+        return
+    fi
+    spawn "$WORKER_LOG" bash bin/dev worker-loop >"$WORKER_PID"
+    echo "  worker       emails and scheduled jobs  (log: $WORKER_LOG)"
+}
+
+# Keeps a worker running: restarts it after its hourly time limit or a crash.
+worker_loop() {
+    while true; do
+        "$PHP" bin/console messenger:consume async scheduler_default --time-limit=3600 --memory-limit=256M -v || true
+        sleep 2
+    done
+}
+
+stop_server() {
+    local pid
+    pid=$(server_pid)
+    if [[ -n "$pid" ]]; then
+        kill_tree "$pid"
+        echo "  web server   stopped"
+    else
+        echo "  web server   not running"
+    fi
+}
+
+stop_worker() {
+    if worker_running; then
+        kill_tree "$(cat "$WORKER_PID")"
+        "$PHP" bin/console messenger:stop-workers -q || true
+        echo "  worker       stopped"
+    else
+        echo "  worker       not running"
+    fi
+    rm -f "$WORKER_PID"
+}
+
+status() {
+    local pid
+    pid=$(server_pid)
+    if [[ -n "$pid" ]]; then echo "  web server   running on http://$HOST:$PORT (pid $pid)"; else echo "  web server   stopped"; fi
+    if worker_running; then echo "  worker       running (pid $(cat "$WORKER_PID"))"; else echo "  worker       stopped"; fi
+}
+
+case "${1:-}" in
+    start) start_server; start_worker ;;
+    stop) stop_worker; stop_server ;;
+    restart) stop_worker; stop_server; start_server; start_worker ;;
+    status) status ;;
+    logs) touch "$SERVER_LOG" "$WORKER_LOG" "$LOG_DIR/dev.log"; tail -n 50 -f "$SERVER_LOG" "$WORKER_LOG" "$LOG_DIR/dev.log" ;;
+    worker-loop) worker_loop ;;
+    *) echo "Usage: bin/dev start|stop|restart|status|logs" >&2; exit 2 ;;
+esac
